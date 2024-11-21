@@ -1,0 +1,18 @@
+---
+# Per environment values which override defaults in hmpps-video-conference-schedule-ui/values.yaml
+
+generic-service:
+  ingress:
+    host: video-conference-schedule.prison.service.justice.gov.uk
+
+  env:
+    INGRESS_URL: "https://book-a-video-link.prison.service.justice.gov.uk"
+    HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
+    MANAGE_USERS_API_URL: "https://manage-users-api.hmpps.service.justice.gov.uk"
+    TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
+    FRONTEND_COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
+    AUDIT_ENABLED: "true"
+    BOOK_A_VIDEO_LINK_API_URL: "https://book-a-video-link-api.prison.service.justice.gov.uk"
+
+generic-prometheus-alerts:
+  alertSeverity: hmpps-book-a-video-link-prod

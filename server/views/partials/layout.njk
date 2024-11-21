@@ -1,0 +1,31 @@
+{% extends "govuk/template.njk" %}
+
+{% set mainClasses = 'govuk-main-wrapper--l' %}
+
+{% block head %}
+  <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
+  {% for css in feComponents.cssIncludes %}
+    <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+  {% endfor %}
+{% endblock %}
+
+{% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
+
+{% block header %}
+  {{ feComponents.header | safe }}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include 'partials/beforeContent.njk' %}
+{% endblock %}
+
+{% block footer %}
+  {{ feComponents.footer | safe }}
+{% endblock %}
+
+{% block bodyEnd %}
+  {% for js in feComponents.jsIncludes %}
+    <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+  {% endfor %}
+  <script type="module" src="/assets/javascript/videoConferenceSchedule.min.js"></script>
+{% endblock %}

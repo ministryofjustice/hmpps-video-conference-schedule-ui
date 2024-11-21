@@ -1,0 +1,5 @@
+function initAll() {
+
+}
+
+export { initAll }
