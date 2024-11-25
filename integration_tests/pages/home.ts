@@ -1,11 +1,7 @@
-import Page, { PageElement } from './page'
+import Page from './page'
 
 export default class HomePage extends Page {
   constructor() {
-    super('Daily video conference schedule')
+    super('Daily Video Conference Schedule')
   }
-
-  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
-
-  headerPhaseBanner = (): PageElement => cy.get('[data-qa=header-phase-banner]')
 }

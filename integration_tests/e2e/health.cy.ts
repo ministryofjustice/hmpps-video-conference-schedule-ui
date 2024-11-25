@@ -5,7 +5,6 @@ context('Healthcheck', () => {
       cy.task('stubAuthPing')
       cy.task('stubBookAVideoLinkPing')
       cy.task('stubManageUsersPing')
-      cy.task('stubPrisonerSearchPing')
       cy.task('stubTokenVerificationPing')
     })
 
@@ -28,7 +27,6 @@ context('Healthcheck', () => {
       cy.task('stubAuthPing')
       cy.task('stubBookAVideoLinkPing')
       cy.task('stubManageUsersPing')
-      cy.task('stubPrisonerSearchPing')
       cy.task('stubTokenVerificationPing', 500)
     })
 
@@ -37,7 +35,6 @@ context('Healthcheck', () => {
         expect(response.body.components.hmppsAuth.status).to.equal('UP')
         expect(response.body.components.bookAVideoLinkApi.status).to.equal('UP')
         expect(response.body.components.manageUsersApi.status).to.equal('UP')
-        expect(response.body.components.prisonerSearchApi.status).to.equal('UP')
         expect(response.body.components.tokenVerification.status).to.equal('DOWN')
         expect(response.body.components.tokenVerification.details).to.contain({ status: 500, retries: 2 })
       })
