@@ -1,22 +1,17 @@
 version: 2.1
-
 orbs:
   hmpps: ministryofjustice/hmpps@8
   slack: circleci/slack@4.12.5
-
 parameters:
   alerts-slack-channel:
     type: string
     default: book-a-video-link-alerts
-
   releases-slack-channel:
     type: string
     default: book-a-video-link-alerts
-
   node-version:
     type: string
     default: 20.11-browsers
-
 jobs:
   build:
     executor:
@@ -50,7 +45,6 @@ jobs:
             - build
             - dist
             - assets
-
   unit_test:
     executor:
       name: hmpps/node
@@ -66,7 +60,6 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
-
   integration_test:
     executor:
       name: hmpps/node_redis
@@ -97,7 +90,6 @@ jobs:
           path: integration_tests/videos
       - store_artifacts:
           path: integration_tests/screenshots
-
 workflows:
   version: 2
   build-test-and-deploy:
@@ -137,77 +129,39 @@ workflows:
             - integration_test
             - build_docker
           helm_timeout: 5m
-#      - request-preprod-approval:
-#          type: approval
-#          requires:
-#            - deploy_dev
-#      - hmpps/deploy_env:
-#          name: deploy_preprod
-#          env: "preprod"
-#          jira_update: true
-#          jira_env_type: staging
-#          pipeline_id: <<pipeline.id>>
-#          pipeline_number: <<pipeline.number>>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-book-a-video-link-preprod
-#          requires:
-#            - request-preprod-approval
-#          helm_timeout: 5m
-#      - request-prod-approval:
-#          type: approval
-#          requires:
-#            - deploy_preprod
-#      - hmpps/deploy_env:
-#          name: deploy_prod
-#          env: "prod"
-#          jira_update: true
-#          jira_env_type: production
-#          pipeline_id: <<pipeline.id>>
-#          pipeline_number: <<pipeline.number>>
-#          slack_notification: true
-#          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-book-a-video-link-prod
-#          requires:
-#            - request-prod-approval
-#          helm_timeout: 5m
-
-  security:
-    triggers:
-      - schedule:
-          cron: "25 6 * * 1-5"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/npm_security_audit:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          node_tag: << pipeline.parameters.node-version >>
-          context:
-            - hmpps-common-vars
-      - hmpps/trivy_latest_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      - hmpps/veracode_pipeline_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
-  security-weekly:
-    triggers:
-      - schedule:
-          cron: "33 6 * * 1"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/veracode_policy_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
+  #      - request-preprod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_dev
+  #      - hmpps/deploy_env:
+  #          name: deploy_preprod
+  #          env: "preprod"
+  #          jira_update: true
+  #          jira_env_type: staging
+  #          pipeline_id: <<pipeline.id>>
+  #          pipeline_number: <<pipeline.number>>
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-book-a-video-link-preprod
+  #          requires:
+  #            - request-preprod-approval
+  #          helm_timeout: 5m
+  #      - request-prod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_preprod
+  #      - hmpps/deploy_env:
+  #          name: deploy_prod
+  #          env: "prod"
+  #          jira_update: true
+  #          jira_env_type: production
+  #          pipeline_id: <<pipeline.id>>
+  #          pipeline_number: <<pipeline.number>>
+  #          slack_notification: true
+  #          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-book-a-video-link-prod
+  #          requires:
+  #            - request-prod-approval
+  #          helm_timeout: 5m
