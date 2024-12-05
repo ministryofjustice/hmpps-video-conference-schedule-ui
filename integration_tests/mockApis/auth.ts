@@ -51,6 +51,17 @@ const ping = () =>
     },
   })
 
+const pingFeComponents = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/frontend-components-api/health/ping',
+    },
+    response: {
+      status: 200,
+    },
+  })
+
 const redirect = () =>
   stubFor({
     request: {
@@ -150,7 +161,7 @@ const feComponents = () =>
 
 export default {
   getSignInUrl,
-  stubAuthPing: ping,
+  stubAuthPing: () => Promise.all([ping(), pingFeComponents()]),
   stubAuthManageDetails: manageDetails,
   stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), token(roles), feComponents(), tokenVerification.stubVerifyToken()]),
