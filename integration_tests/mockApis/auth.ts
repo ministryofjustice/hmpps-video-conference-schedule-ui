@@ -55,7 +55,7 @@ const pingFeComponents = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/frontend-components-api/health/ping',
+      urlPattern: '/frontend-components-api/health',
     },
     response: {
       status: 200,
