@@ -1,7 +1,7 @@
 import { stubGet } from './wiremock'
 
 const stubUser = (name: string = 'john smith') =>
-  stubGet('/manage-users-api/users/me', {
+  stubGet('/manage-users-api/users/USER1', {
     username: 'USER1',
     active: true,
     userId: '123456',

@@ -25,7 +25,7 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeManageUsersApiClient
-        .get('/users/me')
+        .get('/users/jbloggs')
         .matchHeader('authorization', `Bearer ${user.token}`)
         .reply(200, response)
 
