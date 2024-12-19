@@ -7,7 +7,7 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 
-export default function Index({ auditService }: Services): Router {
+export default function Index({ auditService, prisonService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
@@ -19,7 +19,7 @@ export default function Index({ auditService }: Services): Router {
     res.locals.user.authSource === 'nomis' ? next() : next(createHttpError.Unauthorized()),
   )
 
-  route('/', new HomeHandler())
+  route('/', new HomeHandler(prisonService))
 
   return router
 }

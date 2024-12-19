@@ -1,0 +1,29 @@
+.stat {
+  .stat--number {
+    @extend .govuk-heading-l;
+    margin: 0 1rem 0 0;
+    padding: 0;
+    display: inline-block;
+  }
+
+  .stat--text {
+    @extend .govuk-body;
+    display: inline-block;
+    margin: 0;
+  }
+
+  .stat--link {
+    @extend .govuk-link;
+    @extend .govuk-link--no-visited-state;
+    display: inline-block;
+    font-size: 19px;
+    margin: 0 0 .5rem 0;
+    padding-left: 2rem;
+  }
+
+  .stat--details {
+    summary {
+      padding-left: 2rem;
+    }
+  }
+}

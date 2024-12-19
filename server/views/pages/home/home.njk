@@ -1,7 +1,65 @@
 {% extends "partials/layout.njk" %}
 
-{% set pageTitle = "Daily Video Conference Schedule" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
+{% set pageTitle = "Video daily schedule: " + prisonName %}
 
 {% block content %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ pageTitle }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
+            <span class="govuk-caption-xl govuk-!-margin-bottom-6">{{ now() | formatDate('iiii d MMMM yyyy') }}. Last updated {{ now() | formatDate('HH:mm') }}</span>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            {{ govukButton({
+                classes: 'govuk-button--secondary',
+                text: "Refresh"
+            }) }}
+
+            {{ stat({
+                number: 1,
+                text: "Appointments listed"
+            }) }}
+
+            {{ stat({
+                number: 1,
+                text: "Cancelled appointments",
+                link: {
+                    text: 'View',
+                    href: '/'
+                }
+            }) }}
+
+            {{ stat({
+                number: 1,
+                text: "Missing CVP links",
+                details: {
+                    summaryText: 'Requesting links',
+                    text: 'Requests for missing links are automatically sent to courts at 3pm the day before the hearing. If links are still missing on the day of the hearing please contact the court.'
+                }
+            }) }}
+        </div>
+    </div>
 {% endblock %}
+
+{% macro stat(params) %}
+    <div class="stat">
+        <div>
+            <div class="stat--number">{{ params.number }}</div>
+            <div class="stat--text">{{ params.text }}</div>
+        </div>
+        {% if params.link %}
+            <a href="{{ params.link.href }}" class="stat--link">{{ params.link.text }}<span class="govuk-visually-hidden">{{ params.text }}</span></a>
+        {% endif %}
+        {% if params.details %}
+            {{ govukDetails({
+                summaryText: params.details.summaryText,
+                text: params.details.text,
+                classes: 'stat--details'
+            }) }}
+        {% endif %}
+    </div>
+{% endmacro %}

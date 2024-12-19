@@ -1,3 +1,5 @@
+import { format, isValid, parseISO } from 'date-fns'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -20,4 +22,11 @@ export const initialiseName = (fullName?: string): string | null => {
 
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
+}
+
+export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
+  if (!date) return undefined
+  const richDate = typeof date === 'string' ? parseISO(date) : date
+  if (!isValid(richDate)) return undefined
+  return format(richDate, fmt)
 }
