@@ -8,6 +8,6 @@ export default class ManageUsersApiClient extends RestClient {
   }
 
   public getUser(user: Express.User): Promise<User> {
-    return this.get({ path: '/users/me' }, user, TokenType.USER_TOKEN)
+    return this.get({ path: `/users/${user.username}` }, user, TokenType.USER_TOKEN)
   }
 }

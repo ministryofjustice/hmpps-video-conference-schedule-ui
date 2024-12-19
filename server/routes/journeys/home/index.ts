@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors'
 import { Router } from 'express'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
@@ -12,6 +13,11 @@ export default function Index({ auditService }: Services): Router {
   const route = (path: string | string[], handler: PageHandler) =>
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+
+  // Only prison users are authorized to use this service
+  router.use((req, res, next) =>
+    res.locals.user.authSource === 'nomis' ? next() : next(createHttpError.Unauthorized()),
+  )
 
   route('/', new HomeHandler())
 

@@ -34,7 +34,7 @@ export const user: Express.User = {
   username: 'user1',
   displayName: 'First Last',
   active: true,
-  authSource: 'NOMIS',
+  authSource: 'nomis',
 }
 
 export const flashProvider = jest.fn()
