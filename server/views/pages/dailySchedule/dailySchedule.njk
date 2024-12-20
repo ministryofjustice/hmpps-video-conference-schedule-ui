@@ -48,47 +48,51 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <div class="hmpps-print-and-export">
-                <button class="hmpps-print-and-export--export">Export (.csv file)</button>
-                <button class="hmpps-print-and-export--print">Print schedule</button>
-            </div>
-        </div>
-    </div>
+            {% set rows = [] %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            {{ govukTable({
-                attributes: {
-                    'data-module': 'moj-sortable-table'
-                },
-                head: [
-                    {
-                        text: "Prisoner",
-                        attributes: {
-                            "aria-sort": "ascending"
+            {% if rows | length %}
+                <div class="hmpps-print-and-export">
+                    <button class="hmpps-print-and-export--export">Export (.csv file)</button>
+                    <button class="hmpps-print-and-export--print">Print schedule</button>
+                </div>
+
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        {
+                            text: "Prisoner",
+                            attributes: {
+                                "aria-sort": "ascending"
+                            }
+                        },
+                        {
+                            text: "Time"
+                        },
+                        {
+                            text: "Appointment"
+                        },
+                        {
+                            text: "Location"
+                        },
+                        {
+                            text: "Video link"
+                        },
+                        {
+                            text: "Status"
+                        },
+                        {
+                            text: "Action"
                         }
-                    },
-                    {
-                        text: "Time"
-                    },
-                    {
-                        text: "Appointment"
-                    },
-                    {
-                        text: "Location"
-                    },
-                    {
-                        text: "Video link"
-                    },
-                    {
-                        text: "Status"
-                    },
-                    {
-                        text: "Action"
-                    }
-                ],
-                rows: []
-            }) }}
+                    ],
+                    rows: rows
+                }) }}
+            {% else %}
+                <p class="govuk-body">
+                    There are no video appointments scheduled for {{ now() | formatDate('iiii d MMMM yyyy') }}
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
