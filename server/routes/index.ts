@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import home from './journeys/home'
+import dailySchedule from './journeys/dailySchedule'
 import { Services } from '../services'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
-  router.use('/', home(services))
+  router.use('/', dailySchedule(services))
 
   return router
 }

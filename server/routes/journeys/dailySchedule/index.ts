@@ -2,7 +2,7 @@ import createHttpError from 'http-errors'
 import { Router } from 'express'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
-import HomeHandler from './handlers/homeHandler'
+import DailyScheduleHandler from './handlers/dailyScheduleHandler'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
@@ -19,7 +19,7 @@ export default function Index({ auditService, prisonService }: Services): Router
     res.locals.user.authSource === 'nomis' ? next() : next(createHttpError.Unauthorized()),
   )
 
-  route('/', new HomeHandler(prisonService))
+  route('/', new DailyScheduleHandler(prisonService))
 
   return router
 }

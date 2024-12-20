@@ -3,8 +3,8 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 
-export default class HomeHandler implements PageHandler {
-  public PAGE_NAME = Page.HOME_PAGE
+export default class DailyScheduleHandler implements PageHandler {
+  public PAGE_NAME = Page.DAILY_SCHEDULE_PAGE
 
   constructor(private readonly prisonService: PrisonService) {}
 
@@ -13,7 +13,7 @@ export default class HomeHandler implements PageHandler {
 
     const prison = await this.prisonService.getPrison(user.activeCaseLoadId, user)
 
-    res.render('pages/home/home', {
+    res.render('pages/dailySchedule/dailySchedule', {
       prisonName: prison.prisonName,
     })
   }
