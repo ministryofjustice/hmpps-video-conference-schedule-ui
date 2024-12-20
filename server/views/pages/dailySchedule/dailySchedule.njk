@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 
@@ -11,55 +11,102 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
             <span class="govuk-caption-xl govuk-!-margin-bottom-6">{{ now() | formatDate('iiii d MMMM yyyy') }}. Last updated {{ now() | formatDate('HH:mm') }}</span>
         </div>
+        <div class="govuk-grid-column-one-quarter">
+            {{ govukButton({
+                classes: 'govuk-button--secondary hmpps-refresh',
+                text: "Refresh schedule"
+            }) }}
+        </div>
     </div>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            {{ govukButton({
-                classes: 'govuk-button--secondary js-refresh',
-                text: "Refresh"
+            {{ stat({
+                heading: "Appointments listed",
+                number: 11,
+                visuallyHiddenText: "appointments"
             }) }}
 
             {{ stat({
+                heading: "Cancelled appointments",
                 number: 1,
-                text: "Appointments listed"
-            }) }}
-
-            {{ stat({
-                number: 1,
-                text: "Cancelled appointments",
+                visuallyHiddenText: "appointments",
                 link: {
-                    text: 'View',
-                    href: '/'
+                    href: "/",
+                    text: "View",
+                    visuallyHiddenText: "all cancelled appointments"
                 }
             }) }}
 
             {{ stat({
+                heading: "Missing video links",
                 number: 1,
-                text: "Missing CVP links",
-                details: {
-                    summaryText: 'Requesting links',
-                    text: 'Requests for missing links are automatically sent to courts at 3pm the day before the hearing. If links are still missing on the day of the hearing please contact the court.'
-                }
+                visuallyHiddenText: "video link"
+            }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="hmpps-print-and-export">
+                <button class="hmpps-print-and-export--export">Export (.csv file)</button>
+                <button class="hmpps-print-and-export--print">Print schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {{ govukTable({
+                attributes: {
+                    'data-module': 'moj-sortable-table'
+                },
+                head: [
+                    {
+                        text: "Prisoner",
+                        attributes: {
+                            "aria-sort": "ascending"
+                        }
+                    },
+                    {
+                        text: "Time"
+                    },
+                    {
+                        text: "Appointment"
+                    },
+                    {
+                        text: "Location"
+                    },
+                    {
+                        text: "Video link"
+                    },
+                    {
+                        text: "Status"
+                    },
+                    {
+                        text: "Action"
+                    }
+                ],
+                rows: []
             }) }}
         </div>
     </div>
 {% endblock %}
 
 {% macro stat(params) %}
-    <div class="stat">
-        <div>
-            <div class="stat--number">{{ params.number }}</div>
-            <div class="stat--text">{{ params.text }}</div>
-        </div>
+    <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-3 govuk-!-padding-left-0">
+        <div class="govuk-hint govuk-!-margin-bottom-0">{{ params.heading }}</div>
+        <span class="govuk-heading-xl govuk-!-margin-0 govuk-!-padding-0 ">
+            <span>{{ params.number }}</span>
+            {% if params.visuallyHiddenText %}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>{% endif %}
+        </span>
+
         {% if params.link %}
-            <a href="{{ params.link.href }}" class="stat--link">{{ params.link.text }}<span class="govuk-visually-hidden">{{ params.text }}</span></a>
-        {% endif %}
-        {% if params.details %}
-            {{ govukDetails({
-                summaryText: params.details.summaryText,
-                text: params.details.text,
-                classes: 'stat--details'
-            }) }}
+            <p class="govuk-!-margin-bottom-0">
+                <a href="{{ params.link.href }}" data-qa="{{ params.link.dataQa }}" class="govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+                    {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.link.visuallyHiddenText }}</span>
+                </a>
+            </p>
         {% endif %}
     </div>
 {% endmacro %}

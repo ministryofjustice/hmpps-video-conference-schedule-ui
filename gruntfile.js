@@ -48,6 +48,12 @@ module.exports = grunt => {
           },
           {
             expand: true,
+            cwd: 'frontend/images',
+            src: ['./**/*'],
+            dest: 'assets/images/',
+          },
+          {
+            expand: true,
             cwd: 'node_modules/@ministryofjustice/frontend/moj/assets',
             src: ['./**/*'],
             dest: 'assets/',
