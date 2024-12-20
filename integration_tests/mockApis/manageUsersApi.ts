@@ -6,6 +6,7 @@ const stubUser = (name: string = 'john smith') =>
     active: true,
     userId: '123456',
     authSource: 'nomis',
+    activeCaseLoadId: 'MDI',
     name,
   })
 
