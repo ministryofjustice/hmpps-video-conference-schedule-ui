@@ -88,24 +88,6 @@ export default abstract class Page {
       })
   }
 
-  protected selectTimePickerTime = (label: string, hour: number, minute: number) => {
-    cy.contains('legend', label)
-      .parent()
-      .within(() => {
-        cy.contains('label', 'Hour')
-          .invoke('attr', 'for')
-          .then(id => {
-            cy.get(`#${id}`).select(hour.toString().padStart(2, '0'))
-          })
-
-        cy.contains('label', 'Minute')
-          .invoke('attr', 'for')
-          .then(id => {
-            cy.get(`#${id}`).select(minute.toString().padStart(2, '0'))
-          })
-      })
-  }
-
   protected getButton = (text: string): PageElement => cy.get('button, a').contains(text)
 
   protected getLink = (text: string): PageElement => cy.get('a').contains(text)

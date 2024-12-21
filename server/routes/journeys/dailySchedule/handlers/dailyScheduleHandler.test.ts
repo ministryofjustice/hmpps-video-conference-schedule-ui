@@ -3,18 +3,24 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
+import PrisonService from '../../../../services/prisonService'
+import { Prison } from '../../../../@types/prisonRegisterApi/types'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/prisonService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { auditService },
+    services: { auditService, prisonService },
     userSupplier: () => user,
   })
+
+  prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
 })
 
 afterEach(() => {
@@ -30,11 +36,12 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Daily Video Conference Schedule')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOME_PAGE, {
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
+        expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
       })
   })
 })

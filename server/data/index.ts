@@ -15,12 +15,14 @@ import ManageUsersApiClient from './manageUsersApiClient'
 import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import FrontendComponentApiClient from './frontendComponentApiClient'
+import PrisonRegisterApiClient from './prisonRegisterApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   frontendComponentApiClient: new FrontendComponentApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
+  prisonRegisterApiClient: new PrisonRegisterApiClient(),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
 })
 

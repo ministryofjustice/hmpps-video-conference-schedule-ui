@@ -1,4 +1,4 @@
-import HomePage from '../pages/home'
+import DailySchedulePage from '../pages/dailySchedule'
 import AuthSignInPage from '../pages/signIn/authSignIn'
 import Page from '../pages/page'
 
@@ -7,6 +7,7 @@ context('Sign In', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubUser')
+    cy.task('stubGetPrison')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -21,7 +22,7 @@ context('Sign In', () => {
 
   it('Token verification failure takes user to sign in page', () => {
     cy.signIn()
-    Page.verifyOnPage(HomePage)
+    Page.verifyOnPage(DailySchedulePage)
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain
@@ -30,7 +31,7 @@ context('Sign In', () => {
 
   it('Token verification failure clears user session', () => {
     cy.signIn()
-    Page.verifyOnPage(HomePage)
+    Page.verifyOnPage(DailySchedulePage)
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain

@@ -119,6 +119,15 @@ export default {
       },
       agent: new AgentConfig(Number(get('BOOK_A_VIDEO_LINK_API_TIMEOUT_RESPONSE', 30000))),
     },
+    prisonRegisterApi: {
+      url: get('PRISON_REGISTER_API_URL', 'http://localhost:8090', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 30000))),
+    },
   },
   sqs: {
     audit: auditConfig(),
