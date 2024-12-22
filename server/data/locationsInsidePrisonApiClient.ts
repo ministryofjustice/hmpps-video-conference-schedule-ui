@@ -7,13 +7,7 @@ export default class LocationsInsidePrisonApiClient extends RestClient {
     super('Locations Inside Prison API', config.apis.locationsInsidePrisonApi)
   }
 
-  getAppointmentLocations(prisonId: string, user: Express.User): Promise<Location[]> {
-    return this.get(
-      {
-        path: `/locations/prison/${prisonId}/non-residential-usage-type/APPOINTMENT`,
-        query: { formatLocalName: true, sortByLocalName: true },
-      },
-      user,
-    )
+  getLocationById(id: string, user: Express.User): Promise<Location> {
+    return this.get({ path: `/locations/${id}`, query: { formatLocalName: true } }, user)
   }
 }

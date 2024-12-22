@@ -24,16 +24,16 @@ describe('locationsInsidePrisonApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getAppointmentLocations', () => {
+  describe('getLocationById', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
       fakeLocationsInsidePrisonApiClient
-        .get('/locations/prison/MDI/non-residential-usage-type/APPOINTMENT?formatLocalName=true&sortByLocalName=true')
+        .get('/locations/abc-123?formatLocalName=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await locationsInsidePrisonApiClient.getAppointmentLocations('MDI', user)
+      const output = await locationsInsidePrisonApiClient.getLocationById('abc-123', user)
       expect(output).toEqual(response)
     })
   })

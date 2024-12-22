@@ -1,7 +1,7 @@
 import config from '../config'
 import RestClient from './restClient'
 import { formatDate } from '../utils/utils'
-import { ReferenceCode, ScheduledVideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
+import { ReferenceCode, BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
   constructor() {
@@ -12,11 +12,11 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.get({ path: `/reference-codes/group/${groupCode}` }, user)
   }
 
-  public getScheduledVideoLinkBookings(
+  public getScheduledVideoLinkAppointments(
     prisonId: string,
     date: Date,
     user: Express.User,
-  ): Promise<ScheduledVideoLinkBooking[]> {
+  ): Promise<BvlsAppointment[]> {
     return this.get({ path: `/schedule/prison/${prisonId}`, query: { date: formatDate(date, 'yyyy-MM-dd') } }, user)
   }
 }

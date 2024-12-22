@@ -37,7 +37,7 @@ describe('bookAVideoLinkApiClient', () => {
     })
   })
 
-  describe('getScheduledVideoLinkBookings', () => {
+  describe('getScheduledVideoLinkAppointments', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
@@ -46,7 +46,11 @@ describe('bookAVideoLinkApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await bookAVideoLinkApiClient.getScheduledVideoLinkBookings('MDI', new Date('2024-07-12'), user)
+      const output = await bookAVideoLinkApiClient.getScheduledVideoLinkAppointments(
+        'MDI',
+        new Date('2024-07-12'),
+        user,
+      )
       expect(output).toEqual(response)
     })
   })

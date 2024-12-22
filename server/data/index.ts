@@ -16,14 +16,22 @@ import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import FrontendComponentApiClient from './frontendComponentApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
+import PrisonApiClient from './prisonApiClient'
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
+import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
+import NomisMappingApiClient from './nomisMappingApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   frontendComponentApiClient: new FrontendComponentApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
-  prisonRegisterApiClient: new PrisonRegisterApiClient(),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
+  locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(),
+  nomisMappingApiClient: new NomisMappingApiClient(),
+  prisonApiClient: new PrisonApiClient(),
+  prisonRegisterApiClient: new PrisonRegisterApiClient(),
+  prisonerSearchApiClient: new PrisonerSearchApiClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
