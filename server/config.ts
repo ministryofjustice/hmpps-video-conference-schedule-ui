@@ -111,7 +111,7 @@ export default {
       agent: new AgentConfig(Number(get('FRONTEND_COMPONENT_API_TIMEOUT_RESPONSE', 5000))),
     },
     bookAVideoLinkApi: {
-      url: get('BOOK_A_VIDEO_LINK_API_URL', 'http://localhost:8089', requiredInProduction),
+      url: get('BOOK_A_VIDEO_LINK_API_URL', 'http://localhost:8083', requiredInProduction),
       healthPath: '/health/ping',
       timeout: {
         response: Number(get('BOOK_A_VIDEO_LINK_API_TIMEOUT_RESPONSE', 30000)),
@@ -119,14 +119,50 @@ export default {
       },
       agent: new AgentConfig(Number(get('BOOK_A_VIDEO_LINK_API_TIMEOUT_RESPONSE', 30000))),
     },
+    locationsInsidePrisonApi: {
+      url: get('LOCATIONS_INSIDE_PRISON_API_URL', 'http://localhost:8084', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('LOCATIONS_INSIDE_PRISON_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('LOCATIONS_INSIDE_PRISON_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('LOCATIONS_INSIDE_PRISON_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    nomisMappingApi: {
+      url: get('NOMIS_MAPPING_API_URL', 'http://localhost:8085', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('NOMIS_MAPPING_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('NOMIS_MAPPING_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('NOMIS_MAPPING_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    prisonApi: {
+      url: get('PRISON_API_URL', 'http://localhost:8086', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('PRISON_API_TIMEOUT_RESPONSE', 30000))),
+    },
     prisonRegisterApi: {
-      url: get('PRISON_REGISTER_API_URL', 'http://localhost:8090', requiredInProduction),
+      url: get('PRISON_REGISTER_API_URL', 'http://localhost:8087', requiredInProduction),
       healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 30000)),
         deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 30000)),
       },
       agent: new AgentConfig(Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    prisonerSearchApi: {
+      url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8088', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000))),
     },
   },
   sqs: {
