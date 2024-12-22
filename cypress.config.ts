@@ -6,6 +6,10 @@ import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import bookAVideoLinkApi from './integration_tests/mockApis/bookAVideoLinkApi'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegisterApi'
+import locationsInsidePrisonApi from './integration_tests/mockApis/locationsInsidePrisonApi'
+import prisonApi from './integration_tests/mockApis/prisonApi'
+import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
+import nomisMappingApi from './integration_tests/mockApis/nomisMappingApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -26,8 +30,12 @@ export default defineConfig({
         ...auth,
         ...tokenVerification,
         ...manageUsersApi,
-        ...prisonRegisterApi,
         ...bookAVideoLinkApi,
+        ...locationsInsidePrisonApi,
+        ...nomisMappingApi,
+        ...prisonApi,
+        ...prisonRegisterApi,
+        ...prisonerSearchApi,
       })
     },
     baseUrl: 'http://localhost:3007',
