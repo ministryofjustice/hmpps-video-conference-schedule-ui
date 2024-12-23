@@ -24,7 +24,7 @@ type ScheduleItem = {
   endTime: string
   appointmentDescription: string
   appointmentLocationDescription: string
-  tags: string[]
+  tags: string[] // TODO: Logic for displaying "New" and "Updated" tags
   videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
@@ -60,6 +60,8 @@ export default class ScheduleService {
     const scheduleItems = await Promise.all(
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
+
+    // TODO Filter scheduleItems by user defined filters here
 
     const groupedAppointments = _.groupBy(scheduleItems, item => item.videoBookingId ?? '_undefined')
 
