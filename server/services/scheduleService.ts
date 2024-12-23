@@ -4,7 +4,7 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { ScheduledAppointment } from '../@types/prisonApi/types'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
-import LocationsService from './LocationsService'
+import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 
@@ -23,6 +23,7 @@ type ScheduleItem = {
   appointmentDescription: string
   appointmentLocationDescription: string
   tags: string[]
+  videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
   appointmentType?: string
@@ -33,7 +34,6 @@ type DailySchedule = {
   appointmentsListed: number
   missingVideoLinks: number
   appointmentGroups: ScheduleItem[][]
-  appointments: ScheduleItem[]
 }
 
 export default class ScheduleService {
@@ -51,7 +51,7 @@ export default class ScheduleService {
     ])
 
     const prisoners = await this.prisonerSearchApiClient.getByPrisonerNumbers(
-      scheduledAppointments.map(appointment => appointment.offenderNo),
+      _.uniq(scheduledAppointments.map(appointment => appointment.offenderNo)),
       user,
     )
 
@@ -63,9 +63,8 @@ export default class ScheduleService {
 
     return {
       appointmentsListed: scheduleItems.length,
-      missingVideoLinks: scheduleItems.filter(item => !item.videoLink).length,
+      missingVideoLinks: scheduleItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
       appointmentGroups: Object.values(groupedAppointments),
-      appointments: scheduleItems,
     }
   }
 
@@ -85,6 +84,7 @@ export default class ScheduleService {
       appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
+      videoLinkRequired: bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN',
       videoLink: bvlsAppointment?.videoUrl,
       appointmentType: bvlsAppointment?.hearingTypeDescription || bvlsAppointment?.probationMeetingTypeDescription,
       externalAgencyDescription: bvlsAppointment?.courtDescription || bvlsAppointment?.probationTeamDescription,

@@ -14,5 +14,5 @@ function createUserToken(authorities: string[]) {
 }
 
 export default function createUser(authorities: string[]) {
-  return { token: createUserToken(authorities), username: 'jbloggs' } as Express.User
+  return { token: createUserToken(authorities), username: 'jbloggs', activeCaseLoadId: 'MDI' } as Express.User
 }
