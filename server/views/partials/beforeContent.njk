@@ -12,4 +12,11 @@
   html: 'This is a new service. Your feedback will help us to improve this service.'
 }) }}
 
+<nav>
+  {{ govukBackLink({
+    text: backLinkText or "Back",
+    href: backLinkHref
+  }) }}
+</nav>
+
 {% include './formErrorSummary.njk' %}

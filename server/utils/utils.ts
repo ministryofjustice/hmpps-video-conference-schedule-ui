@@ -1,4 +1,5 @@
-import { format, isValid, parseISO } from 'date-fns'
+import { format, isValid, parse, parseISO } from 'date-fns'
+import { enGB } from 'date-fns/locale'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -30,3 +31,8 @@ export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   if (!isValid(richDate)) return undefined
   return format(richDate, fmt)
 }
+
+export const simpleDateToDate = (date: { day: string; month: string; year: string }): Date =>
+  date.day || date.month || date.year
+    ? parse(`${date.day}/${date.month}/${date.year}`, 'P', new Date(), { locale: enGB })
+    : null

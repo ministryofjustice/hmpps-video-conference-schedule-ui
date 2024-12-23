@@ -2,6 +2,7 @@ import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 
 export enum Page {
   DAILY_SCHEDULE_PAGE = 'DAILY_SCHEDULE_PAGE',
+  SELECT_DATE_PAGE = 'SELECT_DATE_PAGE',
 }
 
 export interface PageViewEventDetails {
