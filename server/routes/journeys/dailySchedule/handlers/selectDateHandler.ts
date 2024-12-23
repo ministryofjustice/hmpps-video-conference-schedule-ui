@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { formatDate, startOfToday } from 'date-fns'
+import { formatDate } from 'date-fns'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import IsValidDate from '../../../validators/isValidDate'
