@@ -32,7 +32,7 @@ type ScheduleItem = {
   externalAgencyDescription?: string
 }
 
-type DailySchedule = {
+export type DailySchedule = {
   appointmentsListed: number
   missingVideoLinks: number
   appointmentGroups: ScheduleItem[][]

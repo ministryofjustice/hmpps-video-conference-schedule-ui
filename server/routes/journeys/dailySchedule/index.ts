@@ -7,6 +7,7 @@ import SelectDateHandler from './handlers/selectDateHandler'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
+import DownloadCsvHandler from './handlers/downloadCsvHandler'
 
 export default function Index({ auditService, prisonService, scheduleService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -21,6 +22,7 @@ export default function Index({ auditService, prisonService, scheduleService }: 
   )
 
   route('/', new DailyScheduleHandler(prisonService, scheduleService))
+  route('/download-csv', new DownloadCsvHandler(scheduleService))
   route('/select-date', new SelectDateHandler())
 
   return router

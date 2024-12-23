@@ -100,12 +100,11 @@
                 {% endfor %}
             {% endfor %}
 
+            <div class="hmpps-print-and-export">
+                <button class="hmpps-print-and-export--export">Export (.csv file)</button>
+                <button class="hmpps-print-and-export--print">Print schedule</button>
+            </div>
             {% if rows | length %}
-                <div class="hmpps-print-and-export">
-                    <button class="hmpps-print-and-export--export">Export (.csv file)</button>
-                    <button class="hmpps-print-and-export--print">Print schedule</button>
-                </div>
-
                 {{ govukTable({
                     attributes: {
                         'data-module': 'moj-sortable-table'
