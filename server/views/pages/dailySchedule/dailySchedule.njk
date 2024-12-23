@@ -1,6 +1,7 @@
 {% extends "partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
@@ -10,15 +11,28 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
-            <span class="govuk-caption-xl govuk-!-margin-bottom-6">{{ now() | formatDate('iiii d MMMM yyyy') }}. Last updated {{ now() | formatDate('HH:mm') }}</span>
+            <span class="govuk-caption-xl govuk-!-margin-bottom-6">{{ date | formatDate('iiii d MMMM yyyy') }}. {% if not isPastDay %}Last updated {{ now() | formatDate('HH:mm') }} {% endif %}</span>
         </div>
-        <div class="govuk-grid-column-one-quarter">
-            {{ govukButton({
-                classes: 'govuk-button--secondary hmpps-refresh',
-                text: "Refresh schedule"
-            }) }}
-        </div>
+        {% if not isPastDay %}
+            <div class="govuk-grid-column-one-quarter">
+                {{ govukButton({
+                    classes: 'govuk-button--secondary hmpps-refresh',
+                    text: "Refresh schedule"
+                }) }}
+            </div>
+        {% endif %}
     </div>
+
+    {% if isPastDay %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                {{ govukWarningText({
+                    text: "You can not edit details of appointments that have already happened.",
+                    iconFallbackText: "Warning"
+                }) }}
+            </div>
+        </div>
+    {% endif %}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
@@ -74,7 +88,11 @@
                             classes: classes
                         },
                         {
-                            html: '<a class="govuk-link govuk-link--no-visited-state" href="/" rel="noreferrer noopener" target="_blank">View or edit<span class="govuk-visually-hidden">(opens in new tab)</span></a>' if loop.index == 1,
+                            html: '
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/" rel="noreferrer noopener" target="_blank">
+                                        View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                    </a>
+                                  ' if loop.index == 1,
                             classes: classes
                         }
                     ]), rows) %}
@@ -121,7 +139,7 @@
                 }) }}
             {% else %}
                 <p class="govuk-body">
-                    There are no video appointments scheduled for {{ now() | formatDate('iiii d MMMM yyyy') }}
+                    There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}
                 </p>
             {% endif %}
         </div>
