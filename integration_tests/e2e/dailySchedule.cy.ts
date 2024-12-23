@@ -2,12 +2,16 @@ import DailySchedulePage from '../pages/dailySchedule'
 import AuthSignInPage from '../pages/signIn/authSignIn'
 import Page from '../pages/page'
 
-context('Sign In', () => {
+context('Daily schedule', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubUser')
     cy.task('stubGetPrison')
+    cy.task('stubGetAppointments')
+    cy.task('stubGetVideoLinkBookings')
+    cy.task('stubGetPrisoners')
+    cy.task('stubGetLocation')
   })
 
   it('Unauthenticated user directed to auth', () => {
