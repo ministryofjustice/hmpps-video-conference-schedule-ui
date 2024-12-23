@@ -1,3 +1,3 @@
 import { components } from '.'
 
-export type LocationMapping = components['schemas']['LocationMappingDto']
+export type LocationMapping = components['schemas']['NomisDpsLocationMapping']

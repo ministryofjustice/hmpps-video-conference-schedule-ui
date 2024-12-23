@@ -170,7 +170,7 @@ describe('Schedule service', () => {
               appointmentDescription: 'Pre-hearing',
               appointmentId: 1,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentType: 'Appeal',
+              appointmentType: false,
               externalAgencyDescription: 'Aberystwyth Civil',
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
@@ -184,6 +184,7 @@ describe('Schedule service', () => {
               endTime: '08:00',
               tags: [],
               videoBookingId: 1,
+              videoLink: false,
               videoLinkRequired: false,
             },
             {
@@ -210,7 +211,7 @@ describe('Schedule service', () => {
               appointmentDescription: 'Post-hearing',
               appointmentId: 3,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentType: 'Appeal',
+              appointmentType: false,
               externalAgencyDescription: 'Aberystwyth Civil',
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
@@ -224,6 +225,7 @@ describe('Schedule service', () => {
               endTime: '09:15',
               tags: [],
               videoBookingId: 1,
+              videoLink: false,
               videoLinkRequired: false,
             },
           ],
@@ -246,6 +248,7 @@ describe('Schedule service', () => {
               endTime: '12:00',
               tags: [],
               videoBookingId: 2,
+              videoLink: false,
               videoLinkRequired: false,
             },
           ],
@@ -254,6 +257,7 @@ describe('Schedule service', () => {
               appointmentDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
+              appointmentType: false,
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
@@ -265,6 +269,7 @@ describe('Schedule service', () => {
               startTime: '08:30',
               endTime: '09:00',
               tags: [],
+              videoLink: false,
               videoLinkRequired: false,
             },
           ],

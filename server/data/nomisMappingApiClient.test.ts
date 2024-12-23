@@ -29,7 +29,7 @@ describe('nomisMappingApiClient', () => {
       const response = { data: 'data' }
 
       fakeNomisMappingApiClient
-        .get('/mapping/locations/nomis/1')
+        .get('/api/locations/nomis/1')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

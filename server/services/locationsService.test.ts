@@ -26,7 +26,7 @@ describe('Locations service', () => {
       nomisMappingApiClient.getLocationMappingByNomisId.mockResolvedValue({
         nomisLocationId: 1,
         dpsLocationId: 'abc-123',
-      } as LocationMapping)
+      })
 
       locationsInsidePrisonApiClient.getLocationById.mockResolvedValue({ id: 'abc-123' } as Location)
 
