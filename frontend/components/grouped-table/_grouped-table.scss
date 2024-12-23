@@ -2,4 +2,18 @@
   .govuk-table__header {
     border-top: 1px solid #b1b4b6;
   }
+
+  .govuk-table__cell {
+    &--alternate-shade {
+      background-color: #F3F2F140;
+    }
+
+    &--no-border {
+      border-bottom: none;
+
+      &.govuk-table__cell--alternate-shade {
+        border-bottom: white 5px solid;
+      }
+    }
+  }
 }

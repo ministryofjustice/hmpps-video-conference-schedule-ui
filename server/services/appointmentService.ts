@@ -8,6 +8,6 @@ export default class AppointmentService {
 
     return this.prisonApiClient
       .getScheduledAppointments(prisonId, date, user)
-      .then(appts => appts.filter(appt => appt.appointmentTypeCode.startsWith('VLB')))
+      .then(appts => appts.filter(appt => appt.appointmentTypeCode.startsWith('VL')))
   }
 }

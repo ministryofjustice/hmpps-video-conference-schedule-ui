@@ -1,22 +1,26 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { startOfDay, startOfToday } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import { Prison } from '../../../../@types/prisonRegisterApi/types'
+import ScheduleService from '../../../../services/scheduleService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonService')
+jest.mock('../../../../services/scheduleService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
+const scheduleService = new ScheduleService(null, null, null, null) as jest.Mocked<ScheduleService>
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { auditService, prisonService },
+    services: { auditService, prisonService, scheduleService },
     userSupplier: () => user,
   })
 
@@ -28,7 +32,7 @@ afterEach(() => {
 })
 
 describe('GET', () => {
-  it('should render index page', () => {
+  it('should render index page for today', () => {
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -42,6 +46,34 @@ describe('GET', () => {
           correlationId: expect.any(String),
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), user)
+      })
+  })
+
+  it('should render index page for specific date', () => {
+    return request(app)
+      .get('/?date=2024-12-12')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+        const date = new Date('2024-12-12')
+
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), user)
+      })
+  })
+
+  it('should render index page for today if given date is invalid', () => {
+    return request(app)
+      .get('/?date=nonsense')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(new Date()), user)
       })
   })
 })
