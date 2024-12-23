@@ -2,7 +2,6 @@ import createUser from '../testutils/createUser'
 import LocationsService from './locationsService'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import LocationsInsidePrisonApiClient from '../data/locationsInsidePrisonApiClient'
-import { LocationMapping } from '../@types/nomisMappingApi/types'
 import { Location } from '../@types/locationsInsidePrisonApi/types'
 
 jest.mock('../data/locationsInsidePrisonApiClient')
