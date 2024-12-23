@@ -3,6 +3,7 @@ import { Router } from 'express'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import DailyScheduleHandler from './handlers/dailyScheduleHandler'
+import SelectDateHandler from './handlers/selectDateHandler'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
@@ -20,6 +21,7 @@ export default function Index({ auditService, prisonService, scheduleService }: 
   )
 
   route('/', new DailyScheduleHandler(prisonService, scheduleService))
+  route('/select-date', new SelectDateHandler())
 
   return router
 }

@@ -6,6 +6,7 @@ import express from 'express'
 import { initialiseName, formatDate, convertToTitleCase } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
+import { FieldValidationError } from '../middleware/setUpFlash'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -53,6 +54,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('formatDate', formatDate)
+  njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
 
   njkEnv.addGlobal('now', () => new Date())
 }

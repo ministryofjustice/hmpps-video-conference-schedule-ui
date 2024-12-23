@@ -16,7 +16,8 @@ export default class DailyScheduleHandler implements PageHandler {
   GET = async (req: Request, res: Response) => {
     const { user } = res.locals
 
-    const date = new Date(req.query.date?.toString())
+    const dateFromQueryParam = new Date(req.query.date?.toString())
+    const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
 
     const [prison, schedule] = await Promise.all([
       this.prisonService.getPrison(user.activeCaseLoadId, user),
@@ -26,6 +27,8 @@ export default class DailyScheduleHandler implements PageHandler {
     res.render('pages/dailySchedule/dailySchedule', {
       prisonName: prison.prisonName,
       schedule,
+      date,
+      isPastDay: startOfDay(date) < startOfDay(new Date()),
     })
   }
 }

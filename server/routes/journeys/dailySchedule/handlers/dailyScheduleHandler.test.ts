@@ -7,6 +7,7 @@ import AuditService, { Page } from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import ScheduleService from '../../../../services/scheduleService'
+import { existsByDataQa } from '../../../testutils/cheerio'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonService')
@@ -46,6 +47,7 @@ describe('GET', () => {
           correlationId: expect.any(String),
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
+        expect(existsByDataQa($, 'warning-text')).toBe(false)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), user)
       })
   })
@@ -60,6 +62,7 @@ describe('GET', () => {
         const date = new Date('2024-12-12')
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), user)
       })
   })
