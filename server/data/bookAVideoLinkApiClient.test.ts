@@ -23,21 +23,7 @@ describe('bookAVideoLinkApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getReferenceCodesForGroup', () => {
-    it('should return data from api', async () => {
-      const response = { data: 'data' }
-
-      fakeBookAVideoLinkApiClient
-        .get('/reference-codes/group/GROUP')
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, response)
-
-      const output = await bookAVideoLinkApiClient.getReferenceCodesForGroup('GROUP', user)
-      expect(output).toEqual(response)
-    })
-  })
-
-  describe('getScheduledVideoLinkBookings', () => {
+  describe('getScheduledVideoLinkAppointments', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
@@ -46,7 +32,11 @@ describe('bookAVideoLinkApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await bookAVideoLinkApiClient.getScheduledVideoLinkBookings('MDI', new Date('2024-07-12'), user)
+      const output = await bookAVideoLinkApiClient.getScheduledVideoLinkAppointments(
+        'MDI',
+        new Date('2024-07-12'),
+        user,
+      )
       expect(output).toEqual(response)
     })
   })

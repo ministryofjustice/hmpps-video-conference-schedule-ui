@@ -3,19 +3,19 @@ import nock from 'nock'
 import config from '../config'
 import createUser from '../testutils/createUser'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
-import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
+import NomisMappingApiClient from './nomisMappingApiClient'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
 const user = createUser([])
 
-describe('locationsInsidePrisonApiClient', () => {
-  let fakeLocationsInsidePrisonApiClient: nock.Scope
-  let locationsInsidePrisonApiClient: LocationsInsidePrisonApiClient
+describe('nomisMappingApiClient', () => {
+  let fakeNomisMappingApiClient: nock.Scope
+  let nomisMappingApiClient: NomisMappingApiClient
 
   beforeEach(() => {
-    fakeLocationsInsidePrisonApiClient = nock(config.apis.locationsInsidePrisonApi.url)
-    locationsInsidePrisonApiClient = new LocationsInsidePrisonApiClient()
+    fakeNomisMappingApiClient = nock(config.apis.nomisMappingApi.url)
+    nomisMappingApiClient = new NomisMappingApiClient()
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
@@ -24,16 +24,16 @@ describe('locationsInsidePrisonApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getLocationById', () => {
+  describe('getLocationMappingByNomisId', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
-      fakeLocationsInsidePrisonApiClient
-        .get('/locations/abc-123?formatLocalName=true')
+      fakeNomisMappingApiClient
+        .get('/api/locations/nomis/1')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await locationsInsidePrisonApiClient.getLocationById('abc-123', user)
+      const output = await nomisMappingApiClient.getLocationMappingByNomisId(1, user)
       expect(output).toEqual(response)
     })
   })
