@@ -1,0 +1,14 @@
+.govuk-tag {
+  vertical-align: middle;
+  max-width: 200px;
+  text-transform: uppercase;
+}
+
+.govuk-tag--alerts {
+  border: 3px solid #4C2C92;
+  color: #4C2C92;
+  background-color: white;
+  margin-bottom: 0;
+  font-size: .875rem;
+  line-height: 1;
+}

@@ -3,7 +3,7 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
-import { initialiseName, formatDate } from './utils'
+import { initialiseName, formatDate, convertToTitleCase } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 
@@ -15,6 +15,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Video Conference Schedule'
   app.locals.authUrl = config.apis.hmppsAuth.externalUrl
+  app.locals.dpsUrl = config.dpsUrl
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.feedbackUrl = config.feedbackUrl
@@ -50,6 +51,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('formatDate', formatDate)
 
   njkEnv.addGlobal('now', () => new Date())

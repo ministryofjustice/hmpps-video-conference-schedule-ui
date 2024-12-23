@@ -63,7 +63,10 @@ export default class ScheduleService {
 
     // TODO Filter scheduleItems by user defined filters here
 
-    const groupedAppointments = _.groupBy(scheduleItems, item => item.videoBookingId ?? '_undefined')
+    const groupedAppointments = _.chain(scheduleItems)
+      .groupBy(item => item.videoBookingId ?? item.appointmentId)
+      .sortBy(groups => groups[0].startTime)
+      .value()
 
     return {
       appointmentsListed: scheduleItems.length,
@@ -93,7 +96,9 @@ export default class ScheduleService {
       appointmentType:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
-      externalAgencyDescription: bvlsAppointment?.courtDescription || bvlsAppointment?.probationTeamDescription,
+      externalAgencyDescription:
+        (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
+        (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
       tags: [],
     }
   }

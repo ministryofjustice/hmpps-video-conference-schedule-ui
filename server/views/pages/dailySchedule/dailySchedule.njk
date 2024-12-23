@@ -2,6 +2,7 @@
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 
@@ -23,24 +24,13 @@
         <div class="govuk-grid-column-three-quarters">
             {{ stat({
                 heading: "Appointments listed",
-                number: 11,
+                number: schedule.appointmentsListed,
                 visuallyHiddenText: "appointments"
             }) }}
 
             {{ stat({
-                heading: "Cancelled appointments",
-                number: 1,
-                visuallyHiddenText: "appointments",
-                link: {
-                    href: "/",
-                    text: "View",
-                    visuallyHiddenText: "all cancelled appointments"
-                }
-            }) }}
-
-            {{ stat({
                 heading: "Missing video links",
-                number: 1,
+                number: schedule.missingVideoLinks,
                 visuallyHiddenText: "video link"
             }) }}
         </div>
@@ -49,6 +39,47 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
+
+            {% for appointmentGroup in schedule.appointmentGroups %}
+                {% for scheduleItem in appointmentGroup %}
+                    {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
+                    {% set classes = (classes + ' govuk-table__cell--alternate-shade') | trim if appointmentGroup.length > 1 %}
+
+                    {% set rows = (rows.push([
+                        {
+                            html: showProfileLink(scheduleItem.prisoner) if loop.index == 1,
+                            attributes: {
+                                "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName
+                            },
+                            classes: classes
+                        },
+                        {
+                            text: scheduleItem.startTime + ' to ' + scheduleItem.endTime,
+                            classes: classes
+                        },
+                        {
+                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentType + '</div>' if scheduleItem.appointmentType),
+                            classes: classes
+                        },
+                        {
+                            html:  '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentLocationDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.externalAgencyDescription + '</div>' if scheduleItem.externalAgencyDescription),
+                            classes: classes
+                        },
+                        {
+                            text: scheduleItem.videoLink if scheduleItem.videoLink,
+                            classes: classes
+                        },
+                        {
+                            text: scheduleItem.tags,
+                            classes: classes
+                        },
+                        {
+                            html: '<a class="govuk-link govuk-link--no-visited-state" href="/" rel="noreferrer noopener" target="_blank">View or edit<span class="govuk-visually-hidden">(opens in new tab)</span></a>' if loop.index == 1,
+                            classes: classes
+                        }
+                    ]), rows) %}
+                {% endfor %}
+            {% endfor %}
 
             {% if rows | length %}
                 <div class="hmpps-print-and-export">
@@ -64,7 +95,7 @@
                         {
                             text: "Prisoner",
                             attributes: {
-                                "aria-sort": "ascending"
+                                "aria-sort": "none"
                             }
                         },
                         {
@@ -99,7 +130,7 @@
 
 {% macro stat(params) %}
     <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-3 govuk-!-padding-left-0">
-        <div class="govuk-hint govuk-!-margin-bottom-0">{{ params.heading }}</div>
+        <div class="govuk-body govuk-!-margin-bottom-0">{{ params.heading }}</div>
         <span class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-0 ">
             <span>{{ params.number }}</span>
             {% if params.visuallyHiddenText %}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>{% endif %}
@@ -112,5 +143,31 @@
                 </a>
             </p>
         {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro showProfileLink(params) %}
+    <div>
+        <div>
+            {% set name = params.lastName | convertToTitleCase + ', ' + params.firstName | convertToTitleCase %}
+            {% if params.inPrison %}
+                <a href="{{ dpsUrl }}/prisoner/{{ params.prisonerNumber }}" rel="noreferrer noopener"
+                   target="_blank"
+                   class="govuk-link govuk-link--no-visited-state">
+                    {{ name | safe }}
+                    <span class="govuk-visually-hidden">(opens in new tab)</span>
+                </a>
+            {% else %}
+                {{ name | safe }}
+            {% endif %}
+        </div>
+        {% if params.hasAlerts %}
+            {{ govukTag({
+                text: "Alerts",
+                classes: "govuk-tag--alerts"
+            }) }}
+        {% endif %}
+        <div class="govuk-body-s govuk-!-margin-0">{{ params.prisonerNumber }}</div>
+        <div class="govuk-body-s govuk-!-margin-0">{{ params.cellLocation }}</div>
     </div>
 {% endmacro %}
