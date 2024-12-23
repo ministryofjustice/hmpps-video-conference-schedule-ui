@@ -146,7 +146,7 @@ describe('Schedule service', () => {
         lastName: 'Smith',
         prisonId: 'PVU',
         cellLocation: 'PVI-1-1-001',
-        alerts: [{ alertCode: 'PCY' }],
+        alerts: [{ alertCode: 'XCU' }],
       },
     ] as Prisoner[]
 

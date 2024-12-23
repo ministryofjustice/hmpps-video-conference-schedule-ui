@@ -8,6 +8,8 @@ import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 
+const RELEVANT_ALERTS = ['HA', 'PEEP', 'XEL', 'XCU']
+
 type ScheduleItem = {
   appointmentId: number
   prisoner: {
@@ -101,7 +103,7 @@ export default class ScheduleService {
       lastName: prisoner.lastName,
       cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
       inPrison: prisoner.prisonId === user.activeCaseLoadId,
-      hasAlerts: prisoner.alerts.length > 0,
+      hasAlerts: prisoner.alerts.filter(a => RELEVANT_ALERTS.includes(a.alertCode)).length > 0,
     }
   }
 
