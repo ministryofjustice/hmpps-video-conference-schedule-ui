@@ -17,11 +17,20 @@ export default class DailyScheduleHandler implements PageHandler {
     const { user } = res.locals
 
     const dateFromQueryParam = new Date(req.query.date?.toString())
-    const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+    const statusFromQueryParam = req.query.status as 'ACTIVE' | 'CANCELLED'
 
-    const [prison, schedule] = await Promise.all([
+    const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+    const status = ['ACTIVE', 'CANCELLED'].includes(statusFromQueryParam) ? statusFromQueryParam : 'ACTIVE'
+
+    const [prison, appointmentsRolledOut, schedule] = await Promise.all([
       this.prisonService.getPrison(user.activeCaseLoadId, user),
-      this.scheduleService.getSchedule(user.activeCaseLoadId, startOfDay(isValid(date) ? date : new Date()), user),
+      this.prisonService.isAppointmentsRolledOutAt(user.activeCaseLoadId, user),
+      this.scheduleService.getSchedule(
+        user.activeCaseLoadId,
+        startOfDay(isValid(date) ? date : new Date()),
+        status,
+        user,
+      ),
     ])
 
     res.render('pages/dailySchedule/dailySchedule', {
@@ -29,6 +38,8 @@ export default class DailyScheduleHandler implements PageHandler {
       schedule,
       date,
       isPastDay: startOfDay(date) < startOfDay(new Date()),
+      appointmentsRolledOut,
+      status,
     })
   }
 }

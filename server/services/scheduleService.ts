@@ -18,6 +18,7 @@ type ScheduleItem = {
     inPrison: boolean
     hasAlerts: boolean
   }
+  status: 'ACTIVE' | 'CANCELLED'
   startTime: string
   endTime: string
   appointmentDescription: string
@@ -33,6 +34,7 @@ type ScheduleItem = {
 
 export type DailySchedule = {
   appointmentsListed: number
+  cancelledAppointments: number
   missingVideoLinks: number
   appointmentGroups: ScheduleItem[][]
 }
@@ -45,10 +47,15 @@ export default class ScheduleService {
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
   ) {}
 
-  public async getSchedule(prisonId: string, date: Date, user: Express.User): Promise<DailySchedule> {
+  public async getSchedule(
+    prisonId: string,
+    date: Date,
+    showStatus: 'ACTIVE' | 'CANCELLED',
+    user: Express.User,
+  ): Promise<DailySchedule> {
     const [scheduledAppointments, bvlsAppointments] = await Promise.all([
       this.appointmentService.getVideoLinkAppointments(prisonId, date, user),
-      this.bookAVideoLinkApiClient.getScheduledVideoLinkAppointments(prisonId, date, user),
+      this.bookAVideoLinkApiClient.getVideoLinkAppointments(prisonId, date, user),
     ])
 
     const prisoners = await this.prisonerSearchApiClient.getByPrisonerNumbers(
@@ -60,16 +67,20 @@ export default class ScheduleService {
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
-    // TODO Filter scheduleItems by user defined filters here
+    // TODO: Filter scheduleItems by user defined filters here
 
     const groupedAppointments = _.chain(scheduleItems)
+      .filter(item => item.status === showStatus)
       .groupBy(item => item.videoBookingId ?? (item.appointmentId && item.prisoner.prisonerNumber))
       .sortBy(groups => groups[0].startTime)
       .value()
 
     return {
-      appointmentsListed: scheduleItems.length,
-      missingVideoLinks: scheduleItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
+      appointmentsListed: scheduleItems.filter(item => item.status === showStatus).length,
+      cancelledAppointments: scheduleItems.filter(item => item.status === 'CANCELLED').length,
+      missingVideoLinks: scheduleItems.filter(
+        item => item.status === showStatus && item.videoLinkRequired && !item.videoLink,
+      ).length,
       appointmentGroups: Object.values(groupedAppointments),
     }
   }
@@ -85,6 +96,7 @@ export default class ScheduleService {
     return {
       prisoner: this.getPrisoner(scheduledAppointment, prisoners, user),
       appointmentId: scheduledAppointment.id,
+      status: scheduledAppointment.status,
       startTime: scheduledAppointment.startTime,
       endTime: scheduledAppointment.endTime,
       appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),

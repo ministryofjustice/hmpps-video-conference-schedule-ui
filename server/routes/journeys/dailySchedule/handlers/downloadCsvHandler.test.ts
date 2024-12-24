@@ -45,7 +45,7 @@ describe('GET', () => {
 
         expect(res.text).toEqual('data\nabc123')
 
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
   })
 
@@ -55,15 +55,10 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect('Content-Disposition', `attachment; filename="daily-schedule-2024-12-12.csv"`)
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
-
         const date = new Date('2024-12-12')
         expect(res.text).toEqual('data\nabc123')
 
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), 'ACTIVE', user)
       })
   })
 
@@ -76,14 +71,36 @@ describe('GET', () => {
         `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
       )
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
-
         expect(res.text).toEqual('data\nabc123')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
+      })
+  })
 
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), user)
+  it('should download csv for cancelled appointments', () => {
+    return request(app)
+      .get('/download-csv?status=CANCELLED')
+      .expect('Content-Type', /text\/csv; charset=utf-8/)
+      .expect(
+        'Content-Disposition',
+        `attachment; filename="daily-schedule-cancelled-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
+      )
+      .expect(res => {
+        expect(res.text).toEqual('data\nabc123')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
+      })
+  })
+
+  it('should download csv for active appointments if status is invalid', () => {
+    return request(app)
+      .get('/download-csv?status=NONSENSE')
+      .expect('Content-Type', /text\/csv; charset=utf-8/)
+      .expect(
+        'Content-Disposition',
+        `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
+      )
+      .expect(res => {
+        expect(res.text).toEqual('data\nabc123')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
   })
 })

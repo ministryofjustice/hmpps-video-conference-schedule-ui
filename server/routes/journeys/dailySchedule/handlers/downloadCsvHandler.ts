@@ -14,17 +14,21 @@ export default class DownloadCsvHandler implements PageHandler {
     const { user } = res.locals
 
     const dateFromQueryParam = new Date(req.query.date?.toString())
+    const statusFromQueryParam = req.query.status as 'ACTIVE' | 'CANCELLED'
+
     const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+    const status = ['ACTIVE', 'CANCELLED'].includes(statusFromQueryParam) ? statusFromQueryParam : 'ACTIVE'
 
     const schedule = await this.scheduleService.getSchedule(
       user.activeCaseLoadId,
       startOfDay(isValid(date) ? date : new Date()),
+      status,
       user,
     )
 
     const csv = converter.json2csv(schedule.appointmentGroups.flat())
     res.header('Content-Type', 'text/csv')
-    res.attachment(`daily-schedule-${formatDate(date, 'yyyy-MM-dd')}.csv`)
+    res.attachment(`daily-schedule${status === 'CANCELLED' ? '-cancelled' : ''}-${formatDate(date, 'yyyy-MM-dd')}.csv`)
     res.send(csv)
   }
 }

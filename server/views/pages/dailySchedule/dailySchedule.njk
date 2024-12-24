@@ -6,8 +6,14 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
+
 {% set backLinkText = 'Choose a different date' %}
 {% set backLinkHref = '/select-date' %}
+
+{% if status == 'CANCELLED' %}
+    {% set backLinkText = 'View active appointments' %}
+    {% set backLinkHref = '/?date=' + date | formatDate('yyyy-MM-dd') %}
+{% endif %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -44,13 +50,25 @@
             {{ stat({
                 heading: "Appointments listed",
                 number: schedule.appointmentsListed,
-                visuallyHiddenText: "appointments"
+                visuallyHiddenText: "appointments listed"
             }) }}
+
+            {% if appointmentsRolledOut and status != 'CANCELLED' %}
+                {{ stat({
+                    heading: "Cancelled appointments",
+                    number: schedule.cancelledAppointments,
+                    visuallyHiddenText: "cancelled appointments",
+                    link: {
+                        href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
+                        text: 'View'
+                    }
+                }) }}
+            {% endif %}
 
             {{ stat({
                 heading: "Missing video links",
                 number: schedule.missingVideoLinks,
-                visuallyHiddenText: "video link"
+                visuallyHiddenText: "missing video links"
             }) }}
         </div>
     </div>
@@ -154,7 +172,7 @@
         {% if params.link %}
             <p class="govuk-!-margin-bottom-0">
                 <a href="{{ params.link.href }}" data-qa="{{ params.link.dataQa }}" class="govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
-                    {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.link.visuallyHiddenText }}</span>
+                    {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>
                 </a>
             </p>
         {% endif %}

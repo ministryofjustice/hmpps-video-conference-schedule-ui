@@ -106,6 +106,17 @@ describe('Schedule service', () => {
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
       },
+      {
+        id: 6,
+        offenderNo: 'ABC123',
+        startTime: '16:30',
+        endTime: '17:30',
+        locationId: 2,
+        locationDescription: 'ROOM 2',
+        appointmentTypeDescription: 'Video Link - Legal Appointment',
+        status: 'CANCELLED',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
+      },
     ]
 
     bvlsAppointments = [
@@ -171,7 +182,7 @@ describe('Schedule service', () => {
     ] as Prisoner[]
 
     appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
-    bookAVideoLinkApiClient.getScheduledVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+    bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
     locationsService.getLocationByNomisId = jest.fn(
       async (id, _) => ({ 1: { key: 'ROOM_1' }, 3: { key: 'ROOM_3' } })[id] as Location,
@@ -181,7 +192,7 @@ describe('Schedule service', () => {
   describe('getSchedule', () => {
     it('builds a daily schedule', async () => {
       const date = new Date('2024-12-12')
-      const result = await scheduleService.getSchedule('MDI', date, user)
+      const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
 
       expect(result).toEqual({
         appointmentGroups: [
@@ -202,6 +213,7 @@ describe('Schedule service', () => {
               },
               startTime: '07:45',
               endTime: '08:00',
+              status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
               videoLink: false,
@@ -224,6 +236,7 @@ describe('Schedule service', () => {
               },
               startTime: '08:00',
               endTime: '09:00',
+              status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
               videoLinkRequired: true,
@@ -245,6 +258,7 @@ describe('Schedule service', () => {
               },
               startTime: '09:00',
               endTime: '09:15',
+              status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
               videoLink: false,
@@ -269,6 +283,7 @@ describe('Schedule service', () => {
               },
               startTime: '08:30',
               endTime: '09:00',
+              status: 'ACTIVE',
               tags: [],
               videoLink: false,
               videoLinkRequired: false,
@@ -292,6 +307,7 @@ describe('Schedule service', () => {
               },
               startTime: '08:30',
               endTime: '09:00',
+              status: 'ACTIVE',
               tags: [],
               videoLink: false,
               videoLinkRequired: false,
@@ -315,6 +331,7 @@ describe('Schedule service', () => {
               },
               startTime: '11:00',
               endTime: '12:00',
+              status: 'ACTIVE',
               tags: [],
               videoBookingId: 2,
               videoLink: false,
@@ -324,11 +341,58 @@ describe('Schedule service', () => {
           ],
         ],
         appointmentsListed: 6,
+        cancelledAppointments: 1,
         missingVideoLinks: 1,
       })
 
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
-      expect(bookAVideoLinkApiClient.getScheduledVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
+      expect(locationsService.getLocationByNomisId).toHaveBeenCalledTimes(4)
+      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+    })
+
+    it('builds a view of the cancelled appointments', async () => {
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule('MDI', date, 'CANCELLED', user)
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentDescription: 'Legal Appointment',
+              appointmentId: 6,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentType: false,
+              externalAgencyDescription: false,
+              prisoner: {
+                cellLocation: 'MDI-1-1-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '16:30',
+              endTime: '17:30',
+              status: 'CANCELLED',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
+            },
+          ],
+        ],
+        appointmentsListed: 1,
+        cancelledAppointments: 1,
+        missingVideoLinks: 0,
+      })
+
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
       expect(locationsService.getLocationByNomisId).toHaveBeenCalledTimes(4)
       expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(1, 1, user)
