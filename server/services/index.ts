@@ -17,12 +17,13 @@ export const services = () => {
     nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
+    activitiesAndAppointmentsApiClient,
   } = dataAccess()
 
   const userService = new UserService(manageUsersApiClient)
   const auditService = new AuditService(hmppsAuditClient)
   const prisonService = new PrisonService(prisonRegisterApiClient)
-  const appointmentService = new AppointmentService(prisonApiClient)
+  const appointmentService = new AppointmentService(prisonApiClient, activitiesAndAppointmentsApiClient)
   const locationsService = new LocationsService(locationsInsidePrisonApiClient, nomisMappingApiClient)
   const scheduleService = new ScheduleService(
     appointmentService,

@@ -20,12 +20,14 @@ import PrisonApiClient from './prisonApiClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
 import NomisMappingApiClient from './nomisMappingApiClient'
+import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   frontendComponentApiClient: new FrontendComponentApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   manageUsersApiClient: new ManageUsersApiClient(),
+  activitiesAndAppointmentsApiClient: new ActivitiesAndAppointmentsApiClient(),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
   locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(),
   nomisMappingApiClient: new NomisMappingApiClient(),
@@ -35,5 +37,3 @@ export const dataAccess = () => ({
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
-
-export { ManageUsersApiClient, HmppsAuditClient }

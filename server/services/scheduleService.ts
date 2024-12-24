@@ -1,13 +1,10 @@
 import _ from 'lodash'
-import AppointmentService from './appointmentService'
+import AppointmentService, { Appointment } from './appointmentService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { Appointment } from '../@types/prisonApi/types'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
-import { formatDate } from '../utils/utils'
 import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
-import config from '../config'
 
 const RELEVANT_ALERTS = ['HA', 'PEEP', 'XEL', 'XCU']
 
@@ -66,7 +63,7 @@ export default class ScheduleService {
     // TODO Filter scheduleItems by user defined filters here
 
     const groupedAppointments = _.chain(scheduleItems)
-      .groupBy(item => item.videoBookingId ?? item.appointmentId)
+      .groupBy(item => item.videoBookingId ?? (item.appointmentId && item.prisoner.prisonerNumber))
       .sortBy(groups => groups[0].startTime)
       .value()
 
@@ -88,8 +85,8 @@ export default class ScheduleService {
     return {
       prisoner: this.getPrisoner(scheduledAppointment, prisoners, user),
       appointmentId: scheduledAppointment.id,
-      startTime: formatDate(scheduledAppointment.startTime, 'HH:mm'),
-      endTime: formatDate(scheduledAppointment.endTime, 'HH:mm'),
+      startTime: scheduledAppointment.startTime,
+      endTime: scheduledAppointment.endTime,
       appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
@@ -102,7 +99,7 @@ export default class ScheduleService {
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
       tags: [],
-      viewAppointmentLink: `${config.dpsUrl}/appointment-details/${scheduledAppointment.id}`,
+      viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
     }
   }
 
@@ -133,8 +130,8 @@ export default class ScheduleService {
     const basicMatch = bvlsAppointments.find(bvlsAppointment => {
       return (
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
-        bvlsAppointment.startTime === formatDate(appointment.startTime, 'HH:mm') &&
-        bvlsAppointment.endTime === formatDate(appointment.endTime, 'HH:mm')
+        bvlsAppointment.startTime === appointment.startTime &&
+        bvlsAppointment.endTime === appointment.endTime
       )
     })
 

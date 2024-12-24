@@ -1,10 +1,9 @@
 import createUser from '../testutils/createUser'
-import AppointmentService from './appointmentService'
+import AppointmentService, { Appointment } from './appointmentService'
 import ScheduleService from './scheduleService'
 import LocationsService from './locationsService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
-import { Appointment } from '../@types/prisonApi/types'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { Location } from '../@types/locationsInsidePrisonApi/types'
@@ -29,7 +28,7 @@ describe('Schedule service', () => {
   let prisoners: Prisoner[]
 
   beforeEach(() => {
-    appointmentService = new AppointmentService(null) as jest.Mocked<AppointmentService>
+    appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
     locationsService = new LocationsService(null, null) as jest.Mocked<LocationsService>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
@@ -44,47 +43,68 @@ describe('Schedule service', () => {
       {
         id: 1,
         offenderNo: 'ABC123',
-        startTime: '2024-12-12T07:45:00Z',
-        endTime: '2024-12-12T08:00:00Z',
+        startTime: '07:45',
+        endTime: '08:00',
         locationId: 1,
         locationDescription: 'ROOM 1',
         appointmentTypeDescription: 'Video Link - Court Hearing',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
       },
       {
         id: 2,
         offenderNo: 'ABC123',
-        startTime: '2024-12-12T08:00:00Z',
-        endTime: '2024-12-12T09:00:00Z',
+        startTime: '08:00',
+        endTime: '09:00',
         locationId: 1,
         locationDescription: 'ROOM 1',
         appointmentTypeDescription: 'Video Link - Court Hearing',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
       },
       {
         id: 3,
         offenderNo: 'ABC123',
-        startTime: '2024-12-12T09:00:00Z',
-        endTime: '2024-12-12T09:15:00Z',
+        startTime: '09:00',
+        endTime: '09:15',
         locationId: 1,
         locationDescription: 'ROOM 1',
         appointmentTypeDescription: 'Video Link - Court Hearing',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
       },
       {
         id: 4,
         offenderNo: 'ZXY321',
-        startTime: '2024-12-12T08:30:00Z',
-        endTime: '2024-12-12T09:00:00Z',
+        startTime: '08:30',
+        endTime: '09:00',
         locationId: 2,
         locationDescription: 'ROOM 2',
         appointmentTypeDescription: 'Video Link - Official Other',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+      },
+      {
+        id: 4,
+        offenderNo: 'ABC123',
+        startTime: '08:30',
+        endTime: '09:00',
+        locationId: 2,
+        locationDescription: 'ROOM 2',
+        appointmentTypeDescription: 'Video Link - Official Other',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
       },
       {
         id: 5,
         offenderNo: 'ZXY321',
-        startTime: '2024-12-12T11:00:00Z',
-        endTime: '2024-12-12T12:00:00Z',
+        startTime: '11:00',
+        endTime: '12:00',
         locationId: 3,
         locationDescription: 'ROOM 3',
         appointmentTypeDescription: 'Video Link - Probation',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
       },
     ]
 
@@ -257,6 +277,29 @@ describe('Schedule service', () => {
           ],
           [
             {
+              appointmentDescription: 'Official Other',
+              appointmentId: 4,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentType: false,
+              externalAgencyDescription: false,
+              prisoner: {
+                cellLocation: 'MDI-1-1-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:30',
+              endTime: '09:00',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+            },
+          ],
+          [
+            {
               appointmentDescription: 'Probation',
               appointmentId: 5,
               appointmentLocationDescription: 'ROOM 3',
@@ -280,7 +323,7 @@ describe('Schedule service', () => {
             },
           ],
         ],
-        appointmentsListed: 5,
+        appointmentsListed: 6,
         missingVideoLinks: 1,
       })
 
