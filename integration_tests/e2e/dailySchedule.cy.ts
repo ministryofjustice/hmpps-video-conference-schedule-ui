@@ -8,6 +8,7 @@ context('Daily schedule', () => {
     cy.task('stubSignIn')
     cy.task('stubUser')
     cy.task('stubGetPrison')
+    cy.task('stubIsAppointmentsRolledOut')
     cy.task('stubGetAppointments')
     cy.task('stubGetVideoLinkBookings')
     cy.task('stubGetPrisoners')

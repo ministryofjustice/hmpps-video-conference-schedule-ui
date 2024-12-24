@@ -178,6 +178,7 @@ export default {
     audit: auditConfig(),
   },
   dpsUrl: get('DPS_URL', 'http://localhost:3000', requiredInProduction),
+  activitiesAndAppointmentsUrl: get('ACTIVITIES_AND_APPOINTMENTS_URL', 'http://localhost:3000', requiredInProduction),
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),

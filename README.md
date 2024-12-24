@@ -24,6 +24,8 @@ Ensure you have a local .env file, with the following content:
 
 ```
 INGRESS_URL=http://localhost:3000
+DPS_URL=https://digital-dev.prison.service.justice.gov.uk
+ACTIVITIES_AND_APPOINTMENTS_URL=https://activities-dev.prison.service.justice.gov.uk
 REDIS_ENABLED=true
 AUDIT_ENABLED=false
 TOKEN_VERIFICATION_ENABLED=false
