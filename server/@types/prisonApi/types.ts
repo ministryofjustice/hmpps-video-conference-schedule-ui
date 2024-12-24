@@ -1,3 +1,3 @@
 import { components } from '.'
 
-export type ScheduledAppointment = components['schemas']['ScheduledAppointmentDto']
+export type Appointment = components['schemas']['ScheduledAppointmentDto']

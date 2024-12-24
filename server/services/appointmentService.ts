@@ -7,7 +7,7 @@ export default class AppointmentService {
     // TODO: Fetch appointments from A&A here if rolled out in A&A
 
     return this.prisonApiClient
-      .getScheduledAppointments(prisonId, date, user)
+      .getAppointments(prisonId, date, user)
       .then(appts => appts.filter(appt => appt.appointmentTypeCode.startsWith('VL')))
   }
 }

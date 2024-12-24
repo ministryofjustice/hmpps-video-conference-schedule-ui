@@ -5,6 +5,7 @@ context('Healthcheck', () => {
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing')
       cy.task('stubManageUsersPing')
+      cy.task('stubActivitiesAndAppointmentsPing')
       cy.task('stubBookAVideoLinkPing')
       cy.task('stubLocationsInsidePrisonApiPing')
       cy.task('stubNomisMappingApiPing')
@@ -32,6 +33,7 @@ context('Healthcheck', () => {
       cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing', 500)
       cy.task('stubManageUsersPing')
+      cy.task('stubActivitiesAndAppointmentsPing')
       cy.task('stubBookAVideoLinkPing')
       cy.task('stubLocationsInsidePrisonApiPing')
       cy.task('stubNomisMappingApiPing')
@@ -44,6 +46,7 @@ context('Healthcheck', () => {
       cy.request({ url: '/health', method: 'GET', failOnStatusCode: false }).then(response => {
         expect(response.body.components.hmppsAuth.status).to.equal('UP')
         expect(response.body.components.manageUsersApi.status).to.equal('UP')
+        expect(response.body.components.activitiesAndAppointmentsApi.status).to.equal('UP')
         expect(response.body.components.bookAVideoLinkApi.status).to.equal('UP')
         expect(response.body.components.locationsInsidePrisonApi.status).to.equal('UP')
         expect(response.body.components.nomisMappingApi.status).to.equal('UP')

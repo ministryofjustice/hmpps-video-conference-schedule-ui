@@ -10,6 +10,7 @@ import locationsInsidePrisonApi from './integration_tests/mockApis/locationsInsi
 import prisonApi from './integration_tests/mockApis/prisonApi'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import nomisMappingApi from './integration_tests/mockApis/nomisMappingApi'
+import activitiesAndAppointmentsApi from './integration_tests/mockApis/activitiesAndAppointmentsApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -30,6 +31,7 @@ export default defineConfig({
         ...auth,
         ...tokenVerification,
         ...manageUsersApi,
+        ...activitiesAndAppointmentsApi,
         ...bookAVideoLinkApi,
         ...locationsInsidePrisonApi,
         ...nomisMappingApi,
