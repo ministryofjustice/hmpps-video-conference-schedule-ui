@@ -4,7 +4,7 @@ import ScheduleService from './scheduleService'
 import LocationsService from './locationsService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
-import { ScheduledAppointment } from '../@types/prisonApi/types'
+import { Appointment } from '../@types/prisonApi/types'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { Location } from '../@types/locationsInsidePrisonApi/types'
@@ -24,7 +24,7 @@ describe('Schedule service', () => {
 
   let scheduleService: ScheduleService
 
-  let appointments: ScheduledAppointment[]
+  let appointments: Appointment[]
   let bvlsAppointments: BvlsAppointment[]
   let prisoners: Prisoner[]
 
@@ -186,6 +186,7 @@ describe('Schedule service', () => {
               videoBookingId: 1,
               videoLink: false,
               videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             },
             {
               appointmentDescription: 'Court Hearing',
@@ -206,6 +207,7 @@ describe('Schedule service', () => {
               tags: [],
               videoBookingId: 1,
               videoLinkRequired: true,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
             },
             {
               appointmentDescription: 'Post-hearing',
@@ -227,6 +229,7 @@ describe('Schedule service', () => {
               videoBookingId: 1,
               videoLink: false,
               videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
             },
           ],
           [
@@ -249,6 +252,7 @@ describe('Schedule service', () => {
               tags: [],
               videoLink: false,
               videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
           ],
           [
@@ -272,6 +276,7 @@ describe('Schedule service', () => {
               videoBookingId: 2,
               videoLink: false,
               videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],
         ],

@@ -24,7 +24,7 @@ describe('prisonApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getScheduledAppointments', () => {
+  describe('getAppointments', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
@@ -33,7 +33,7 @@ describe('prisonApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await prisonApiClient.getScheduledAppointments('MDI', new Date('2024-12-12'), user)
+      const output = await prisonApiClient.getAppointments('MDI', new Date('2024-12-12'), user)
       expect(output).toEqual(response)
     })
   })

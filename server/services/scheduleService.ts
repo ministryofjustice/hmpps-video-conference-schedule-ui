@@ -1,12 +1,13 @@
 import _ from 'lodash'
 import AppointmentService from './appointmentService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { ScheduledAppointment } from '../@types/prisonApi/types'
+import { Appointment } from '../@types/prisonApi/types'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
 import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
+import config from '../config'
 
 const RELEVANT_ALERTS = ['HA', 'PEEP', 'XEL', 'XCU']
 
@@ -30,6 +31,7 @@ type ScheduleItem = {
   videoLink?: string
   appointmentType?: string
   externalAgencyDescription?: string
+  viewAppointmentLink: string
 }
 
 export type DailySchedule = {
@@ -76,7 +78,7 @@ export default class ScheduleService {
   }
 
   private async createScheduleItem(
-    scheduledAppointment: ScheduledAppointment,
+    scheduledAppointment: Appointment,
     bvlsAppointments: BvlsAppointment[],
     prisoners: Prisoner[],
     user: Express.User,
@@ -100,10 +102,11 @@ export default class ScheduleService {
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
       tags: [],
+      viewAppointmentLink: `${config.dpsUrl}/appointment-details/${scheduledAppointment.id}`,
     }
   }
 
-  private getPrisoner(scheduledAppointment: ScheduledAppointment, prisoners: Prisoner[], user: Express.User) {
+  private getPrisoner(scheduledAppointment: Appointment, prisoners: Prisoner[], user: Express.User) {
     const prisoner = prisoners.find(p => p.prisonerNumber === scheduledAppointment.offenderNo)
 
     return {
@@ -116,14 +119,14 @@ export default class ScheduleService {
     }
   }
 
-  private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: ScheduledAppointment) {
+  private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
     return scheduledAppointment.appointmentTypeDescription.replace('Video Link - ', '')
   }
 
   private async matchBvlsAppointmentTo(
-    appointment: ScheduledAppointment,
+    appointment: Appointment,
     bvlsAppointments: BvlsAppointment[],
     user: Express.User,
   ): Promise<BvlsAppointment> {

@@ -1,7 +1,7 @@
 import createUser from '../testutils/createUser'
 import PrisonApiClient from '../data/prisonApiClient'
 import AppointmentService from './appointmentService'
-import { ScheduledAppointment } from '../@types/prisonApi/types'
+import { Appointment } from '../@types/prisonApi/types'
 
 jest.mock('../data/prisonApiClient')
 
@@ -10,7 +10,7 @@ const user = createUser([])
 describe('Appointment service', () => {
   let prisonApiClient: jest.Mocked<PrisonApiClient>
   let appointmentService: AppointmentService
-  let appointments: ScheduledAppointment[]
+  let appointments: Appointment[]
 
   beforeEach(() => {
     prisonApiClient = new PrisonApiClient() as jest.Mocked<PrisonApiClient>
@@ -26,7 +26,7 @@ describe('Appointment service', () => {
 
   describe('getVideoLinkAppointments', () => {
     it('Retrieves retrieves appointments for a date and filters by VLBs', async () => {
-      prisonApiClient.getScheduledAppointments.mockResolvedValue(appointments)
+      prisonApiClient.getAppointments.mockResolvedValue(appointments)
 
       const result = await appointmentService.getVideoLinkAppointments('MDI', new Date('2024-12-12'), user)
 
@@ -34,7 +34,7 @@ describe('Appointment service', () => {
         { id: 1, appointmentTypeCode: 'VLB' },
         { id: 2, appointmentTypeCode: 'VLBP' },
       ])
-      expect(prisonApiClient.getScheduledAppointments).toHaveBeenLastCalledWith('MDI', new Date('2024-12-12'), user)
+      expect(prisonApiClient.getAppointments).toHaveBeenLastCalledWith('MDI', new Date('2024-12-12'), user)
     })
   })
 })
