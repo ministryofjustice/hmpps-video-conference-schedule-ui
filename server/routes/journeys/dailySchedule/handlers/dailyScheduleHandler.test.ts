@@ -14,7 +14,7 @@ jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/scheduleService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
+const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const scheduleService = new ScheduleService(null, null, null, null) as jest.Mocked<ScheduleService>
 
 let app: Express
@@ -48,7 +48,7 @@ describe('GET', () => {
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
         expect(existsByDataQa($, 'warning-text')).toBe(false)
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
   })
 
@@ -63,7 +63,7 @@ describe('GET', () => {
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
         expect(existsByDataQa($, 'warning-text')).toBe(true)
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), 'ACTIVE', user)
       })
   })
 
@@ -76,7 +76,33 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(new Date()), user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(new Date()), 'ACTIVE', user)
+      })
+  })
+
+  it('should render index page for cancelled appointments', () => {
+    return request(app)
+      .get('/?status=CANCELLED')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
+      })
+  })
+
+  it('should render index page for active appointments if status is invalid', () => {
+    return request(app)
+      .get('/?status=NONSENSE')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
   })
 })

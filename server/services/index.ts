@@ -22,7 +22,7 @@ export const services = () => {
 
   const userService = new UserService(manageUsersApiClient)
   const auditService = new AuditService(hmppsAuditClient)
-  const prisonService = new PrisonService(prisonRegisterApiClient)
+  const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
   const appointmentService = new AppointmentService(prisonApiClient, activitiesAndAppointmentsApiClient)
   const locationsService = new LocationsService(locationsInsidePrisonApiClient, nomisMappingApiClient)
   const scheduleService = new ScheduleService(

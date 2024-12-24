@@ -3,7 +3,7 @@ import { stubGet } from './wiremock'
 export default {
   stubBookAVideoLinkPing: () => stubGet('/book-a-video-link-api/health/ping'),
   stubGetVideoLinkBookings: () =>
-    stubGet('/book-a-video-link-api/schedule/prison/MDI\\?date=.*', [
+    stubGet('/book-a-video-link-api/schedule/prison/MDI\\?date=(.)*&includeCancelled=true', [
       {
         videoBookingId: 1,
         prisonerNumber: 'G9566GQ',

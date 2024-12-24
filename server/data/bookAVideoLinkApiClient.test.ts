@@ -23,20 +23,16 @@ describe('bookAVideoLinkApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getScheduledVideoLinkAppointments', () => {
+  describe('getVideoLinkAppointments', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/schedule/prison/MDI?date=2024-07-12')
+        .get('/schedule/prison/MDI?date=2024-07-12&includeCancelled=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await bookAVideoLinkApiClient.getScheduledVideoLinkAppointments(
-        'MDI',
-        new Date('2024-07-12'),
-        user,
-      )
+      const output = await bookAVideoLinkApiClient.getVideoLinkAppointments('MDI', new Date('2024-07-12'), user)
       expect(output).toEqual(response)
     })
   })
