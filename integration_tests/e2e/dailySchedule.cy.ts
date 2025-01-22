@@ -12,7 +12,7 @@ context('Daily schedule', () => {
     cy.task('stubGetAppointments')
     cy.task('stubGetVideoLinkBookings')
     cy.task('stubGetPrisoners')
-    cy.task('stubGetLocation')
+    cy.task('stubGetLocationMapping')
   })
 
   it('Unauthenticated user directed to auth', () => {

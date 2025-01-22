@@ -18,7 +18,6 @@ import FrontendComponentApiClient from './frontendComponentApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import PrisonApiClient from './prisonApiClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
-import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
 import NomisMappingApiClient from './nomisMappingApiClient'
 import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 
@@ -29,7 +28,6 @@ export const dataAccess = () => ({
   manageUsersApiClient: new ManageUsersApiClient(),
   activitiesAndAppointmentsApiClient: new ActivitiesAndAppointmentsApiClient(),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
-  locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(),
   nomisMappingApiClient: new NomisMappingApiClient(),
   prisonApiClient: new PrisonApiClient(),
   prisonRegisterApiClient: new PrisonRegisterApiClient(),

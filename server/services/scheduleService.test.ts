@@ -6,7 +6,7 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
-import { Location } from '../@types/locationsInsidePrisonApi/types'
+import { LocationMapping } from '../@types/nomisMappingApi/types'
 
 jest.mock('../services/appointmentService')
 jest.mock('../services/locationsService')
@@ -29,7 +29,7 @@ describe('Schedule service', () => {
 
   beforeEach(() => {
     appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
-    locationsService = new LocationsService(null, null) as jest.Mocked<LocationsService>
+    locationsService = new LocationsService(null) as jest.Mocked<LocationsService>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
     scheduleService = new ScheduleService(
@@ -126,6 +126,7 @@ describe('Schedule service', () => {
         startTime: '07:45',
         endTime: '08:00',
         prisonLocKey: 'ROOM_1',
+        dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_PRE',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
@@ -136,6 +137,7 @@ describe('Schedule service', () => {
         startTime: '08:00',
         endTime: '09:00',
         prisonLocKey: 'ROOM_1',
+        dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_MAIN',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
@@ -146,6 +148,7 @@ describe('Schedule service', () => {
         startTime: '09:00',
         endTime: '09:15',
         prisonLocKey: 'ROOM_1',
+        dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_POST',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
@@ -156,6 +159,7 @@ describe('Schedule service', () => {
         startTime: '11:00',
         endTime: '12:00',
         prisonLocKey: 'ROOM_3',
+        dpsLocationId: 'zyx-321',
         appointmentType: 'VLB_PROBATION',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
@@ -184,8 +188,8 @@ describe('Schedule service', () => {
     appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
     bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
-    locationsService.getLocationByNomisId = jest.fn(
-      async (id, _) => ({ 1: { key: 'ROOM_1' }, 3: { key: 'ROOM_3' } })[id] as Location,
+    locationsService.getLocationMappingByNomisId = jest.fn(
+      async (id, _) => ({ 1: { dpsLocationId: 'abc-123' }, 3: { dpsLocationId: 'zyx-321' } })[id] as LocationMapping,
     )
   })
 
@@ -348,11 +352,11 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenCalledTimes(4)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
     })
 
     it('builds a view of the cancelled appointments', async () => {
@@ -394,11 +398,11 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenCalledTimes(4)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(locationsService.getLocationByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
     })
   })
 })
