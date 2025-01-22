@@ -139,7 +139,7 @@ export default class ScheduleService {
     bvlsAppointments: BvlsAppointment[],
     user: Express.User,
   ): Promise<BvlsAppointment> {
-    const basicMatch = bvlsAppointments.find(bvlsAppointment => {
+    const basicMatch = bvlsAppointments.filter(bvlsAppointment => {
       return (
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
@@ -147,12 +147,10 @@ export default class ScheduleService {
       )
     })
 
-    if (basicMatch) {
-      const locationKey = await this.locationsService
-        .getLocationByNomisId(appointment.locationId, user)
-        .then(location => location.key)
+    if (basicMatch.length) {
+      const locationMapping = await this.locationsService.getLocationMappingByNomisId(appointment.locationId, user)
 
-      if (basicMatch.prisonLocKey === locationKey) return basicMatch
+      return basicMatch.find(bvlsAppointment => bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId)
     }
 
     return undefined

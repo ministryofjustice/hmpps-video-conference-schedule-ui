@@ -13,7 +13,6 @@ export const services = () => {
     hmppsAuditClient,
     prisonRegisterApiClient,
     prisonApiClient,
-    locationsInsidePrisonApiClient,
     nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
@@ -24,7 +23,7 @@ export const services = () => {
   const auditService = new AuditService(hmppsAuditClient)
   const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
   const appointmentService = new AppointmentService(prisonApiClient, activitiesAndAppointmentsApiClient)
-  const locationsService = new LocationsService(locationsInsidePrisonApiClient, nomisMappingApiClient)
+  const locationsService = new LocationsService(nomisMappingApiClient)
   const scheduleService = new ScheduleService(
     appointmentService,
     locationsService,

@@ -765,8 +765,7 @@ export interface components {
     ErrorResponse: {
       /** Format: int32 */
       status: number
-      /** Format: int32 */
-      errorCode?: number
+      errorCode?: string
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
@@ -1423,6 +1422,16 @@ export interface components {
        */
       prisonLocKey: string
       /**
+       * @description The location description where the appointment takes place. The localName from the locations-inside-prison service).
+       * @example VCC-crown-conference-room-1
+       */
+      prisonLocDesc: string
+      /**
+       * Format: uuid
+       * @description The unique UUID for the location where the appointment takes place. The id field from the locations-inside-prison service.
+       */
+      dpsLocationId: string
+      /**
        * Format: date
        * @description The date for this appointment ISO format (YYYY-MM-DD)
        * @example 2024-10-03
@@ -1514,7 +1523,7 @@ export interface components {
     }
     Location: {
       /**
-       * @description The unique location key for the location
+       * @description The location key for the location (this can change)
        * @example BMI-VIDEOLINK
        */
       key: string
@@ -1528,6 +1537,93 @@ export interface components {
        * @example true
        */
       enabled: boolean
+      /**
+       * Format: uuid
+       * @description The unique UUID for the prison location
+       */
+      dpsLocationId: string
+      extraAttributes?: components['schemas']['RoomAttributes']
+    }
+    /** @description The additional attributes of a video location */
+    RoomAttributes: {
+      /**
+       * @description The status of the room (ACTIVE or INACTIVE)
+       * @example ACTIVE
+       * @enum {string}
+       */
+      locationStatus: 'ACTIVE' | 'INACTIVE'
+      /**
+       * @description An optional message relating to an inactive status
+       * @example Room damaged
+       */
+      statusMessage?: string
+      /**
+       * Format: date
+       * @description The date the room is expected to be operational again
+       * @example 2025-02-12
+       */
+      expectedActiveDate?: string
+      /**
+       * @description The preferred usage for this room (COURT, PROBATION, SHARED, SCHEDULE)
+       * @example SHARED
+       * @enum {string}
+       */
+      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      /**
+       * @description Court or probation team codes allowed to use the room (comma-separated list)
+       * @example YRKMAG,DRBYJS
+       */
+      allowedParties?: string
+      /**
+       * @description The video URL to access the equipment in this room
+       * @example https://prison.video.link/123
+       */
+      prisonVideoUrl?: string
+      /**
+       * @description Notes for these additional attributes
+       * @example some notes
+       */
+      notes?: string
+      /** @description A schedule for this room. Only present if the locationUsage is SCHEDULE. */
+      schedule: components['schemas']['RoomSchedule'][]
+    }
+    /** @description The additional schedule of usage for a video room */
+    RoomSchedule: {
+      /**
+       * @description The day when this time-slot starts
+       * @example Monday
+       * @enum {string}
+       */
+      startDayOfWeek: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
+      /**
+       * @description The day when this time-slot ends
+       * @example Friday
+       * @enum {string}
+       */
+      endDayOfWeek: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
+      /**
+       * Format: partial-time
+       * @description Start time of this slot (24 hr clock, HH:MI)
+       * @example 10:00
+       */
+      startTime: string
+      /**
+       * Format: partial-time
+       * @description End time of this slot (24 hr clock, HH:MI)
+       * @example 16:00
+       */
+      endTime: string
+      /**
+       * @description The usage of this room within this slot (PROBATION, COURT, SHARED)
+       * @example SHARED
+       * @enum {string}
+       */
+      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      /**
+       * @description Court or probation codes (comma-separated) that can use the room within this slot
+       * @example YRKMAG,DRBYJS
+       */
+      allowedParties?: string
     }
     /** @description Describes the details of a prison */
     Prison: {
@@ -2471,6 +2567,8 @@ export interface operations {
         enabledOnly?: boolean
         /** @description Video link only, true or false. When true only returns video link suitable locations. Defaults to true if not supplied. */
         videoLinkOnly?: boolean
+        /** @description Extended attributes, true or false. When true, and only where videoLinkOnly is also true, returns extended room attributes. Defaults to false if not supplied. */
+        extendedAttributes?: boolean
       }
       header?: never
       path: {
