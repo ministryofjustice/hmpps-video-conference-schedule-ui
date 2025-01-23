@@ -34,6 +34,7 @@ type ScheduleItem = {
 
 export type DailySchedule = {
   appointmentsListed: number
+  numberOfPrisoners: number
   cancelledAppointments: number
   missingVideoLinks: number
   appointmentGroups: ScheduleItem[][]
@@ -71,12 +72,13 @@ export default class ScheduleService {
 
     const groupedAppointments = _.chain(scheduleItems)
       .filter(item => item.status === showStatus)
-      .groupBy(item => item.videoBookingId ?? (item.appointmentId && item.prisoner.prisonerNumber))
+      .groupBy(item => item.videoBookingId ?? item.appointmentId + item.prisoner.prisonerNumber)
       .sortBy(groups => groups[0].startTime)
       .value()
 
     return {
       appointmentsListed: scheduleItems.filter(item => item.status === showStatus).length,
+      numberOfPrisoners: _.uniq(scheduleItems.map(item => item.prisoner.prisonerNumber)).length,
       cancelledAppointments: scheduleItems.filter(item => item.status === 'CANCELLED').length,
       missingVideoLinks: scheduleItems.filter(
         item => item.status === showStatus && item.videoLinkRequired && !item.videoLink,

@@ -117,6 +117,17 @@ describe('Schedule service', () => {
         status: 'CANCELLED',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
       },
+      {
+        id: 7,
+        offenderNo: 'ABC123',
+        startTime: '16:30',
+        endTime: '17:30',
+        locationId: 2,
+        locationDescription: 'ROOM 2',
+        appointmentTypeDescription: 'Video Link - Legal Appointment',
+        status: 'ACTIVE',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
+      },
     ]
 
     bvlsAppointments = [
@@ -343,8 +354,33 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],
+          [
+            {
+              appointmentDescription: 'Legal Appointment',
+              appointmentId: 7,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentType: false,
+              endTime: '17:30',
+              externalAgencyDescription: false,
+              prisoner: {
+                cellLocation: 'MDI-1-1-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '16:30',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
+            },
+          ],
         ],
-        appointmentsListed: 6,
+        appointmentsListed: 7,
+        numberOfPrisoners: 2,
         cancelledAppointments: 1,
         missingVideoLinks: 1,
       })
@@ -391,6 +427,7 @@ describe('Schedule service', () => {
           ],
         ],
         appointmentsListed: 1,
+        numberOfPrisoners: 2,
         cancelledAppointments: 1,
         missingVideoLinks: 0,
       })
