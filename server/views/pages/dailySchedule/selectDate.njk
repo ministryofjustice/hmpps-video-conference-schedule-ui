@@ -1,53 +1,35 @@
 {% extends "partials/layout.njk" %}
 
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = "Select the date you want to view a daily schedule for" %}
-{% set backLinkHref = '/' %}
+{% set backLinkHref = '/?date=' + date %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
+            <span class="govuk-caption-l">Daily schedule</span>
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                <span class="govuk-caption-l">Daily schedule</span>
-                {{ govukDateInput({
-                    id: "date",
-                    fieldset: {
-                        legend: {
-                            text: pageTitle,
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                        }
+
+                {{ mojDatePicker({
+                    id: 'date',
+                    name: 'date',
+                    label: {
+                        text: "Date",
+                        classes: 'govuk-label--s'
                     },
                     hint: {
-                        text: "For example, " + now() | formatDate('dd MM yyyy')
+                        text: 'Enter the date, for example ' + now() | formatDate('dd/MM/yyyy') + ', or select the calendar to pick a date'
                     },
                     errorMessage: validationErrors | findError('date'),
-                    items: [
-                        {
-                            id: "date-day",
-                            name: "date[day]",
-                            label: "Day",
-                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('date')),
-                            value: formResponses.date['day']
-                        },
-                        {
-                            id: "date-month",
-                            name: "date[month]",
-                            label: "Month",
-                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('date')),
-                            value: formResponses.date['month']
-                        },
-                        {
-                            id: "date-year",
-                            name: "date[year]",
-                            label: "Year",
-                            classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('date')),
-                            value: formResponses.date['year']
-                        }
-                    ]
+                    value: formResponses.date
                 }) }}
 
                 {{ govukButton({
