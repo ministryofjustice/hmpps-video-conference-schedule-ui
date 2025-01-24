@@ -581,6 +581,35 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/job/purposeful-activity-reports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Trigger the job to generate purposeful activity reports and upload to s3
+     * @description
+     *           Generates 3 csv reports which are uploaded to an s3 bucket for prison performance reporting team to process for
+     *           purposeful activity generation purposes and to display on the prison regime dashboard in the performance hub.
+     *
+     *           Report 1) Details of attended purposeful-activity activities
+     *           Report 2) Details of attended purposeful-activity appointments
+     *           Report 3) Prison rollout table
+     *
+     *           Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
+     *
+     */
+    post: operations['triggerPurposefulActivityReportsJob']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/job/manage-attendance-records': {
     parameters: {
       query?: never
@@ -2250,6 +2279,7 @@ export interface components {
        * @example 2023-05-24
        */
       endDate: string
+      /** @description Describes a case note to be added to the prisoner's profile as part of the deallocation. */
       caseNote?: components['schemas']['AddCaseNoteRequest']
       /**
        * Format: int64
@@ -2395,7 +2425,9 @@ export interface components {
        * @example CHAP
        */
       categoryCode: string
+      /** @description The tier for this appointment, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this appointment */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description
@@ -2640,7 +2672,9 @@ export interface components {
        * @example CHAP
        */
       categoryCode: string
+      /** @description The tier for this appointment, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this appointment */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description
@@ -2684,6 +2718,12 @@ export interface components {
        * @example 10:30
        */
       endTime?: string
+      /** @description
+       *         Describes the schedule of the appointment series i.e. how the appointments in the series repeat. The frequency of
+       *         those appointments and how many appointments there are in total in the series.
+       *         If null, the appointment series has only one appointment. Note that the presence of this property does not mean
+       *         there is more than one appointment as a number of appointments value of one is valid.
+       *          */
       schedule?: components['schemas']['AppointmentSeriesSchedule']
       /**
        * @description
@@ -2908,10 +2948,10 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      unpaged?: boolean
     }
     PagedWaitingListApplication: {
       /** Format: int32 */
@@ -2987,6 +3027,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the waiting list status was last updated
+       * @example 2023-06-04T16:30:00
        */
       statusUpdatedTime?: string
       /**
@@ -3013,6 +3054,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the waiting list was first created
+       * @example 2023-00-03T12:00:00
        */
       creationTime: string
       /**
@@ -3023,6 +3065,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the waiting list was last updated
+       * @example 2023-00-04T16:30:00
        */
       updatedTime?: string
       /**
@@ -3030,6 +3073,7 @@ export interface components {
        * @example Jane Doe
        */
       updatedBy?: string
+      /** @description The earliest release date of the prisoner */
       earliestReleaseDate: components['schemas']['EarliestReleaseDate']
       /** @description Does the prisoner have non-associations? Null implies that non-associations could not be retrieved */
       nonAssociations?: boolean
@@ -3210,6 +3254,7 @@ export interface components {
        * @example A basic maths course suitable for introduction to the subject
        */
       description?: string
+      /** @description The category for this activity, one of the high-level categories */
       category: components['schemas']['ActivityCategory']
       /**
        * @description The most recent risk assessment level for this activity
@@ -3237,6 +3282,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time when this activity was created
+       * @example 2022-09-01T09:01:02
        */
       createdTime: string
       /**
@@ -3319,6 +3365,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Date and time this scheduled instance was cancelled (or null if not cancelled)
+       * @example 2022-09-29T11:20:21
        */
       cancelledTime?: string
       /**
@@ -3362,6 +3409,7 @@ export interface components {
       nextScheduledInstanceDate?: string
       /** @description The list of attendees */
       attendances: components['schemas']['Attendance'][]
+      /** @description The activity schedule */
       activitySchedule: components['schemas']['ActivityScheduleLite']
     }
     /** @description
@@ -3383,6 +3431,10 @@ export interface components {
        * @example Monday AM Houseblock 3
        */
       description: string
+      /**
+       * @description The NOMIS internal location for this schedule
+       * @example 98877667
+       */
       internalLocation?: components['schemas']['InternalLocation']
       /**
        * Format: int32
@@ -3390,6 +3442,7 @@ export interface components {
        * @example 10
        */
       capacity: number
+      /** @description The activity */
       activity: components['schemas']['ActivityLite']
       /**
        * Format: int32
@@ -3509,6 +3562,7 @@ export interface components {
        * @example A1234AA
        */
       prisonerNumber: string
+      /** @description The reason for attending or not */
       attendanceReason?: components['schemas']['AttendanceReason']
       /**
        * @description Free text to allow comments to be put against the attendance
@@ -3518,6 +3572,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the attendance was updated
+       * @example 2023-09-10T09:30:00
        */
       recordedTime?: string
       /**
@@ -3565,7 +3620,7 @@ export interface components {
        */
       caseNoteText?: string
       /** @description The attendance history records for this attendance */
-      attendanceHistory: components['schemas']['AttendanceHistory'][]
+      attendanceHistory?: components['schemas']['AttendanceHistory'][]
       /**
        * @description Flag to show whether this attendance is editable
        * @example true
@@ -3585,6 +3640,7 @@ export interface components {
        * @example 123456
        */
       id: number
+      /** @description The reason for attending or not */
       attendanceReason?: components['schemas']['AttendanceReason']
       /**
        * @description Free text to allow comments to be put against the attendance
@@ -3594,6 +3650,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the attendance was updated
+       * @example 2023-09-10T09:30:00
        */
       recordedTime: string
       /**
@@ -3622,7 +3679,6 @@ export interface components {
        */
       caseNoteText?: string
     }
-    /** @description The reason for attending or not */
     AttendanceReason: {
       /**
        * Format: int64
@@ -3686,10 +3742,7 @@ export interface components {
        */
       notes: string
     }
-    /**
-     * @description An internal NOMIS location for an activity to take place
-     * @example 98877667
-     */
+    /** @description An internal NOMIS location for an activity to take place */
     InternalLocation: {
       /**
        * Format: int32
@@ -4079,6 +4132,7 @@ export interface components {
       scheduleDescription: string
       /** @description Indicates whether this allocation is to an activity within the 'Not in work' category */
       isUnemployment: boolean
+      /** @description Where a prison uses pay bands to differentiate earnings, this is the pay band given to this prisoner. Will be null for unpaid activities. */
       prisonPayBand?: components['schemas']['PrisonPayBand']
       /**
        * Format: date
@@ -4095,6 +4149,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the prisoner was allocated to the activity
+       * @example 2022-09-01T09:00:00
        */
       allocatedTime?: string
       /**
@@ -4105,6 +4160,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the prisoner was deallocated from the activity
+       * @example 2022-09-02T09:00:00
        */
       deallocatedTime?: string
       /**
@@ -4116,6 +4172,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the allocation was suspended
+       * @example 2022-09-02T09:00:00
        */
       suspendedTime?: string
       /**
@@ -4134,11 +4191,16 @@ export interface components {
        * @enum {string}
        */
       status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' | 'AUTO_SUSPENDED' | 'ENDED' | 'SUSPENDED_WITH_PAY'
+      /** @description Where an allocation end date has been set, this includes the details of the planned de-allocation */
       plannedDeallocation?: components['schemas']['PlannedDeallocation']
+      /** @description This includes the details of the planned suspension for the allocation if there is one */
       plannedSuspension?: components['schemas']['PlannedSuspension']
       /** @description The days and times that the prisoner is excluded from this activity's schedule. All values must match a slot where the activity is scheduled to run, and due to sync to nomis, there can not not be exclusions defined on the same day and time slot over multiple weeks. */
       exclusions: components['schemas']['Slot'][]
-      /** @description The name of the prisoner. Included only if includePrisonerSummary = true */
+      /**
+       * @deprecated
+       * @description The name of the prisoner. Included only if includePrisonerSummary = true
+       */
       prisonerName?: string
       /**
        * @description The prisoner's first name. Included only if includePrisonerSummary = true
@@ -4162,14 +4224,12 @@ export interface components {
       prisonerPrisonCode?: string
       /** @description The cell location of the prisoner. Included only if includePrisonerSummary = true */
       cellLocation?: string
+      /** @description The earliest release date of the prisoner. Included only if includePrisonerSummary = true */
       earliestReleaseDate?: components['schemas']['EarliestReleaseDate']
       /** @description Does the prisoner have non-associations?. Included only if includePrisonerSummary = true. Null implies that non-associations could not be retrieved */
       nonAssociations?: boolean
     }
-    /**
-     * @description The code and descriptive reason why this prisoner was deallocated from the activity
-     * @example PLANNED
-     */
+    /** @description The code and descriptive reason why this prisoner was deallocated from the activity */
     DeallocationReason: {
       /**
        * @description The code for the deallocation reason
@@ -4201,10 +4261,15 @@ export interface components {
        * @example ADMIN
        */
       plannedBy: string
+      /**
+       * @description The planned reason generated by the system
+       * @example PLANNED
+       */
       plannedReason: components['schemas']['DeallocationReason']
       /**
        * Format: date-time
        * @description The system time when the de-allocation plan was made
+       * @example 2023-07-10 14:54
        */
       plannedAt: string
     }
@@ -4236,6 +4301,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The system time when the suspension plan was made
+       * @example 2023-07-10 14:54
        */
       plannedAt: string
       /** @description Is the suspension paid or not */
@@ -4861,11 +4927,13 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time on or after which to search for events
+       * @example 2022-09-01T09:01:02
        */
       startTime?: string
       /**
        * Format: date-time
        * @description The date and time on or before which to search for events
+       * @example 2022-09-01T09:01:02
        */
       endTime?: string
       /**
@@ -4929,6 +4997,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time at which this event occurred
+       * @example 2022-09-01T09:01:02
        */
       recordedTime: string
       /**
@@ -5162,6 +5231,9 @@ export interface components {
        *         attending each appointment
        *          */
       attendees: components['schemas']['AppointmentAttendeeSearchResult'][]
+      /** @description
+       *         The summary of the category of this appointment
+       *          */
       category: components['schemas']['AppointmentCategorySummary']
       /**
        * @description
@@ -5171,6 +5243,10 @@ export interface components {
        * @example Meeting with the governor
        */
       customName?: string
+      /** @description
+       *         The summary of the internal location this appointment will take place.
+       *         Will be null if in cell = true
+       *          */
       internalLocation?: components['schemas']['AppointmentLocationSummary']
       /**
        * @description
@@ -5234,6 +5310,19 @@ export interface components {
        * @example false
        */
       isExpired: boolean
+      /**
+       * Format: date-time
+       * @description The date and time this appointment was created. Will not change
+       */
+      createdTime: string
+      /**
+       * Format: date-time
+       * @description
+       *         The date and time this appointment was last changed.
+       *         Will be null if this appointment has not been altered since it was created
+       *
+       */
+      updatedTime?: string
     }
     /** @description
      *       Described on the UI as an "Attendee". A prisoner attending a specific appointment in an appointment series or set.
@@ -5250,6 +5339,7 @@ export interface components {
        * @example 123456
        */
       id: number
+      /** @description Summary of the prisoner attending the appointment */
       prisoner: components['schemas']['PrisonerSummary']
       /** @description
        *         Specifies whether the prisoner attended the specific appointment in an appointment series or set.
@@ -5287,7 +5377,15 @@ export interface components {
        * @example 123456
        */
       id: number
+      /** @description
+       *         Summary of the appointment series this appointment is part of.
+       *         Will be null if this appointment is part of a set of appointments on the same day.
+       *          */
       appointmentSeries?: components['schemas']['AppointmentSeriesSummary']
+      /** @description
+       *         Summary of the appointment set this appointment is part of
+       *         Will be null if this appointment is part of a series of an appointments on a schedule.
+       *          */
       appointmentSet?: components['schemas']['AppointmentSetSummary']
       /**
        * @description The appointment type (INDIVIDUAL or GROUP)
@@ -5316,8 +5414,14 @@ export interface components {
        *         Attendees are at the appointment level to allow for per appointment attendee changes.
        *          */
       attendees: components['schemas']['AppointmentAttendeeSummary'][]
+      /** @description
+       *         The summary of the appointment's category. Can be different to the parent appointment series if this appointment
+       *         has been edited.
+       *          */
       category: components['schemas']['AppointmentCategorySummary']
+      /** @description The tier for this appointment, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this appointment */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description
@@ -5327,6 +5431,11 @@ export interface components {
        * @example Meeting with the governor
        */
       customName?: string
+      /** @description
+       *         The summary of the internal location this appointment will take place. Can be different to the parent
+       *         appointment series if this appointment has been edited.
+       *         Will be null if in cell = true
+       *          */
       internalLocation?: components['schemas']['AppointmentLocationSummary']
       /**
        * @description
@@ -5444,6 +5553,12 @@ export interface components {
        * @example 12345
        */
       id: number
+      /** @description
+       *         Describes the schedule of the appointment series i.e. how the appointments in the series repeat. The frequency of
+       *         those appointments and how many appointments there are in total in the series.
+       *         If null, the appointment series has only one appointment. Note that the presence of this property does not mean
+       *         there is more than one appointment as a number of appointments value of one is valid.
+       *          */
       schedule?: components['schemas']['AppointmentSeriesSchedule']
       /**
        * Format: int32
@@ -5489,7 +5604,6 @@ export interface components {
        */
       scheduledAppointmentCount: number
     }
-    /** @description Summary of the prisoner attending the appointment */
     PrisonerSummary: {
       /**
        * @description The NOMIS OFFENDERS.OFFENDER_ID_DISPLAY value for mapping to a prisoner record in NOMIS
@@ -5539,9 +5653,6 @@ export interface components {
        */
       category?: string
     }
-    /** @description
-     *         The list of appointments to create
-     *          */
     AppointmentSetAppointment: {
       /**
        * @description The prisoner attending the appointment
@@ -5650,7 +5761,9 @@ export interface components {
        * @example CHAP
        */
       categoryCode: string
+      /** @description The tier for this appointment, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this appointment */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description
@@ -5777,6 +5890,11 @@ export interface components {
        * @example 10:30
        */
       endTime: string
+      /** @description
+       *         Describes the schedule of the appointment series i.e. how the appointments in the series will repeat. The frequency
+       *         of those appointments and how many appointments there will be in total in the series.
+       *         Will create a single appointment if not supplied.
+       *          */
       schedule?: components['schemas']['AppointmentSeriesSchedule']
       /**
        * @description
@@ -5879,6 +5997,7 @@ export interface components {
        * @example 2023-09-10
        */
       suspendFrom: string
+      /** @description Describes a case note to be added to the prisoner's profile as part of the suspension. */
       suspensionCaseNote?: components['schemas']['AddCaseNoteRequest']
       /**
        * @description The type of suspension. Only SUSPENDED or SUSPENDED_WITH_PAY are allowed when suspending
@@ -6142,8 +6261,11 @@ export interface components {
        * @example A basic maths course suitable for introduction to the subject
        */
       description?: string
+      /** @description The category for this activity, one of the high-level categories */
       category: components['schemas']['ActivityCategory']
+      /** @description The tier for this activity, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this activity */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description A list of eligibility rules which apply to this activity. These can be positive (include) and negative (exclude)
@@ -6174,6 +6296,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time when this activity was created
+       * @example 2022-09-01T09:01:02
        */
       createdTime: string
       /**
@@ -6184,6 +6307,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time when this activity was updated
+       * @example 2022-09-01T09:01:02
        */
       updatedTime?: string
       /**
@@ -6199,10 +6323,7 @@ export interface components {
        */
       paid: boolean
     }
-    /**
-     * @description Describes an eligibility rule as applied to an activity
-     * @example [FEMALE_ONLY,AGED_18-25]
-     */
+    /** @description Describes an eligibility rule as applied to an activity */
     ActivityEligibility: {
       /**
        * Format: int64
@@ -6210,6 +6331,7 @@ export interface components {
        * @example 123456
        */
       id: number
+      /** @description The eligiblity rule which applies */
       eligibility: components['schemas']['EligibilityRule']
     }
     /** @description Describes the pay rates and bands which apply to an activity */
@@ -6230,6 +6352,7 @@ export interface components {
        * @example Basic
        */
       incentiveLevel: string
+      /** @description The pay band for this activity pay */
       prisonPayBand: components['schemas']['PrisonPayBand']
       /**
        * Format: int32
@@ -6280,6 +6403,10 @@ export interface components {
       description: string
       /** @description Indicates the dates between which the schedule has been suspended */
       suspensions: components['schemas']['Suspension'][]
+      /**
+       * @description The NOMIS internal location for this schedule
+       * @example 98877667
+       */
       internalLocation?: components['schemas']['InternalLocation']
       /**
        * Format: int32
@@ -6287,6 +6414,7 @@ export interface components {
        * @example 10
        */
       capacity: number
+      /** @description The activity */
       activity: components['schemas']['ActivityLite']
       /**
        * Format: int32
@@ -6316,6 +6444,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time when this activity schedule was updated
+       * @example 2022-09-01T09:01:02
        */
       updatedTime?: string
       /**
@@ -6384,6 +6513,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Date and time this scheduled instance was cancelled (or null if not cancelled)
+       * @example 2022-09-29T11:20:00
        */
       cancelledTime?: string
       /**
@@ -6724,10 +6854,7 @@ export interface components {
        */
       bookings: components['schemas']['BookingCount'][]
     }
-    /**
-     * @description The count for a booking ID
-     * @example { [ "bookingId": 12345, "count": 2 ] }
-     */
+    /** @description The count for a booking ID */
     BookingCount: {
       /**
        * Format: int64
@@ -6953,11 +7080,13 @@ export interface components {
       /**
        * Format: date
        * @description Date Added
+       * @example Thu May 12 00:00:00 UTC 2005
        */
       startDate?: string
       /**
        * Format: date
        * @description Date ended
+       * @example Fri Feb 12 00:00:00 UTC 2021
        */
       endDate?: string
       /**
@@ -6971,10 +7100,6 @@ export interface components {
        */
       addressUsages?: components['schemas']['AddressUsageDto'][]
     }
-    /**
-     * @description The address usages/types
-     * @example null
-     */
     AddressUsageDto: {
       /**
        * Format: int64
@@ -7005,9 +7130,13 @@ export interface components {
     }
     /** @description Cross references prisoners details with activity requirements */
     AllocationSuitability: {
+      /** @description The prisoner's workplace risk assessment suitability */
       workplaceRiskAssessment?: components['schemas']['WRASuitability']
+      /** @description The prisoner's incentive level suitability */
       incentiveLevel?: components['schemas']['IncentiveLevelSuitability']
+      /** @description The prisoner's education suitability */
       education?: components['schemas']['EducationSuitability']
+      /** @description The prisoner's release date suitability */
       releaseDate?: components['schemas']['ReleaseDateSuitability']
       /** @description The prisoner's currently active allocations with pay rates */
       allocations: components['schemas']['AllocationPayRate'][]
@@ -7019,7 +7148,6 @@ export interface components {
       allocation: components['schemas']['Allocation']
       caseNoteText?: string
     }
-    /** @description The prisoner's education levels */
     Education: {
       /** Format: int64 */
       bookingId: number
@@ -7042,7 +7170,7 @@ export interface components {
     EducationSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example true
+       * @example True
        */
       suitable: boolean
       /** @description The prisoner's education levels */
@@ -7052,7 +7180,7 @@ export interface components {
     IncentiveLevelSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example true
+       * @example True
        */
       suitable: boolean
       /**
@@ -7065,15 +7193,12 @@ export interface components {
     ReleaseDateSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example true
+       * @example True
        */
       suitable: boolean
+      /** @description The prisoner's earliest release date */
       earliestReleaseDate: components['schemas']['EarliestReleaseDate']
     }
-    /**
-     * @description The phone number associated with the address
-     * @example null
-     */
     Telephone: {
       /**
        * @description Telephone number
@@ -7101,7 +7226,7 @@ export interface components {
     WRASuitability: {
       /**
        * @description The prisoner's suitability
-       * @example true
+       * @example True
        */
       suitable: boolean
       /**
@@ -7151,6 +7276,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Date and time the non-association was updated. In Europe/London (ISO 8601) format without timezone offset e.g. YYYY-MM-DDTHH:MM:SS.
+       * @example 2021-07-05T10:35:17
        */
       whenUpdated: string
       /**
@@ -7185,6 +7311,7 @@ export interface components {
     /** @description Describes a candidate for allocation to an activity */
     ActivityCandidate: {
       /**
+       * @deprecated
        * @description The candidate's name
        * @example Joe Bloggs
        */
@@ -7211,6 +7338,7 @@ export interface components {
       cellLocation?: string
       /** @description Any activities the candidate is currently allocated to (excluding ended) */
       otherAllocations: components['schemas']['Allocation'][]
+      /** @description The candidate's earliest release date */
       earliestReleaseDate: components['schemas']['EarliestReleaseDate']
       /** @description Does the prisoner have non-associations? Null implies that non-associations could not be retrieved */
       nonAssociations?: boolean
@@ -7377,12 +7505,14 @@ export interface components {
        * @example false
        */
       offWing: boolean
+      /** @description The NOMIS internal location for this schedule */
       internalLocation?: components['schemas']['InternalLocation']
       /**
        * @description Flag to indicate if the scheduled instance has been cancelled
        * @example false
        */
       cancelled: boolean
+      /** @description Attendance summary details for a scheduled instance */
       attendanceSummary: components['schemas']['AttendanceSummaryDetails']
       /**
        * @description Flag to indicate if attendance is required
@@ -7398,7 +7528,7 @@ export interface components {
        */
       prisonCode: string
       /**
-       * @description Flag to indicate if this prison is presently rolled out for activities
+       * @description Flag to indicate if activities are enabled
        * @example true
        */
       activitiesRolledOut: boolean
@@ -7409,7 +7539,7 @@ export interface components {
        */
       activitiesRolloutDate?: string
       /**
-       * @description Flag to indicate if this prison is presently rolled out for appointments
+       * @description Flag to indicate if appointments are enabled
        * @example true
        */
       appointmentsRolledOut: boolean
@@ -7424,6 +7554,11 @@ export interface components {
        * @description max days to expire events based on prisoner movement, default is 21
        */
       maxDaysToExpiry: number
+      /**
+       * @description Flag to indicate if this prison is presently rolled out and live to the prison
+       * @example true
+       */
+      prisonLive: boolean
     }
     DlqMessage: {
       body: {
@@ -7451,6 +7586,7 @@ export interface components {
        * @example Maths level 1
        */
       activityName?: string
+      /** @description The category for this activity, one of the high-level categories */
       category: components['schemas']['ActivityCategory']
       /**
        * Format: int32
@@ -7470,6 +7606,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time when this activity was created
+       * @example 2022-09-01T09:01:02
        */
       createdTime: string
       /**
@@ -7483,6 +7620,7 @@ export interface components {
      *       A count summary of appointments based on a category
      *        */
     AppointmentCountSummary: {
+      /** @description The appointment category */
       appointmentCategorySummary: components['schemas']['AppointmentCategorySummary']
       /**
        * Format: int64
@@ -7495,6 +7633,7 @@ export interface components {
       /**
        * Format: int64
        * @description Location identifier.
+       * @example null
        */
       locationId: number
       /**
@@ -7520,11 +7659,13 @@ export interface components {
       /**
        * Format: int64
        * @description Identifier of this location's parent location.
+       * @example null
        */
       parentLocationId?: number
       /**
        * Format: int32
        * @description Current occupancy of location.
+       * @example null
        */
       currentOccupancy?: number
       /**
@@ -7535,6 +7676,7 @@ export interface components {
       /**
        * Format: int32
        * @description Operational capacity of the location.
+       * @example null
        */
       operationalCapacity?: number
       /**
@@ -7624,6 +7766,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time that this event occurred
+       * @example 2022-10-01T23:11:01
        */
       eventTime?: string
       /**
@@ -7650,6 +7793,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time that this event was acknowledged.
+       * @example 2022-10-01T23:11:01
        */
       acknowledgedTime?: string
       /**
@@ -7772,6 +7916,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The date and time the attendance was updated
+       * @example 2023-09-10T09:30:00
        */
       recordedTime?: string
       /**
@@ -7882,6 +8027,7 @@ export interface components {
        *         specified, the name format will be "Custom name (Category description)"
        *          */
       appointmentName: string
+      /** @description The summary of the internal location this appointment will take place. Will be null if in cell = true */
       internalLocation?: components['schemas']['AppointmentLocationSummary']
       /**
        * @description Flag to indicate if the location of the appointment is in cell
@@ -7968,6 +8114,9 @@ export interface components {
        *         specified, the name format will be "Custom name (Category description)"
        *          */
       appointmentName: string
+      /** @description
+       *         The summary of the category used to create the set of appointment series
+       *          */
       category: components['schemas']['AppointmentCategorySummary']
       /**
        * @description
@@ -7977,6 +8126,9 @@ export interface components {
        * @example Meeting with the governor
        */
       customName?: string
+      /** @description
+       *         The summary of the internal location of the appointment series in the set. Will be null if in cell = true
+       *          */
       internalLocation?: components['schemas']['AppointmentLocationSummary']
       /**
        * @description
@@ -8051,8 +8203,13 @@ export interface components {
        *         specified, the name format will be "Custom name (Category description)"
        *          */
       appointmentName: string
+      /** @description
+       *         The summary of the appointment series' category
+       *          */
       category: components['schemas']['AppointmentCategorySummary']
+      /** @description The tier for this appointment, as defined by the Future Prison Regime team */
       tier?: components['schemas']['EventTier']
+      /** @description The organiser of this appointment */
       organiser?: components['schemas']['EventOrganiser']
       /**
        * @description
@@ -8062,6 +8219,9 @@ export interface components {
        * @example Meeting with the governor
        */
       customName?: string
+      /** @description
+       *         The summary of the internal location this appointment series will take place. Will be null if in cell = true
+       *          */
       internalLocation?: components['schemas']['AppointmentLocationSummary']
       /**
        * @description
@@ -8088,6 +8248,12 @@ export interface components {
        * @example 10:30
        */
       endTime?: string
+      /** @description
+       *         Describes the schedule of the appointment series i.e. how the appointments in the series repeat. The frequency of
+       *         those appointments and how many appointments there are in total in the series.
+       *         If null, the appointment series has only one appointment. Note that the presence of this property does not mean
+       *         there is more than one appointment as a number of appointments value of one is valid.
+       *          */
       schedule?: components['schemas']['AppointmentSeriesSchedule']
       /**
        * @description
@@ -9422,6 +9588,29 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  triggerPurposefulActivityReportsJob: {
+    parameters: {
+      query?: {
+        /** @description Report is calculated for the week up to the prior saturday. increase offset to generate reports for weeks prior to that */
+        weekOffset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/plain': string
         }
       }
     }

@@ -1,10 +1,23 @@
 import _ from 'lodash'
+import {
+  isAfter,
+  isBefore,
+  isToday,
+  isTomorrow,
+  isYesterday,
+  parseISO,
+  set,
+  startOfToday,
+  startOfYesterday,
+  subHours,
+} from 'date-fns'
 import AppointmentService, { Appointment } from './appointmentService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
+import { parseDate } from '../utils/utils'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -77,19 +90,18 @@ export default class ScheduleService {
 
     // TODO: Filter scheduleItems by user defined filters here
 
-    const groupedAppointments = _.chain(scheduleItems)
-      .filter(item => item.status === showStatus)
+    const displayItems = scheduleItems.filter(item => item.status === showStatus)
+
+    const groupedAppointments = _.chain(displayItems)
       .groupBy(item => item.videoBookingId ?? item.appointmentId + item.prisoner.prisonerNumber)
       .sortBy(groups => groups[0].startTime)
       .value()
 
     return {
-      appointmentsListed: scheduleItems.filter(item => item.status === showStatus).length,
-      numberOfPrisoners: _.uniq(scheduleItems.map(item => item.prisoner.prisonerNumber)).length,
+      appointmentsListed: displayItems.length,
+      numberOfPrisoners: _.uniq(displayItems.map(item => item.prisoner.prisonerNumber)).length,
       cancelledAppointments: scheduleItems.filter(item => item.status === 'CANCELLED').length,
-      missingVideoLinks: scheduleItems.filter(
-        item => item.status === showStatus && item.videoLinkRequired && !item.videoLink,
-      ).length,
+      missingVideoLinks: displayItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
       appointmentGroups: Object.values(groupedAppointments),
     }
   }
@@ -101,6 +113,39 @@ export default class ScheduleService {
     user: Express.User,
   ): Promise<ScheduleItem> {
     const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, user)
+    const createdTime = bvlsAppointment?.createdTime || scheduledAppointment.createdTime
+    const updatedTime = bvlsAppointment?.updatedTime || scheduledAppointment.updatedTime
+    const videoLinkRequired = bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN'
+
+    const buildTags = () => {
+      const appointmentDate = parseDate(scheduledAppointment.date)
+      const createdTimeParsed = createdTime && parseISO(createdTime)
+      const updatedTimeParsed = updatedTime && parseISO(updatedTime)
+
+      const isInRange = (time: Date, start: Date, end: Date) => isAfter(time, start) && isBefore(new Date(), end)
+
+      const isNew =
+        (isToday(appointmentDate) && isToday(createdTimeParsed)) ||
+        (isToday(appointmentDate) &&
+          isYesterday(createdTimeParsed) &&
+          isInRange(createdTimeParsed, set(startOfYesterday(), { hours: 15 }), set(startOfToday(), { hours: 10 }))) ||
+        (isTomorrow(appointmentDate) && isAfter(createdTimeParsed, set(startOfToday(), { hours: 15 })))
+
+      const isUpdated =
+        (isToday(appointmentDate) &&
+          isToday(updatedTimeParsed) &&
+          isAfter(updatedTimeParsed, subHours(new Date(), 1))) ||
+        (isToday(appointmentDate) &&
+          isYesterday(updatedTimeParsed) &&
+          isInRange(updatedTimeParsed, set(startOfYesterday(), { hours: 15 }), set(startOfToday(), { hours: 10 }))) ||
+        (isTomorrow(appointmentDate) && isAfter(updatedTimeParsed, set(startOfToday(), { hours: 15 })))
+
+      return [
+        isNew ? 'NEW' : undefined,
+        isUpdated ? 'UPDATED' : undefined,
+        videoLinkRequired && !bvlsAppointment?.videoUrl ? 'LINK_MISSING' : undefined,
+      ].filter(Boolean)
+    }
 
     return {
       prisoner: this.getPrisoner(scheduledAppointment, prisoners, user),
@@ -111,15 +156,15 @@ export default class ScheduleService {
       appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
-      videoLinkRequired: bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN',
-      videoLink: bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.videoUrl,
+      videoLinkRequired,
+      videoLink: videoLinkRequired && bvlsAppointment?.videoUrl,
       appointmentType:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
       externalAgencyDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
-      tags: [],
+      tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
     }
   }

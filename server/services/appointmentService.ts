@@ -5,7 +5,12 @@ import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointment
 import { Appointment as PrisonApiAppointment } from '../@types/prisonApi/types'
 import config from '../config'
 
-export type Appointment = PrisonApiAppointment & { status: 'ACTIVE' | 'CANCELLED'; viewAppointmentLink: string }
+export type Appointment = PrisonApiAppointment & {
+  status: 'ACTIVE' | 'CANCELLED'
+  viewAppointmentLink: string
+  createdTime?: string
+  updatedTime?: string
+}
 
 export default class AppointmentService {
   constructor(
@@ -38,6 +43,7 @@ export default class AppointmentService {
         apt.attendees.map(a => ({
           id: apt.appointmentId,
           offenderNo: a.prisonerNumber,
+          date: apt.startDate,
           startTime: apt.startTime,
           endTime: apt.endTime,
           appointmentTypeCode: apt.category.code,
@@ -46,6 +52,8 @@ export default class AppointmentService {
           locationDescription: apt.internalLocation?.description,
           status: apt.isCancelled ? 'CANCELLED' : 'ACTIVE',
           viewAppointmentLink: `${config.activitiesAndAppointmentsUrl}/appointments/${apt.appointmentId}`,
+          createdTime: apt.createdTime,
+          updatedTime: apt.updatedTime,
         })),
       ),
     )

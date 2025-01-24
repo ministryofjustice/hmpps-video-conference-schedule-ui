@@ -1,3 +1,5 @@
+import sinon from 'sinon'
+import { formatDate, set, startOfToday, startOfTomorrow, startOfYesterday, subMinutes } from 'date-fns'
 import createUser from '../testutils/createUser'
 import AppointmentService, { Appointment } from './appointmentService'
 import ScheduleService from './scheduleService'
@@ -42,6 +44,7 @@ describe('Schedule service', () => {
     appointments = [
       {
         id: 1,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '07:45',
         endTime: '08:00',
@@ -53,6 +56,7 @@ describe('Schedule service', () => {
       },
       {
         id: 2,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '08:00',
         endTime: '09:00',
@@ -64,6 +68,7 @@ describe('Schedule service', () => {
       },
       {
         id: 3,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '09:00',
         endTime: '09:15',
@@ -75,6 +80,7 @@ describe('Schedule service', () => {
       },
       {
         id: 4,
+        date: '2024-12-12',
         offenderNo: 'ZXY321',
         startTime: '08:30',
         endTime: '09:00',
@@ -86,6 +92,7 @@ describe('Schedule service', () => {
       },
       {
         id: 4,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '08:30',
         endTime: '09:00',
@@ -97,6 +104,7 @@ describe('Schedule service', () => {
       },
       {
         id: 5,
+        date: '2024-12-12',
         offenderNo: 'ZXY321',
         startTime: '11:00',
         endTime: '12:00',
@@ -108,6 +116,7 @@ describe('Schedule service', () => {
       },
       {
         id: 6,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '16:30',
         endTime: '17:30',
@@ -119,6 +128,7 @@ describe('Schedule service', () => {
       },
       {
         id: 7,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         startTime: '16:30',
         endTime: '17:30',
@@ -252,7 +262,7 @@ describe('Schedule service', () => {
               startTime: '08:00',
               endTime: '09:00',
               status: 'ACTIVE',
-              tags: [],
+              tags: ['LINK_MISSING'],
               videoBookingId: 1,
               videoLinkRequired: true,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
@@ -427,7 +437,7 @@ describe('Schedule service', () => {
           ],
         ],
         appointmentsListed: 1,
-        numberOfPrisoners: 2,
+        numberOfPrisoners: 1,
         cancelledAppointments: 1,
         missingVideoLinks: 0,
       })
@@ -440,6 +450,317 @@ describe('Schedule service', () => {
       expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
       expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
       expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+    })
+
+    describe('tags', () => {
+      let clock: sinon.SinonFakeTimers
+
+      afterEach(() => {
+        if (clock) {
+          clock.restore()
+        }
+      })
+
+      it("should add the NEW tag to appointments created today, if viewing today's appointments", async () => {
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: new Date().toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+        bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
+      })
+
+      it("should add the NEW tag to appointments created yesterday after 3pm, if viewing today's appointments and now is before 10pm", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
+      })
+
+      it("should not add the NEW tag to appointments created yesterday after 3pm, if viewing today's appointments and now is after 10pm", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T10:00:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it("should not add the NEW tag to appointments created yesterday before 3pm, if viewing today's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfYesterday(), { hours: 14, seconds: 59 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it("should add the NEW tag to appointments created today after 3pm, if viewing tomorrow's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfToday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
+      })
+
+      it("should not add the NEW tag to appointments created today before 3pm, if viewing tomorrow's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfToday(), { hours: 14, seconds: 59 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it("should add the UPDATED tag to appointments updated today up to an hour ago, if viewing today's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: subMinutes(new Date(), 59).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
+      })
+
+      it("should not add the UPDATED tag to appointments updated today more than an hour ago, if viewing today's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: subMinutes(new Date(), 61).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it("should add the UPDATED tag to appointments updated after 3pm yesterday, if viewing today's appointments and now is before 10am", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
+      })
+
+      it("should not add the UPDATED tag to appointments updated after 3pm yesterday, if viewing today's appointments and now is after 10am", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T10:01:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it("should not add the UPDATED tag to appointments updated before 3pm yesterday, if viewing today's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: set(startOfYesterday(), { hours: 14, seconds: 59 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
     })
   })
 })

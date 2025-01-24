@@ -31,6 +31,11 @@ export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   return format(richDate, fmt)
 }
 
+export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
+  if (!date) return null
+  return parse(date, fromFormat, new Date())
+}
+
 export const parseDatePickerDate = (datePickerDate: string): Date => {
   if (!datePickerDate) return null
 
