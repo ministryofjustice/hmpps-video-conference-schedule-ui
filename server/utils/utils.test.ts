@@ -1,5 +1,5 @@
 import { isValid, parse } from 'date-fns'
-import { convertToTitleCase, initialiseName, simpleDateToDate } from './utils'
+import { convertToTitleCase, initialiseName, parseDatePickerDate } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -30,17 +30,36 @@ describe('initialise name', () => {
   })
 })
 
-describe('simpleDateToDate', () => {
-  it('has all empty fields', () => {
-    expect(simpleDateToDate({ day: '', month: '', year: '' })).toEqual(null)
+describe('parseDatePickerDate', () => {
+  it('is not a date', () => {
+    expect(isValid(parseDatePickerDate('bad string'))).toBeFalsy()
   })
 
-  it('is invalid', () => {
-    expect(isValid(simpleDateToDate({ day: '31', month: '02', year: '2022' }))).toBeFalsy()
+  it('is invalid date', () => {
+    expect(isValid(parseDatePickerDate('31/02/2022'))).toBeFalsy()
   })
 
-  it('is valid', () => {
-    const date = simpleDateToDate({ day: '20', month: '03', year: '2022' })
-    expect(date).toEqual(parse('2022-03-20', 'yyyy-MM-dd', new Date()))
+  it.each([
+    { datePickerDate: '23-10-2023', separator: '-' },
+    { datePickerDate: '23/10/2023', separator: '/' },
+    { datePickerDate: '23,10,2023', separator: ',' },
+    { datePickerDate: '23.10.2023', separator: '.' },
+    { datePickerDate: '23 10 2023', separator: ' ' },
+  ])("parses date string when separator is '$separator'", async ({ datePickerDate }) => {
+    const date = parseDatePickerDate(datePickerDate)
+
+    expect(date).toEqual(parse('2023-10-23', 'yyyy-MM-dd', new Date()))
+  })
+
+  it('parses one digit day and month and two digit year', () => {
+    const date = parseDatePickerDate('2/9/23')
+
+    expect(date).toEqual(parse('2023-09-02', 'yyyy-MM-dd', new Date()))
+  })
+
+  it('parses three digit year', () => {
+    const date = parseDatePickerDate('02/09/223')
+
+    expect(date).toEqual(parse('0223-09-02', 'yyyy-MM-dd', new Date()))
   })
 })

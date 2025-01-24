@@ -1,5 +1,4 @@
-import { format, isValid, parse, parseISO } from 'date-fns'
-import { enGB } from 'date-fns/locale'
+import { format, isValid, parse, parseISO, startOfToday } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -32,7 +31,20 @@ export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   return format(richDate, fmt)
 }
 
-export const simpleDateToDate = (date: { day: string; month: string; year: string }): Date =>
-  date.day || date.month || date.year
-    ? parse(`${date.day}/${date.month}/${date.year}`, 'P', new Date(), { locale: enGB })
-    : null
+export const parseDatePickerDate = (datePickerDate: string): Date => {
+  if (!datePickerDate) return null
+
+  const dateFormatPattern = /(\d{1,2})([-/,. ])(\d{1,2})[-/,. ](\d{2,4})/
+
+  if (!dateFormatPattern.test(datePickerDate)) return new Date(NaN)
+
+  const dateMatches = datePickerDate.match(dateFormatPattern)
+
+  const separator = dateMatches[2]
+  const year = dateMatches[4]
+
+  const date = parse(datePickerDate, `dd${separator}MM${separator}${'y'.repeat(year.length)}`, startOfToday())
+  if (!isValid(date)) return new Date(NaN)
+
+  return date
+}

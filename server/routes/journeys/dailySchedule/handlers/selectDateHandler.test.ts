@@ -44,13 +44,13 @@ describe('POST', () => {
   it('should validate an empty form', () => {
     return request(app)
       .post('/select-date')
-      .send({ date: {} })
+      .send({ date: '' })
       .expect(() => {
         expectErrorMessages([
           {
             fieldId: 'date',
             href: '#date',
-            text: 'Enter a valid date',
+            text: 'Enter a date',
           },
         ])
       })
@@ -59,7 +59,7 @@ describe('POST', () => {
   it('should validate an invalid date', () => {
     return request(app)
       .post('/select-date')
-      .send({ date: { day: 31, month: 2, year: 2024 } })
+      .send({ date: 'invalid date' })
       .expect(() => {
         expectErrorMessages([
           {
@@ -74,7 +74,7 @@ describe('POST', () => {
   it('should redirect to the daily schedule page with the input date', () => {
     return request(app)
       .post('/select-date')
-      .send({ date: { day: 12, month: 12, year: 2024 } })
+      .send({ date: '12/12/2024' })
       .expect(302)
       .expect('location', '/?date=2024-12-12')
   })
