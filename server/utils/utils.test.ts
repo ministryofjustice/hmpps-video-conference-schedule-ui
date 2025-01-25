@@ -1,5 +1,5 @@
 import { isValid, parse } from 'date-fns'
-import { convertToTitleCase, initialiseName, parseDatePickerDate } from './utils'
+import { convertToTitleCase, initialiseName, parseDate, parseDatePickerDate } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -27,6 +27,15 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('parseDate', () => {
+  it.each([
+    ['2022-02-17', undefined, new Date(2022, 1, 17)],
+    ['17/02/2022', 'dd/MM/yyyy', new Date(2022, 1, 17)],
+  ])('%s parseDate(%s, %s)', (date: string, fmt: string, expected: Date) => {
+    expect(parseDate(date, fmt)).toEqual(expected)
   })
 })
 

@@ -106,6 +106,10 @@
                             classes: classes
                         },
                         {
+                            html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
+                            classes: classes
+                        },
+                        {
                             html: '
                                     <a class="govuk-link govuk-link--no-visited-state" href="' + scheduleItem.viewAppointmentLink + '" rel="noreferrer noopener" target="_blank">
                                         View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
@@ -156,6 +160,9 @@
                             text: "Video link"
                         },
                         {
+                            text: "Status"
+                        },
+                        {
                             text: "Action"
                         }
                     ],
@@ -178,7 +185,7 @@
             {% if params.visuallyHiddenText %}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>{% endif %}
         </span>
 
-        {% if params.link %}
+        {% if params.link and params.number > 0 %}
             <p class="govuk-!-margin-bottom-0">
                 <a href="{{ params.link.href }}" data-qa="{{ params.link.dataQa }}" class="govuk-link govuk-link--no-visited-state">
                     {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>
@@ -213,3 +220,31 @@
         <div class="govuk-body-s govuk-!-margin-0">{{ params.cellLocation }}</div>
     </div>
 {% endmacro %}
+
+{% macro bookingStatuses(tags) %}
+    <div class="govuk-tag-group">
+        {% for tag in tags %}
+            {% if tag == 'NEW' %}
+                {{ govukTag({
+                    text: "New",
+                    classes: "govuk-tag--status govuk-tag--status__new-booking"
+                }) }}
+            {% endif %}
+
+            {% if tag == 'UPDATED' %}
+                {{ govukTag({
+                    text: "Updated",
+                    classes: "govuk-tag--status govuk-tag--status__updated-booking"
+                }) }}
+            {% endif %}
+
+            {% if tag == 'LINK_MISSING' %}
+                {{ govukTag({
+                    text: "Link missing",
+                    classes: "govuk-tag--status govuk-tag--status__link-missing"
+                }) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}
+

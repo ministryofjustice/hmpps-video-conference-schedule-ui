@@ -25,6 +25,7 @@ describe('Appointment service', () => {
     prisonApiAppointments = [
       {
         id: 1,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         appointmentTypeCode: 'VLBP',
         startTime: '2024-12-12T09:00:00Z',
@@ -32,6 +33,7 @@ describe('Appointment service', () => {
       },
       {
         id: 2,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         appointmentTypeCode: 'DVLBW',
         startTime: '2024-12-12T10:00:00Z',
@@ -39,6 +41,7 @@ describe('Appointment service', () => {
       },
       {
         id: 3,
+        date: '2024-12-12',
         offenderNo: 'ABC123',
         appointmentTypeCode: 'CHAP',
         startTime: '2024-12-12T11:00:00Z',
@@ -46,6 +49,7 @@ describe('Appointment service', () => {
       },
       {
         id: 4,
+        date: '2024-12-12',
         offenderNo: 'ZYX321',
         appointmentTypeCode: 'VLB',
         startTime: '2024-12-12T08:00:00Z',
@@ -58,29 +62,38 @@ describe('Appointment service', () => {
         appointmentId: 1,
         attendees: [{ prisonerNumber: 'ABC123' }, { prisonerNumber: 'ZXY321' }],
         category: { code: 'VLBP' },
+        startDate: '2024-12-12',
         startTime: '09:00',
         endTime: '10:00',
+        createdTime: '2024-12-21T10:43:00Z',
       },
       {
         appointmentId: 2,
         attendees: [{ prisonerNumber: 'ABC123' }, { prisonerNumber: 'ZXY321' }],
         category: { code: 'DVLBW' },
+        startDate: '2024-12-12',
         startTime: '10:00',
         endTime: '11:00',
+        createdTime: '2024-12-21T12:30:00Z',
       },
       {
         appointmentId: 3,
         attendees: [{ prisonerNumber: 'ABC123' }, { prisonerNumber: 'ZXY321' }],
         category: { code: 'CHAP' },
+        startDate: '2024-12-12',
         startTime: '11:00',
         endTime: '12:00',
+        createdTime: '2024-12-22T13:24:00Z',
       },
       {
         appointmentId: 4,
         attendees: [{ prisonerNumber: 'ABC123' }, { prisonerNumber: 'ZXY321' }],
         category: { code: 'VLB' },
+        startDate: '2024-12-12',
         startTime: '08:00',
         endTime: '09:00',
+        createdTime: '2024-12-22T17:54:00Z',
+        updatedTime: '2024-12-22T18:01:00Z',
       },
     ] as ActivitiesAndAppointmentsApiAppointment[]
   })
@@ -95,6 +108,7 @@ describe('Appointment service', () => {
       expect(result).toEqual([
         {
           id: 4,
+          date: '2024-12-12',
           offenderNo: 'ZYX321',
           appointmentTypeCode: 'VLB',
           startTime: '08:00',
@@ -104,6 +118,7 @@ describe('Appointment service', () => {
         },
         {
           id: 1,
+          date: '2024-12-12',
           offenderNo: 'ABC123',
           appointmentTypeCode: 'VLBP',
           startTime: '09:00',
@@ -123,24 +138,32 @@ describe('Appointment service', () => {
 
       expect(result).toEqual([
         {
+          createdTime: '2024-12-22T17:54:00Z',
+          date: '2024-12-12',
           id: 4,
           offenderNo: 'ABC123',
           appointmentTypeCode: 'VLB',
           startTime: '08:00',
           endTime: '09:00',
           status: 'ACTIVE',
+          updatedTime: '2024-12-22T18:01:00Z',
           viewAppointmentLink: 'http://localhost:3000/appointments/4',
         },
         {
+          createdTime: '2024-12-22T17:54:00Z',
+          date: '2024-12-12',
           id: 4,
           offenderNo: 'ZXY321',
           appointmentTypeCode: 'VLB',
           startTime: '08:00',
           endTime: '09:00',
           status: 'ACTIVE',
+          updatedTime: '2024-12-22T18:01:00Z',
           viewAppointmentLink: 'http://localhost:3000/appointments/4',
         },
         {
+          createdTime: '2024-12-21T10:43:00Z',
+          date: '2024-12-12',
           id: 1,
           offenderNo: 'ABC123',
           appointmentTypeCode: 'VLBP',
@@ -150,6 +173,8 @@ describe('Appointment service', () => {
           viewAppointmentLink: 'http://localhost:3000/appointments/1',
         },
         {
+          createdTime: '2024-12-21T10:43:00Z',
+          date: '2024-12-12',
           id: 1,
           offenderNo: 'ZXY321',
           appointmentTypeCode: 'VLBP',

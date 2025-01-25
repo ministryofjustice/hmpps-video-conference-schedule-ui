@@ -2,13 +2,36 @@
   vertical-align: middle;
   max-width: 200px;
   text-transform: uppercase;
+
+  &--alerts {
+    border: 3px solid #4C2C92;
+    color: #4C2C92;
+    background-color: white;
+    margin-bottom: 0;
+    font-size: .875rem;
+    line-height: 1;
+  }
+
+  &--status {
+    text-transform: none;
+
+    &__link-missing {
+      @extend .govuk-tag--red
+    }
+
+    &__new-booking {
+      @extend .govuk-tag--green
+    }
+
+    &__updated-booking {
+      @extend .govuk-tag--purple
+    }
+  }
 }
 
-.govuk-tag--alerts {
-  border: 3px solid #4C2C92;
-  color: #4C2C92;
-  background-color: white;
-  margin-bottom: 0;
-  font-size: .875rem;
-  line-height: 1;
+.govuk-tag-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
