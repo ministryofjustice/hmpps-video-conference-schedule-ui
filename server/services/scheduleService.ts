@@ -185,7 +185,7 @@ export default class ScheduleService {
   private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
-    return scheduledAppointment.appointmentTypeDescription.replace('Video Link - ', '')
+    return scheduledAppointment.appointmentTypeDescription.replace(/^Video Link - /, '')
   }
 
   private async matchBvlsAppointmentTo(
