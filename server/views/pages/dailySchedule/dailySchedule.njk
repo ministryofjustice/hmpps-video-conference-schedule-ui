@@ -5,7 +5,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% set pageTitle = "Video daily schedule: " + prisonName %}
+{% set pageTitle = ("Video daily schedule: " + prisonName) if status != 'CANCELLED' else ("Cancelled video appointments: " + prisonName) %}
 
 {% if status == 'CANCELLED' %}
     {% set backLinkHref = '/?date=' + date | formatDate('yyyy-MM-dd') %}
@@ -104,19 +104,27 @@
                         {
                             html: scheduleItem.videoLink or 'None entered' if scheduleItem.videoLinkRequired else (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             classes: classes
-                        },
+                        } if status != 'CANCELLED',
                         {
                             html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
-                        },
+                        } if status != 'CANCELLED',
+                        {
+                            text: scheduleItem.cancelledAt if (appointmentGroup.length == 1 or loop.index == 2),
+                            classes: classes
+                        } if status == 'CANCELLED',
+                        {
+                            html: scheduleItem.cancelledBy if (appointmentGroup.length == 1 or loop.index == 2),
+                            classes: classes
+                        } if status == 'CANCELLED',
                         {
                             html: '
                                     <a class="govuk-link govuk-link--no-visited-state" href="' + scheduleItem.viewAppointmentLink + '" rel="noreferrer noopener" target="_blank">
-                                        View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                        View' + (' or edit' if not isPastDay and status != 'CANCELLED') + '<span class="govuk-visually-hidden">(opens in new tab)</span>
                                     </a>
                                   ' if loop.index == 1,
                             classes: classes
-                        }
+                        } if not (status == 'CANCELLED' and not appointmentsRolledOut)
                     ]), rows) %}
                 {% endfor %}
             {% endfor %}
@@ -158,20 +166,28 @@
                         },
                         {
                             text: "Video link"
-                        },
+                        } if status != 'CANCELLED',
                         {
                             text: "Status"
-                        },
+                        } if status != 'CANCELLED',
+                        {
+                            text: "Cancelled at"
+                        } if status == 'CANCELLED',
+                        {
+                            text: "Cancelled by"
+                        } if status == 'CANCELLED',
                         {
                             text: "Action"
-                        }
+                        } if not (status == 'CANCELLED' and not appointmentsRolledOut)
                     ],
                     rows: rows
                 }) }}
             {% else %}
-                <p class="govuk-body">
-                    There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}
-                </p>
+                {% if status != 'CANCELLED' %}
+                    <p class="govuk-body">There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}</p>
+                {% else %}
+                    <p class="govuk-body">There are no cancelled video appointments on {{ date | formatDate('iiii d MMMM yyyy') }}</p>
+                {% endif %}
             {% endif %}
         </div>
     </div>

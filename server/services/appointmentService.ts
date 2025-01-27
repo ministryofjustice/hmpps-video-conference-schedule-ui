@@ -54,6 +54,8 @@ export default class AppointmentService {
           viewAppointmentLink: `${config.activitiesAndAppointmentsUrl}/appointments/${apt.appointmentId}`,
           createdTime: apt.createdTime,
           updatedTime: apt.updatedTime,
+          cancelledTime: apt.cancelledTime,
+          cancelledBy: apt.cancelledBy,
         })),
       ),
     )
