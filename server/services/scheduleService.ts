@@ -50,6 +50,8 @@ type ScheduleItem = {
   appointmentType?: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
+  cancelledTime?: string
+  cancelledBy?: string
 }
 
 export type DailySchedule = {
@@ -166,6 +168,8 @@ export default class ScheduleService {
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
       tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
+      cancelledTime: scheduledAppointment.cancelledTime,
+      cancelledBy: scheduledAppointment.cancelledBy,
     }
   }
 
@@ -185,7 +189,7 @@ export default class ScheduleService {
   private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
-    return scheduledAppointment.appointmentTypeDescription.replace(/^Video Link - /, '')
+    return scheduledAppointment.appointmentTypeDescription.replaceAll(/Video Link - /g, '')
   }
 
   private async matchBvlsAppointmentTo(

@@ -10,6 +10,8 @@ export type Appointment = PrisonApiAppointment & {
   viewAppointmentLink: string
   createdTime?: string
   updatedTime?: string
+  cancelledTime?: string
+  cancelledBy?: string
 }
 
 export default class AppointmentService {
@@ -47,7 +49,9 @@ export default class AppointmentService {
           startTime: apt.startTime,
           endTime: apt.endTime,
           appointmentTypeCode: apt.category.code,
-          appointmentTypeDescription: apt.customName || apt.category.description,
+          appointmentTypeDescription: apt.customName
+            ? `${apt.customName} (${apt.category.description})`
+            : apt.category.description,
           locationId: apt.internalLocation?.id,
           locationDescription: apt.internalLocation?.description || (apt.inCell ? 'In cell' : undefined),
           status: apt.isCancelled ? 'CANCELLED' : 'ACTIVE',

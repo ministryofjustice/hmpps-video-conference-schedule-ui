@@ -110,7 +110,7 @@
                             classes: classes
                         } if status != 'CANCELLED',
                         {
-                            text: scheduleItem.cancelledAt if (appointmentGroup.length == 1 or loop.index == 2),
+                            text: (scheduleItem.cancelledTime | formatDate("d MMM yyyy 'at' hh:mmaaaaa'm'")) if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
                         } if status == 'CANCELLED',
                         {

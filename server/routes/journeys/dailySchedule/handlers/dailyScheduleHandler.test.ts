@@ -88,7 +88,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
       })
   })
