@@ -27,6 +27,7 @@ export const services = () => {
     nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
+    manageUsersApiClient,
   )
 
   return {

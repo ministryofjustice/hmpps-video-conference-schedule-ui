@@ -114,7 +114,7 @@
                             classes: classes
                         } if status == 'CANCELLED',
                         {
-                            html: scheduleItem.cancelledBy if (appointmentGroup.length == 1 or loop.index == 2),
+                            html: (scheduleItem.cancelledBy | initialiseName) if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
                         } if status == 'CANCELLED',
                         {

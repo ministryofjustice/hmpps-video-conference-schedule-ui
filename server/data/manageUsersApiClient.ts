@@ -1,5 +1,5 @@
 import config from '../config'
-import RestClient, { TokenType } from './restClient'
+import RestClient from './restClient'
 import { User } from '../@types/manageUsersApi/types'
 
 export default class ManageUsersApiClient extends RestClient {
@@ -8,6 +8,10 @@ export default class ManageUsersApiClient extends RestClient {
   }
 
   public getUser(user: Express.User): Promise<User> {
-    return this.get({ path: `/users/${user.username}` }, user, TokenType.USER_TOKEN)
+    return this.getUserByUsername(user.username, user)
+  }
+
+  public getUserByUsername(username: string, user: Express.User): Promise<User> {
+    return this.get({ path: `/users/${username}` }, user)
   }
 }

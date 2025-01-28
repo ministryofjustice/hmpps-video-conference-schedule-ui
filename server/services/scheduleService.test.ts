@@ -9,11 +9,14 @@ import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { LocationMapping } from '../@types/nomisMappingApi/types'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
+import ManageUsersApiClient from '../data/manageUsersApiClient'
+import { User } from '../@types/manageUsersApi/types'
 
 jest.mock('../services/appointmentService')
 jest.mock('../data/nomisMappingApiClient')
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerSearchApiClient')
+jest.mock('../data/manageUsersApiClient')
 
 const user = createUser([])
 
@@ -22,6 +25,7 @@ describe('Schedule service', () => {
   let nomisMappingApiClient: jest.Mocked<NomisMappingApiClient>
   let bookAVideoLinkApiClient: jest.Mocked<BookAVideoLinkApiClient>
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
+  let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
 
   let scheduleService: ScheduleService
 
@@ -34,11 +38,13 @@ describe('Schedule service', () => {
     nomisMappingApiClient = new NomisMappingApiClient() as jest.Mocked<NomisMappingApiClient>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
+    manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
     scheduleService = new ScheduleService(
       appointmentService,
       nomisMappingApiClient,
       bookAVideoLinkApiClient,
       prisonerSearchApiClient,
+      manageUsersApiClient,
     )
 
     appointments = [
@@ -125,6 +131,8 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Legal Appointment',
         status: 'CANCELLED',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
+        cancelledBy: 'jbloggs',
+        cancelledTime: '2024-12-14T11:59:00Z',
       },
       {
         id: 7,
@@ -212,6 +220,7 @@ describe('Schedule service', () => {
     nomisMappingApiClient.getLocationMappingByNomisId = jest.fn(
       async (id, _) => ({ 1: { dpsLocationId: 'abc-123' }, 3: { dpsLocationId: 'zyx-321' } })[id] as LocationMapping,
     )
+    manageUsersApiClient.getUserByUsername.mockResolvedValue({ name: 'Joe Bloggs' } as User)
   })
 
   describe('getSchedule', () => {
@@ -433,6 +442,8 @@ describe('Schedule service', () => {
               videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
+              cancelledBy: 'Joe Bloggs',
+              cancelledTime: '2024-12-14T11:59:00Z',
             },
           ],
         ],
@@ -450,6 +461,8 @@ describe('Schedule service', () => {
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(1)
+      expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
     })
 
     describe('tags', () => {

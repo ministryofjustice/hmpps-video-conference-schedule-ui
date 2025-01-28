@@ -18,6 +18,7 @@ import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { parseDate } from '../utils/utils'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
+import ManageUsersApiClient from '../data/manageUsersApiClient'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -68,6 +69,7 @@ export default class ScheduleService {
     private readonly nomisMappingApiClient: NomisMappingApiClient,
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
+    private readonly manageUsersApiClient: ManageUsersApiClient,
   ) {}
 
   public async getSchedule(
@@ -169,7 +171,9 @@ export default class ScheduleService {
       tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
       cancelledTime: scheduledAppointment.cancelledTime,
-      cancelledBy: scheduledAppointment.cancelledBy,
+      cancelledBy: scheduledAppointment.cancelledBy
+        ? (await this.manageUsersApiClient.getUserByUsername(scheduledAppointment.cancelledBy, user))?.name
+        : undefined,
     }
   }
 
