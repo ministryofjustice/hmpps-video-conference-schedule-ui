@@ -146,11 +146,26 @@ describe('Schedule service', () => {
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
       },
+      {
+        id: 8,
+        date: '2024-12-12',
+        offenderNo: 'ZXY321',
+        startTime: '11:00',
+        endTime: '12:00',
+        locationId: 3,
+        locationDescription: 'ROOM 3',
+        appointmentTypeDescription: 'Video Link - Probation',
+        status: 'CANCELLED',
+        viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
+        cancelledBy: 'EXTERNAL',
+        cancelledTime: '2024-12-12T11:59:00Z',
+      },
     ]
 
     bvlsAppointments = [
       {
         videoBookingId: 1,
+        statusCode: 'ACTIVE',
         prisonerNumber: 'ABC123',
         startTime: '07:45',
         endTime: '08:00',
@@ -162,6 +177,7 @@ describe('Schedule service', () => {
       },
       {
         videoBookingId: 1,
+        statusCode: 'ACTIVE',
         prisonerNumber: 'ABC123',
         startTime: '08:00',
         endTime: '09:00',
@@ -173,6 +189,7 @@ describe('Schedule service', () => {
       },
       {
         videoBookingId: 1,
+        statusCode: 'ACTIVE',
         prisonerNumber: 'ABC123',
         startTime: '09:00',
         endTime: '09:15',
@@ -184,6 +201,7 @@ describe('Schedule service', () => {
       },
       {
         videoBookingId: 2,
+        statusCode: 'ACTIVE',
         prisonerNumber: 'ZXY321',
         startTime: '11:00',
         endTime: '12:00',
@@ -192,6 +210,20 @@ describe('Schedule service', () => {
         appointmentType: 'VLB_PROBATION',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
+      },
+      {
+        videoBookingId: 3,
+        statusCode: 'CANCELLED',
+        prisonerNumber: 'ZXY321',
+        startTime: '11:00',
+        endTime: '12:00',
+        prisonLocKey: 'ROOM_3',
+        dpsLocationId: 'zyx-321',
+        appointmentType: 'VLB_PROBATION',
+        probationTeamDescription: 'Burnley PP',
+        probationMeetingTypeDescription: 'Recall report',
+        cancelledBy: 'jsmith',
+        cancelledTime: '2024-12-12T11:59:00Z',
       },
     ] as BvlsAppointment[]
 
@@ -220,7 +252,13 @@ describe('Schedule service', () => {
     nomisMappingApiClient.getLocationMappingByNomisId = jest.fn(
       async (id, _) => ({ 1: { dpsLocationId: 'abc-123' }, 3: { dpsLocationId: 'zyx-321' } })[id] as LocationMapping,
     )
-    manageUsersApiClient.getUserByUsername.mockResolvedValue({ name: 'Joe Bloggs' } as User)
+    manageUsersApiClient.getUserByUsername.mockImplementation(
+      async username =>
+        ({
+          jbloggs: { name: 'Joe Bloggs', authSource: 'nomis' } as User,
+          jsmith: { name: 'John Smith', authSource: 'auth' } as User,
+        })[username],
+    )
   })
 
   describe('getSchedule', () => {
@@ -400,18 +438,19 @@ describe('Schedule service', () => {
         ],
         appointmentsListed: 7,
         numberOfPrisoners: 2,
-        cancelledAppointments: 1,
+        cancelledAppointments: 2,
         missingVideoLinks: 1,
       })
 
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
     })
 
     it('builds a view of the cancelled appointments', async () => {
@@ -420,6 +459,33 @@ describe('Schedule service', () => {
 
       expect(result).toEqual({
         appointmentGroups: [
+          [
+            {
+              appointmentDescription: 'Probation',
+              appointmentId: 8,
+              appointmentLocationDescription: 'ROOM 3',
+              appointmentType: 'Recall report',
+              endTime: '12:00',
+              externalAgencyDescription: 'Burnley PP',
+              prisoner: {
+                cellLocation: 'Out of prison',
+                firstName: 'John',
+                hasAlerts: true,
+                inPrison: false,
+                lastName: 'Smith',
+                prisonerNumber: 'ZXY321',
+              },
+              startTime: '11:00',
+              status: 'CANCELLED',
+              tags: [],
+              videoBookingId: 3,
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
+              cancelledBy: 'External user',
+              cancelledTime: '2024-12-12T11:59:00Z',
+            },
+          ],
           [
             {
               appointmentDescription: 'Legal Appointment',
@@ -447,22 +513,24 @@ describe('Schedule service', () => {
             },
           ],
         ],
-        appointmentsListed: 1,
-        numberOfPrisoners: 1,
-        cancelledAppointments: 1,
+        appointmentsListed: 2,
+        numberOfPrisoners: 2,
+        cancelledAppointments: 2,
         missingVideoLinks: 0,
       })
 
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
-      expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(1)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
+      expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(2)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
+      expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)
     })
 
     describe('tags', () => {

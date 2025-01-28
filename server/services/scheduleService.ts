@@ -171,9 +171,7 @@ export default class ScheduleService {
       tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
       cancelledTime: scheduledAppointment.cancelledTime,
-      cancelledBy: scheduledAppointment.cancelledBy
-        ? (await this.manageUsersApiClient.getUserByUsername(scheduledAppointment.cancelledBy, user))?.name
-        : undefined,
+      cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
     }
   }
 
@@ -203,6 +201,7 @@ export default class ScheduleService {
   ): Promise<BvlsAppointment> {
     const basicMatch = bvlsAppointments.filter(bvlsAppointment => {
       return (
+        bvlsAppointment.statusCode === appointment.status &&
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
         bvlsAppointment.endTime === appointment.endTime
@@ -215,6 +214,15 @@ export default class ScheduleService {
       return basicMatch.find(bvlsAppointment => bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId)
     }
 
+    return undefined
+  }
+
+  private async getCancelledBy(appointment: Appointment, bvlsAppointment: BvlsAppointment, user: Express.User) {
+    const cancelledBy = bvlsAppointment?.cancelledBy || appointment.cancelledBy
+    if (cancelledBy) {
+      const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user)
+      return bvlsAppointment && cancelledByUser.authSource === 'auth' ? 'External user' : cancelledByUser.name
+    }
     return undefined
   }
 }

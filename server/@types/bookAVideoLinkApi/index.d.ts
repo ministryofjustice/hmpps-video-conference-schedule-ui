@@ -1460,6 +1460,7 @@ export interface components {
        * @description The timestamp when the booking was last updated
        */
       updatedTime?: string
+      cancelledBy?: string
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {

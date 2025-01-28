@@ -25,6 +25,7 @@ describe('initialise name', () => {
     ['Two words', 'Robert James', 'R. James'],
     ['Three words', 'Robert James Smith', 'R. Smith'],
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
+    ['External user', 'External user', 'External user'],
   ])('%s initialiseName(%s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
   })
