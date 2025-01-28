@@ -14,10 +14,10 @@ import {
 import AppointmentService, { Appointment } from './appointmentService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
-import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { parseDate } from '../utils/utils'
+import NomisMappingApiClient from '../data/nomisMappingApiClient'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -65,7 +65,7 @@ export type DailySchedule = {
 export default class ScheduleService {
   constructor(
     private readonly appointmentService: AppointmentService,
-    private readonly locationsService: LocationsService,
+    private readonly nomisMappingApiClient: NomisMappingApiClient,
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
   ) {}
@@ -206,7 +206,7 @@ export default class ScheduleService {
     })
 
     if (basicMatch.length) {
-      const locationMapping = await this.locationsService.getLocationMappingByNomisId(appointment.locationId, user)
+      const locationMapping = await this.nomisMappingApiClient.getLocationMappingByNomisId(appointment.locationId, user)
 
       return basicMatch.find(bvlsAppointment => bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId)
     }

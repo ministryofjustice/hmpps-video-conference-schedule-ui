@@ -3,15 +3,15 @@ import { formatDate, set, startOfToday, startOfTomorrow, startOfYesterday, subMi
 import createUser from '../testutils/createUser'
 import AppointmentService, { Appointment } from './appointmentService'
 import ScheduleService from './scheduleService'
-import LocationsService from './locationsService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { LocationMapping } from '../@types/nomisMappingApi/types'
+import NomisMappingApiClient from '../data/nomisMappingApiClient'
 
 jest.mock('../services/appointmentService')
-jest.mock('../services/locationsService')
+jest.mock('../data/nomisMappingApiClient')
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerSearchApiClient')
 
@@ -19,7 +19,7 @@ const user = createUser([])
 
 describe('Schedule service', () => {
   let appointmentService: jest.Mocked<AppointmentService>
-  let locationsService: jest.Mocked<LocationsService>
+  let nomisMappingApiClient: jest.Mocked<NomisMappingApiClient>
   let bookAVideoLinkApiClient: jest.Mocked<BookAVideoLinkApiClient>
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
 
@@ -31,12 +31,12 @@ describe('Schedule service', () => {
 
   beforeEach(() => {
     appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
-    locationsService = new LocationsService(null) as jest.Mocked<LocationsService>
+    nomisMappingApiClient = new NomisMappingApiClient() as jest.Mocked<NomisMappingApiClient>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
     scheduleService = new ScheduleService(
       appointmentService,
-      locationsService,
+      nomisMappingApiClient,
       bookAVideoLinkApiClient,
       prisonerSearchApiClient,
     )
@@ -209,7 +209,7 @@ describe('Schedule service', () => {
     appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
     bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
-    locationsService.getLocationMappingByNomisId = jest.fn(
+    nomisMappingApiClient.getLocationMappingByNomisId = jest.fn(
       async (id, _) => ({ 1: { dpsLocationId: 'abc-123' }, 3: { dpsLocationId: 'zyx-321' } })[id] as LocationMapping,
     )
   })
@@ -398,11 +398,11 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
     })
 
     it('builds a view of the cancelled appointments', async () => {
@@ -445,11 +445,11 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(locationsService.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(4)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
     })
 
     describe('tags', () => {
