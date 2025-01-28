@@ -222,8 +222,8 @@ describe('Schedule service', () => {
         appointmentType: 'VLB_PROBATION',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
-        cancelledBy: 'jsmith',
-        cancelledTime: '2024-12-12T11:59:00Z',
+        updatedBy: 'jsmith',
+        updatedTime: '2024-12-12T11:59:00Z',
       },
     ] as BvlsAppointment[]
 

@@ -125,7 +125,7 @@
                                   ' if loop.index == 1,
                             classes: classes
                         } if not (status == 'CANCELLED' and not appointmentsRolledOut)
-                    ]), rows) %}
+                    ] | filter), rows) %}
                 {% endfor %}
             {% endfor %}
 
@@ -179,7 +179,7 @@
                         {
                             text: "Action"
                         } if not (status == 'CANCELLED' and not appointmentsRolledOut)
-                    ],
+                    ] | filter,
                     rows: rows
                 }) }}
             {% else %}

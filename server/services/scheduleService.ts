@@ -218,10 +218,18 @@ export default class ScheduleService {
   }
 
   private async getCancelledBy(appointment: Appointment, bvlsAppointment: BvlsAppointment, user: Express.User) {
-    const cancelledBy = bvlsAppointment?.cancelledBy || appointment.cancelledBy
+    const cancelledBy = bvlsAppointment?.updatedBy || appointment.cancelledBy
     if (cancelledBy) {
-      const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user)
-      return bvlsAppointment && cancelledByUser.authSource === 'auth' ? 'External user' : cancelledByUser.name
+      const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user).catch(err => {
+        if (err.status !== 404) {
+          throw err
+        }
+        return undefined
+      })
+
+      if (cancelledByUser) {
+        return bvlsAppointment && cancelledByUser.authSource === 'auth' ? 'External user' : cancelledByUser.name
+      }
     }
     return undefined
   }
