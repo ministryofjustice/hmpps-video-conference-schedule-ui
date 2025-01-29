@@ -41,6 +41,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
+          details: { query: {} },
         })
 
         expect(res.text).toEqual('data\nabc123')
@@ -55,6 +56,12 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect('Content-Disposition', `attachment; filename="daily-schedule-2024-12-12.csv"`)
       .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: { query: { date: '2024-12-12' } },
+        })
+
         const date = new Date('2024-12-12')
         expect(res.text).toEqual('data\nabc123')
 
@@ -85,6 +92,12 @@ describe('GET', () => {
         `attachment; filename="daily-schedule-cancelled-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
       )
       .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: { query: { status: 'CANCELLED' } },
+        })
+
         expect(res.text).toEqual('data\nabc123')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
       })

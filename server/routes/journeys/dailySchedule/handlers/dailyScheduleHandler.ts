@@ -33,13 +33,18 @@ export default class DailyScheduleHandler implements PageHandler {
       ),
     ])
 
-    res.render('pages/dailySchedule/dailySchedule', {
-      prisonName: prison.prisonName,
-      schedule,
-      date,
-      isPastDay: startOfDay(date) < startOfDay(new Date()),
-      appointmentsRolledOut,
-      status,
-    })
+    return status === 'ACTIVE'
+      ? res.render('pages/dailySchedule/dailySchedule', {
+          prisonName: prison.prisonName,
+          schedule,
+          date,
+          isPastDay: startOfDay(date) < startOfDay(new Date()),
+          appointmentsRolledOut,
+        })
+      : res.render('pages/dailySchedule/cancelledAppointments', {
+          prisonName: prison.prisonName,
+          schedule,
+          date,
+        })
   }
 }

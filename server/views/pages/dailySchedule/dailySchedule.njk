@@ -4,12 +4,10 @@
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "partials/stat.njk" import stat %}
 
-{% set pageTitle = ("Video daily schedule: " + prisonName) if status != 'CANCELLED' else ("Cancelled video appointments: " + prisonName) %}
-
-{% if status == 'CANCELLED' %}
-    {% set backLinkHref = '/?date=' + date | formatDate('yyyy-MM-dd') %}
-{% endif %}
+{% set pageTitle = "Video daily schedule: " + prisonName %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -17,7 +15,7 @@
             <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                 <span class="govuk-caption-m govuk-!-display-inline-block">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
-                {% if status != 'CANCELLED' %}<a class="govuk-link govuk-link--no-visited-state" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>{% endif %}
+                <a class="govuk-link govuk-link--no-visited-state" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
             </div>
         </div>
     </div>
@@ -38,37 +36,35 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            {% if status != 'CANCELLED' %}
-                {{ stat({
-                    heading: "Appointments listed",
-                    number: schedule.appointmentsListed,
-                    visuallyHiddenText: "appointments listed"
-                }) }}
+            {{ stat({
+                heading: "Appointments listed",
+                number: schedule.appointmentsListed,
+                visuallyHiddenText: "appointments listed"
+            }) }}
 
+            {{ stat({
+                heading: "Total number of prisoners",
+                number: schedule.numberOfPrisoners,
+                visuallyHiddenText: "prisoners"
+            }) }}
+
+            {% if appointmentsRolledOut %}
                 {{ stat({
-                    heading: "Total number of prisoners",
-                    number: schedule.numberOfPrisoners,
-                    visuallyHiddenText: "prisoners"
+                    heading: "Cancelled appointments",
+                    number: schedule.cancelledAppointments,
+                    visuallyHiddenText: "cancelled appointments",
+                    link: {
+                        href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
+                        text: 'View'
+                    }
                 }) }}
             {% endif %}
 
             {{ stat({
-                heading: "Cancelled appointments",
-                number: schedule.cancelledAppointments,
-                visuallyHiddenText: "cancelled appointments",
-                link: {
-                    href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
-                    text: 'View'
-                } if status != 'CANCELLED'
+                heading: "Missing video links",
+                number: schedule.missingVideoLinks,
+                visuallyHiddenText: "missing video links"
             }) }}
-
-            {% if status != 'CANCELLED' %}
-                {{ stat({
-                    heading: "Missing video links",
-                    number: schedule.missingVideoLinks,
-                    visuallyHiddenText: "missing video links"
-                }) }}
-            {% endif %}
         </div>
     </div>
 
@@ -104,45 +100,35 @@
                         {
                             html: scheduleItem.videoLink or 'None entered' if scheduleItem.videoLinkRequired else (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             classes: classes
-                        } if status != 'CANCELLED',
+                        },
                         {
                             html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
-                        } if status != 'CANCELLED',
-                        {
-                            text: (scheduleItem.cancelledTime | formatDate("d MMM yyyy 'at' hh:mmaaaaa'm'")) if (appointmentGroup.length == 1 or loop.index == 2),
-                            classes: classes
-                        } if status == 'CANCELLED',
-                        {
-                            html: (scheduleItem.cancelledBy | initialiseName) if (appointmentGroup.length == 1 or loop.index == 2),
-                            classes: classes
-                        } if status == 'CANCELLED',
+                        },
                         {
                             html: '
                                     <a class="govuk-link govuk-link--no-visited-state" href="' + scheduleItem.viewAppointmentLink + '" rel="noreferrer noopener" target="_blank">
-                                        View' + (' or edit' if not isPastDay and status != 'CANCELLED') + '<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                        View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
                                     </a>
                                   ' if loop.index == 1,
                             classes: classes
-                        } if not (status == 'CANCELLED' and not appointmentsRolledOut)
+                        }
                     ] | filter), rows) %}
                 {% endfor %}
             {% endfor %}
 
-            {% if status != 'CANCELLED' %}
-                <div class="hmpps-action-bar">
-                    {% if not isPastDay %}
-                        <div class="hmpps-last-updated">
-                            <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
-                            {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
-                        </div>
-                    {% endif %}
-                    <div class="hmpps-print-and-export">
-                        <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
-                        <button class="hmpps-print-and-export--print">Print schedule</button>
+            <div class="hmpps-action-bar">
+                {% if not isPastDay %}
+                    <div class="hmpps-last-updated">
+                        <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
+                        {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
                     </div>
+                {% endif %}
+                <div class="hmpps-print-and-export">
+                    <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                    <button class="hmpps-print-and-export--print">Print schedule</button>
                 </div>
-            {% endif %}
+            </div>
             {% if rows | length %}
                 {{ govukTable({
                     attributes: {
@@ -166,76 +152,22 @@
                         },
                         {
                             text: "Video link"
-                        } if status != 'CANCELLED',
+                        },
                         {
                             text: "Status"
-                        } if status != 'CANCELLED',
-                        {
-                            text: "Cancelled at"
-                        } if status == 'CANCELLED',
-                        {
-                            text: "Cancelled by"
-                        } if status == 'CANCELLED',
+                        },
                         {
                             text: "Action"
-                        } if not (status == 'CANCELLED' and not appointmentsRolledOut)
+                        }
                     ] | filter,
                     rows: rows
                 }) }}
             {% else %}
-                {% if status != 'CANCELLED' %}
-                    <p class="govuk-body">There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}</p>
-                {% else %}
-                    <p class="govuk-body">There are no cancelled video appointments on {{ date | formatDate('iiii d MMMM yyyy') }}</p>
-                {% endif %}
+                <p class="govuk-body">There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}</p>
             {% endif %}
         </div>
     </div>
 {% endblock %}
-
-{% macro stat(params) %}
-    <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-3 govuk-!-padding-left-0">
-        <div class="govuk-body govuk-!-margin-bottom-0">{{ params.heading }}</div>
-        <span class="govuk-heading-m govuk-!-margin-0 govuk-!-padding-0 ">
-            <span>{{ params.number }}</span>
-            {% if params.visuallyHiddenText %}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>{% endif %}
-        </span>
-
-        {% if params.link and params.number > 0 %}
-            <p class="govuk-!-margin-bottom-0">
-                <a href="{{ params.link.href }}" data-qa="{{ params.link.dataQa }}" class="govuk-link govuk-link--no-visited-state">
-                    {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>
-                </a>
-            </p>
-        {% endif %}
-    </div>
-{% endmacro %}
-
-{% macro showProfileLink(params) %}
-    <div>
-        <div>
-            {% set name = params.lastName | convertToTitleCase + ', ' + params.firstName | convertToTitleCase %}
-            {% if params.inPrison %}
-                <a href="{{ dpsUrl }}/prisoner/{{ params.prisonerNumber }}" rel="noreferrer noopener"
-                   target="_blank"
-                   class="govuk-link govuk-link--no-visited-state">
-                    {{ name | safe }}
-                    <span class="govuk-visually-hidden">(opens in new tab)</span>
-                </a>
-            {% else %}
-                {{ name | safe }}
-            {% endif %}
-        </div>
-        {% if params.hasAlerts %}
-            {{ govukTag({
-                text: "Alerts",
-                classes: "govuk-tag--alerts"
-            }) }}
-        {% endif %}
-        <div class="govuk-body-s govuk-!-margin-0">{{ params.prisonerNumber }}</div>
-        <div class="govuk-body-s govuk-!-margin-0">{{ params.cellLocation }}</div>
-    </div>
-{% endmacro %}
 
 {% macro bookingStatuses(tags) %}
     <div class="govuk-tag-group">
