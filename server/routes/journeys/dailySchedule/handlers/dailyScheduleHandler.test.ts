@@ -45,6 +45,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
+          details: { query: {} },
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
         expect(existsByDataQa($, 'warning-text')).toBe(false)
@@ -62,6 +63,11 @@ describe('GET', () => {
         const date = new Date('2024-12-12')
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: { query: { date: '2024-12-12' } },
+        })
         expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), 'ACTIVE', user)
       })
@@ -89,6 +95,11 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: { query: { status: 'CANCELLED' } },
+        })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
       })
   })
