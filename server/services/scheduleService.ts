@@ -14,10 +14,11 @@ import {
 import AppointmentService, { Appointment } from './appointmentService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
-import LocationsService from './locationsService'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { parseDate } from '../utils/utils'
+import NomisMappingApiClient from '../data/nomisMappingApiClient'
+import ManageUsersApiClient from '../data/manageUsersApiClient'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -50,6 +51,8 @@ type ScheduleItem = {
   appointmentType?: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
+  cancelledTime?: string
+  cancelledBy?: string
 }
 
 export type DailySchedule = {
@@ -63,9 +66,10 @@ export type DailySchedule = {
 export default class ScheduleService {
   constructor(
     private readonly appointmentService: AppointmentService,
-    private readonly locationsService: LocationsService,
+    private readonly nomisMappingApiClient: NomisMappingApiClient,
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
+    private readonly manageUsersApiClient: ManageUsersApiClient,
   ) {}
 
   public async getSchedule(
@@ -166,6 +170,8 @@ export default class ScheduleService {
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
       tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
+      cancelledTime: scheduledAppointment.cancelledTime,
+      cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
     }
   }
 
@@ -185,7 +191,7 @@ export default class ScheduleService {
   private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
-    return scheduledAppointment.appointmentTypeDescription.replace('Video Link - ', '')
+    return scheduledAppointment.appointmentTypeDescription.replaceAll(/Video Link - /g, '')
   }
 
   private async matchBvlsAppointmentTo(
@@ -195,6 +201,7 @@ export default class ScheduleService {
   ): Promise<BvlsAppointment> {
     const basicMatch = bvlsAppointments.filter(bvlsAppointment => {
       return (
+        bvlsAppointment.statusCode === appointment.status &&
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
         bvlsAppointment.endTime === appointment.endTime
@@ -202,11 +209,28 @@ export default class ScheduleService {
     })
 
     if (basicMatch.length) {
-      const locationMapping = await this.locationsService.getLocationMappingByNomisId(appointment.locationId, user)
+      const locationMapping = await this.nomisMappingApiClient.getLocationMappingByNomisId(appointment.locationId, user)
 
       return basicMatch.find(bvlsAppointment => bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId)
     }
 
+    return undefined
+  }
+
+  private async getCancelledBy(appointment: Appointment, bvlsAppointment: BvlsAppointment, user: Express.User) {
+    const cancelledBy = bvlsAppointment?.updatedBy || appointment.cancelledBy
+    if (cancelledBy) {
+      const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user).catch(err => {
+        if (err.status !== 404) {
+          throw err
+        }
+        return undefined
+      })
+
+      if (cancelledByUser) {
+        return bvlsAppointment && cancelledByUser.authSource === 'auth' ? 'External user' : cancelledByUser.name
+      }
+    }
     return undefined
   }
 }

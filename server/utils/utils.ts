@@ -20,6 +20,8 @@ export const initialiseName = (fullName?: string): string | null => {
   // this check is for the authError page
   if (!fullName) return null
 
+  if (fullName === 'External user') return fullName
+
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }

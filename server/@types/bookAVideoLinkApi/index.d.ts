@@ -765,8 +765,7 @@ export interface components {
     ErrorResponse: {
       /** Format: int32 */
       status: number
-      /** Format: int32 */
-      errorCode?: number
+      errorCode?: string
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
@@ -1456,10 +1455,20 @@ export interface components {
        */
       createdTime: string
       /**
+       * @description The username of the person who created the booking
+       * @example creator@email.com
+       */
+      createdBy: string
+      /**
        * Format: date-time
        * @description The timestamp when the booking was last updated
        */
       updatedTime?: string
+      /**
+       * @description The username of the person who updated the booking
+       * @example amender@email.com
+       */
+      updatedBy?: string
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {

@@ -15,7 +15,7 @@ jest.mock('../../../../services/scheduleService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-const scheduleService = new ScheduleService(null, null, null, null) as jest.Mocked<ScheduleService>
+const scheduleService = new ScheduleService(null, null, null, null, null) as jest.Mocked<ScheduleService>
 
 let app: Express
 
@@ -88,7 +88,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
       })
   })

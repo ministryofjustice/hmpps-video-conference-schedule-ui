@@ -2948,9 +2948,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     PagedWaitingListApplication: {
@@ -5323,6 +5323,22 @@ export interface components {
        *
        */
       updatedTime?: string
+      /**
+       * Format: date-time
+       * @description
+       *         The date and time this appointment was cancelled.
+       *         Will be null if this appointment has not been cancelled
+       *
+       */
+      cancelledTime?: string
+      /**
+       * @description
+       *         The username of the user authenticated via HMPPS auth that cancelled this appointment.
+       *         Will be null if this appointment has not been cancelled
+       *
+       * @example AAA01U
+       */
+      cancelledBy?: string
     }
     /** @description
      *       Described on the UI as an "Attendee". A prisoner attending a specific appointment in an appointment series or set.
