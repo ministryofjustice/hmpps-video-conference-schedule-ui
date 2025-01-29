@@ -1,0 +1,117 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "partials/stat.njk" import stat %}
+
+{% set pageTitle = "Cancelled video appointments: " + prisonName %}
+{% set backLinkHref = '/?date=' + date | formatDate('yyyy-MM-dd') %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
+            <div class="govuk-!-margin-bottom-6">
+                <span class="govuk-caption-m govuk-!-display-inline-block">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {{ stat({
+                heading: "Cancelled appointments",
+                number: schedule.cancelledAppointments,
+                visuallyHiddenText: "cancelled appointments"
+            }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {% set rows = [] %}
+
+            {% for appointmentGroup in schedule.appointmentGroups %}
+                {% for scheduleItem in appointmentGroup %}
+                    {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
+                    {% set classes = (classes + ' govuk-table__cell--alternate-shade') | trim if appointmentGroup.length > 1 %}
+
+                    {% set rows = (rows.push([
+                        {
+                            html: showProfileLink(scheduleItem.prisoner) if loop.index == 1,
+                            attributes: {
+                                "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName
+                            },
+                            classes: classes
+                        },
+                        {
+                            text: scheduleItem.startTime + ' to ' + scheduleItem.endTime,
+                            classes: classes
+                        },
+                        {
+                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentType + '</div>' if scheduleItem.appointmentType),
+                            classes: classes
+                        },
+                        {
+                            html:  '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentLocationDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.externalAgencyDescription + '</div>' if scheduleItem.externalAgencyDescription),
+                            classes: classes
+                        },
+                        {
+                            text: (scheduleItem.cancelledTime | formatDate("d MMM yyyy 'at' h:mmaaaaa'm'")) if (appointmentGroup.length == 1 or loop.index == 2),
+                            classes: classes
+                        },
+                        {
+                            html: (scheduleItem.cancelledBy | initialiseName) if (appointmentGroup.length == 1 or loop.index == 2),
+                            classes: classes
+                        },
+                        {
+                            html: '
+                                    <a class="govuk-link govuk-link--no-visited-state" href="' + scheduleItem.viewAppointmentLink + '" rel="noreferrer noopener" target="_blank">
+                                        View<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                    </a>
+                                  ' if loop.index == 1,
+                            classes: classes
+                        }
+                    ]), rows) %}
+                {% endfor %}
+            {% endfor %}
+
+            {% if rows | length %}
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        {
+                            text: "Prisoner",
+                            attributes: {
+                                "aria-sort": "none"
+                            }
+                        },
+                        {
+                            text: "Time"
+                        },
+                        {
+                            text: "Appointment"
+                        },
+                        {
+                            text: "Location"
+                        },
+                        {
+                            text: "Cancelled at"
+                        },
+                        {
+                            text: "Cancelled by"
+                        },
+                        {
+                            text: "Action"
+                        }
+                    ],
+                    rows: rows
+                }) }}
+            {% else %}
+                <p class="govuk-body">There are no cancelled video appointments on {{ date | formatDate('iiii d MMMM yyyy') }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

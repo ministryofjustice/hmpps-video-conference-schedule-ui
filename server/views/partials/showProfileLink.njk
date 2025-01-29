@@ -1,0 +1,25 @@
+{% macro showProfileLink(params) %}
+    <div>
+        <div>
+            {% set name = params.lastName | convertToTitleCase + ', ' + params.firstName | convertToTitleCase %}
+            {% if params.inPrison %}
+                <a href="{{ dpsUrl }}/prisoner/{{ params.prisonerNumber }}" rel="noreferrer noopener"
+                   target="_blank"
+                   class="govuk-link govuk-link--no-visited-state">
+                    {{ name | safe }}
+                    <span class="govuk-visually-hidden">(opens in new tab)</span>
+                </a>
+            {% else %}
+                {{ name | safe }}
+            {% endif %}
+        </div>
+        {% if params.hasAlerts %}
+            {{ govukTag({
+                text: "Alerts",
+                classes: "govuk-tag--alerts"
+            }) }}
+        {% endif %}
+        <div class="govuk-body-s govuk-!-margin-0">{{ params.prisonerNumber }}</div>
+        <div class="govuk-body-s govuk-!-margin-0">{{ params.cellLocation }}</div>
+    </div>
+{% endmacro %}
