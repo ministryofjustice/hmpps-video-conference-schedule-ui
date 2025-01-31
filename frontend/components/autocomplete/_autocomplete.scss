@@ -1,0 +1,21 @@
+.autocomplete__wrapper {
+  @include govuk-media-query($until: desktop) {
+    width: available;
+  }
+}
+.moj-filter {
+  .autocomplete__wrapper {
+    width: 100%;
+  }
+}
+.autocomplete {
+  &__option {
+    font-family: "GDS Transport", Arial, sans-serif;
+  }
+
+  &__input {
+    &--show-all-values {
+      padding: 5px;
+    }
+  }
+}

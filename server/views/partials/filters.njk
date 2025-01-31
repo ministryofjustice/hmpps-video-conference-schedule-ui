@@ -1,0 +1,182 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+<div class="govuk-grid-row" data-module="moj-filter">
+    <div class="govuk-grid-column-full">
+        <div class="moj-action-bar">
+            <div class="moj-action-bar__filter"></div>
+        </div>
+        <div class="moj-filter">
+            <div class="moj-filter__header">
+                <div class="moj-filter__header-title">
+                    <h2 class="govuk-heading-m">Filter by</h2>
+                </div>
+            </div>
+
+            <div class="moj-filter__content">
+                <div class="moj-filter__selected">
+                    <div class="moj-filter__selected-heading">
+                        <div class="moj-filter__heading-title">
+                            <h2 class="govuk-heading-m">Selected filters</h2>
+                        </div>
+                        <div class="moj-filter__heading-action">
+                            <p><a class="govuk-link govuk-link--no-visited-state" href="#">Clear filters</a></p>
+                        </div>
+                    </div>
+
+                    <ul class="moj-filter-tags">
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> A wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> B wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> C wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> D wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> E wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> F wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> G wing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Video link - Probation meeting</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Video link - Court hearing</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Morning (AM)</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span>VCC-crown-conference-room-2</a></li>
+                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Aberystwyth Family</a></li>
+                    </ul>
+                </div>
+
+                <div class="moj-filter__options">
+                    <form method="POST">
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                        <div class="moj-filter__options-container">
+                            <div class="moj-filter__option">
+                                {{ govukCheckboxes({
+                                    name: "wing",
+                                    classes: "govuk-checkboxes--small",
+                                    fieldset: {
+                                        legend: {
+                                            text: "Wing",
+                                            classes: "govuk-fieldset__legend--m"
+                                        }
+                                    },
+                                    items: [
+                                        {
+                                            value: "A",
+                                            text: "A Wing"
+                                        },
+                                        {
+                                            value: "B",
+                                            text: "B Wing"
+                                        },
+                                        {
+                                            value: "C",
+                                            text: "C Wing"
+                                        }
+                                    ]
+                                }) }}
+                            </div>
+                            <div class="moj-filter__option">
+                                {{ govukCheckboxes({
+                                    name: "appointmentType",
+                                    classes: "govuk-checkboxes--small",
+                                    fieldset: {
+                                        legend: {
+                                            text: "Appointment type",
+                                            classes: "govuk-fieldset__legend--m"
+                                        }
+                                    },
+                                    items: [
+                                        {
+                                            value: "VL",
+                                            text: "Video link - Another prison"
+                                        },
+                                        {
+                                            value: "VL",
+                                            text: "Video link - Court hearing"
+                                        }
+                                    ]
+                                }) }}
+                            </div>
+                            <div class="moj-filter__option">
+                                {{ govukCheckboxes({
+                                    name: "period",
+                                    classes: "govuk-checkboxes--small",
+                                    fieldset: {
+                                        legend: {
+                                            text: "Period",
+                                            classes: "govuk-fieldset__legend--m"
+                                        }
+                                    },
+                                    items: [
+                                        {
+                                            value: "AM",
+                                            text: "Morning (AM)"
+                                        },
+                                        {
+                                            value: "PM",
+                                            text: "Afternoon (PM)"
+                                        },
+                                        {
+                                            value: "ED",
+                                            text: "Evening (ED)"
+                                        }
+                                    ]
+                                }) }}
+                            </div>
+                            <div class="moj-filter__option">
+                                <div class="govuk-!-margin-bottom-6">
+                                    {{ govukSelect({
+                                        id: "location",
+                                        name: "location",
+                                        label: {
+                                            text: "Appointment location",
+                                            classes: "govuk-label--m"
+                                        },
+                                        items: [
+                                            {
+                                                value: "",
+                                                text: ""
+                                            },
+                                            {
+                                                value: "abc-123",
+                                                text: "Test location"
+                                            }
+                                        ]
+                                    }) }}
+
+                                    <button type="submit" class="moj-filter__add-another">Select another location
+                                    </button>
+                                </div>
+
+                                <div>
+                                    {{ govukSelect({
+                                        id: "agency",
+                                        name: "agency",
+                                        label: {
+                                            text: "Court or probation team",
+                                            classes: "govuk-label--m"
+                                        },
+                                        items: [
+                                            {
+                                                value: "",
+                                                text: ""
+                                            },
+                                            {
+                                                value: "abc-123",
+                                                text: "Test court"
+                                            }
+                                        ]
+                                    }) }}
+
+                                    <button type="submit" class="moj-filter__add-another">Select another court or
+                                        probation team
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+                            Apply filters
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
