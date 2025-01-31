@@ -21,6 +21,8 @@
     margin: 0 0 0 auto;
 
     button {
+      @extend .govuk-link;
+      margin: 0;
       background-size: 20px 18px;
       padding: 12px 12px 12px 38px;
       border: 0;

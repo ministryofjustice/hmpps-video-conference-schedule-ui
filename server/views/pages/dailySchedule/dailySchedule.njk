@@ -9,6 +9,10 @@
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 
+{% block meta %}
+    <meta name="autocompleteElements" content="location,agency"/>
+{% endblock %}
+
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
@@ -34,7 +38,9 @@
         </div>
     {% endif %}
 
-    <div class="govuk-grid-row">
+    {% include "partials/filters.njk" %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-6">
         <div class="govuk-grid-column-full">
             {{ stat({
                 heading: "Appointments listed",
@@ -174,7 +180,7 @@
         {% for tag in tags %}
             {% if tag == 'NEW' %}
                 {{ govukTag({
-                    text: "New",
+                    text: "New booking",
                     classes: "govuk-tag--status govuk-tag--status__new-booking"
                 }) }}
             {% endif %}

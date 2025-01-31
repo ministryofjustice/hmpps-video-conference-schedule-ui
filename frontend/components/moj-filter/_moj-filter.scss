@@ -1,0 +1,42 @@
+.moj-action-bar__filter {
+  &::after {
+    content: none;
+  }
+
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+.moj-filter {
+  &:focus {
+    box-shadow: none;
+  }
+
+  &__options-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  &__option {
+    flex: 1;
+  }
+
+  .govuk-label {
+    white-space: nowrap;
+  }
+
+  &__add-another {
+    @extend .govuk-link;
+    margin-top: 10px;
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    color: #1d70b8;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+}
