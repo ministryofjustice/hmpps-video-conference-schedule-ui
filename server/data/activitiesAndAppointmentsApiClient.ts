@@ -1,6 +1,6 @@
 import config from '../config'
 import RestClient from './restClient'
-import { Appointment, RolloutPrisonPlan } from '../@types/activitiesAndAppointmentsApi/types'
+import { Appointment, AppointmentCategory, RolloutPrisonPlan } from '../@types/activitiesAndAppointmentsApi/types'
 import { formatDate } from '../utils/utils'
 
 export default class ActivitiesAndAppointmentsApiClient extends RestClient {
@@ -10,6 +10,10 @@ export default class ActivitiesAndAppointmentsApiClient extends RestClient {
 
   public async isAppointmentsRolledOutAt(prisonId: string, user: Express.User): Promise<boolean> {
     return this.get<RolloutPrisonPlan>({ path: `/rollout/${prisonId}` }, user).then(r => r.appointmentsRolledOut)
+  }
+
+  public async getAppointmentCategories(user: Express.User): Promise<AppointmentCategory[]> {
+    return this.get({ path: `/appointment-categories`, headers: { 'Caseload-Id': user.activeCaseLoadId } }, user)
   }
 
   public getAppointments(

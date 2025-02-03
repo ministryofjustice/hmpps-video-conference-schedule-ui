@@ -35,4 +35,6 @@ export default {
         hearingTypeDescription: 'Appeal',
       },
     ]),
+  stubGetCourts: () => stubGet('/book-a-video-link-api/courts', []),
+  stubGetProbationTeams: () => stubGet('/book-a-video-link-api/probation-teams', []),
 }

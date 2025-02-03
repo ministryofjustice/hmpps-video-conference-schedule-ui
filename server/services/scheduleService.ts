@@ -53,6 +53,7 @@ type ScheduleItem = {
   viewAppointmentLink: string
   cancelledTime?: string
   cancelledBy?: string
+  lastUpdatedOrCreated: string
 }
 
 export type DailySchedule = {
@@ -92,9 +93,10 @@ export default class ScheduleService {
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
-    // TODO: Filter scheduleItems by user defined filters here
+    // TODO: Apply filter rules here
+    const filteredItems = scheduleItems.filter(() => true)
 
-    const displayItems = scheduleItems.filter(item => item.status === showStatus)
+    const displayItems = filteredItems.filter(item => item.status === showStatus)
 
     const groupedAppointments = _.chain(displayItems)
       .groupBy(item => item.videoBookingId ?? item.appointmentId + item.prisoner.prisonerNumber)
@@ -102,9 +104,9 @@ export default class ScheduleService {
       .value()
 
     return {
+      cancelledAppointments: filteredItems.filter(item => item.status === 'CANCELLED').length,
       appointmentsListed: displayItems.length,
       numberOfPrisoners: _.uniq(displayItems.map(item => item.prisoner.prisonerNumber)).length,
-      cancelledAppointments: scheduleItems.filter(item => item.status === 'CANCELLED').length,
       missingVideoLinks: displayItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
       appointmentGroups: Object.values(groupedAppointments),
     }
@@ -172,6 +174,7 @@ export default class ScheduleService {
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
       cancelledTime: scheduledAppointment.cancelledTime,
       cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
+      lastUpdatedOrCreated: updatedTime || createdTime,
     }
   }
 

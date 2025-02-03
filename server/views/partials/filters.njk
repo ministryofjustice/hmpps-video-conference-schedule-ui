@@ -46,6 +46,14 @@
 
                         <div class="moj-filter__options-container">
                             <div class="moj-filter__option">
+                                {% set items = [] %}
+                                {% for wing in wings %}
+                                    {% set items = (items.push({
+                                        value: wing.fullLocationPath,
+                                        text: wing.localName
+                                    }), items) %}
+                                {% endfor %}
+
                                 {{ govukCheckboxes({
                                     name: "wing",
                                     classes: "govuk-checkboxes--small",
@@ -55,23 +63,18 @@
                                             classes: "govuk-fieldset__legend--m"
                                         }
                                     },
-                                    items: [
-                                        {
-                                            value: "A",
-                                            text: "A Wing"
-                                        },
-                                        {
-                                            value: "B",
-                                            text: "B Wing"
-                                        },
-                                        {
-                                            value: "C",
-                                            text: "C Wing"
-                                        }
-                                    ]
+                                    items: items
                                 }) }}
                             </div>
                             <div class="moj-filter__option">
+                                {% set items = [] %}
+                                {% for appointmentType in appointmentTypes %}
+                                    {% set items = (items.push({
+                                        value: appointmentType.code,
+                                        text: appointmentType.description
+                                    }), items) %}
+                                {% endfor %}
+
                                 {{ govukCheckboxes({
                                     name: "appointmentType",
                                     classes: "govuk-checkboxes--small",
@@ -81,16 +84,7 @@
                                             classes: "govuk-fieldset__legend--m"
                                         }
                                     },
-                                    items: [
-                                        {
-                                            value: "VL",
-                                            text: "Video link - Another prison"
-                                        },
-                                        {
-                                            value: "VL",
-                                            text: "Video link - Court hearing"
-                                        }
-                                    ]
+                                    items: items
                                 }) }}
                             </div>
                             <div class="moj-filter__option">
@@ -121,6 +115,14 @@
                             </div>
                             <div class="moj-filter__option">
                                 <div class="govuk-!-margin-bottom-6">
+                                    {% set items = [{value: '', text: ''}] %}
+                                    {% for appointmentLocation in appointmentLocations %}
+                                        {% set items = (items.push({
+                                            value: appointmentLocation.code,
+                                            text: appointmentLocation.localName
+                                        }), items) %}
+                                    {% endfor %}
+
                                     {{ govukSelect({
                                         id: "location",
                                         name: "location",
@@ -128,23 +130,21 @@
                                             text: "Appointment location",
                                             classes: "govuk-label--m"
                                         },
-                                        items: [
-                                            {
-                                                value: "",
-                                                text: ""
-                                            },
-                                            {
-                                                value: "abc-123",
-                                                text: "Test location"
-                                            }
-                                        ]
+                                        items: items
                                     }) }}
 
-                                    <button type="submit" class="moj-filter__add-another">Select another location
-                                    </button>
+                                    <button type="submit" class="moj-filter__add-another">Select another location</button>
                                 </div>
 
                                 <div>
+                                    {% set items = [{value: '', text: ''}] %}
+                                    {% for courtOrProbationTeam in courtsAndProbationTeams %}
+                                        {% set items = (items.push({
+                                            value: courtOrProbationTeam.code,
+                                            text: courtOrProbationTeam.description
+                                        }), items) %}
+                                    {% endfor %}
+
                                     {{ govukSelect({
                                         id: "agency",
                                         name: "agency",
@@ -152,26 +152,15 @@
                                             text: "Court or probation team",
                                             classes: "govuk-label--m"
                                         },
-                                        items: [
-                                            {
-                                                value: "",
-                                                text: ""
-                                            },
-                                            {
-                                                value: "abc-123",
-                                                text: "Test court"
-                                            }
-                                        ]
+                                        items: items
                                     }) }}
 
-                                    <button type="submit" class="moj-filter__add-another">Select another court or
-                                        probation team
-                                    </button>
+                                    <button type="submit" class="moj-filter__add-another">Select another court or probation team</button>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+                        <button type="submit" class="govuk-button govuk-!-margin-top-3 govuk-!-margin-bottom-0" data-module="govuk-button">
                             Apply filters
                         </button>
                     </form>

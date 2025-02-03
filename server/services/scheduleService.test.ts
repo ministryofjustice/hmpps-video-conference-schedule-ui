@@ -59,6 +59,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 2,
@@ -71,6 +72,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 3,
@@ -83,6 +85,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 4,
@@ -95,6 +98,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Official Other',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 4,
@@ -107,6 +111,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Official Other',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 5,
@@ -119,6 +124,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Probation',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 6,
@@ -133,6 +139,7 @@ describe('Schedule service', () => {
         viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
         cancelledBy: 'jbloggs',
         cancelledTime: '2024-12-14T11:59:00Z',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 7,
@@ -145,6 +152,7 @@ describe('Schedule service', () => {
         appointmentTypeDescription: 'Video Link - Legal Appointment',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
+        createdTime: startOfToday().toISOString(),
       },
       {
         id: 8,
@@ -159,6 +167,7 @@ describe('Schedule service', () => {
         viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
         cancelledBy: 'EXTERNAL',
         cancelledTime: '2024-12-12T11:59:00Z',
+        createdTime: startOfToday().toISOString(),
       },
     ]
 
@@ -275,6 +284,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 1',
               appointmentType: false,
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',
@@ -298,6 +308,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 1',
               appointmentType: 'Appeal',
               externalAgencyDescription: 'Aberystwyth Civil',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',
@@ -320,6 +331,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 1',
               appointmentType: false,
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',
@@ -345,6 +357,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 2',
               appointmentType: false,
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
@@ -369,6 +382,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 2',
               appointmentType: false,
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',
@@ -393,6 +407,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 3',
               appointmentType: 'Recall report',
               externalAgencyDescription: 'Burnley PP',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
@@ -419,6 +434,7 @@ describe('Schedule service', () => {
               appointmentType: false,
               endTime: '17:30',
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',
@@ -467,6 +483,7 @@ describe('Schedule service', () => {
               appointmentType: 'Recall report',
               endTime: '12:00',
               externalAgencyDescription: 'Burnley PP',
+              lastUpdatedOrCreated: '2024-12-12T11:59:00Z',
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
@@ -493,6 +510,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 2',
               appointmentType: false,
               externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'MDI-1-1-001',
                 firstName: 'Joe',

@@ -31,4 +31,15 @@ export default {
         category: { code: 'VLB', description: 'Video Link - Court Hearing' },
       },
     ]),
+  stubGetAppointmentCategories: () =>
+    stubGet('/activities-and-appointments-api/appointment-categories', [
+      {
+        code: 'VLB',
+        description: 'Video Link - Court Hearing',
+      },
+      {
+        code: 'VLPM',
+        description: 'Video Link - Probation Meeting',
+      },
+    ]),
 }
