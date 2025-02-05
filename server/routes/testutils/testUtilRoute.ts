@@ -13,5 +13,5 @@ export function testUtilRoutes(): Router {
 export default function expectJourneySession(app: Express, journeyName: string, expectedJourney: unknown) {
   return request(app)
     .get(`/journeySession/${journeyName}`)
-    .expect(res => expect((res.text && JSON.parse(res.text)) || null).toEqual(expectedJourney))
+    .expect(res => expect((res.text && JSON.parse(res.text)) || undefined).toEqual(expectedJourney))
 }

@@ -9,6 +9,7 @@ import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import ScheduleService from '../../../../services/scheduleService'
 import { existsByDataQa } from '../../../testutils/cheerio'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -22,11 +23,16 @@ const scheduleService = new ScheduleService(null, null, null, null, null) as jes
 
 let app: Express
 
-beforeEach(() => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, referenceDataService, prisonService, scheduleService },
     userSupplier: () => user,
+    journeySessionSupplier: () => journeySession,
   })
+}
+
+beforeEach(() => {
+  appSetup()
 
   prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
 })
@@ -124,5 +130,30 @@ describe('GET', () => {
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
+  })
+})
+
+describe('POST', () => {
+  it('should set the posted filter values in session', async () => {
+    return request(app)
+      .post('/')
+      .send({
+        wing: ['A', 'B'],
+        appointmentType: 'VLB',
+        period: 'AM',
+        appointmentLocation: 'VCC-ROOM-1',
+        courtOrProbationTeam: 'ABERCV',
+      })
+      .expect(302)
+      .expect('location', `/`)
+      .then(() =>
+        expectJourneySession(app, 'scheduleFilters', {
+          wing: ['A', 'B'],
+          appointmentType: ['VLB'],
+          period: ['AM'],
+          appointmentLocation: ['VCC-ROOM-1'],
+          courtOrProbationTeam: ['ABERCV'],
+        }),
+      )
   })
 })

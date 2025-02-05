@@ -102,6 +102,6 @@ export default class DailyScheduleHandler implements PageHandler {
         ? { wing, appointmentType, period, appointmentLocation, courtOrProbationTeam }
         : undefined
 
-    res.redirect('.')
+    res.redirect(req.get('Referrer') || '/')
   }
 }
