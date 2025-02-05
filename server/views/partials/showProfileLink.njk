@@ -1,6 +1,6 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% macro showProfileLink(params) %}
+{% macro showProfileLink(dpsUrl, params) %}
     <div>
         <div>
             {% set name = params.lastName | convertToTitleCase + ', ' + params.firstName | convertToTitleCase %}

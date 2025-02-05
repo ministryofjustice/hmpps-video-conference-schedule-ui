@@ -38,7 +38,7 @@
 
                     {% set rows = (rows.push([
                         {
-                            html: showProfileLink(scheduleItem.prisoner) if loop.index == 1,
+                            html: showProfileLink(dpsUrl, scheduleItem.prisoner) if loop.index == 1,
                             attributes: {
                                 "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName
                             },
