@@ -19,6 +19,7 @@ import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { parseDate } from '../utils/utils'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
+import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -42,13 +43,14 @@ type ScheduleItem = {
   status: 'ACTIVE' | 'CANCELLED'
   startTime: string
   endTime?: string
-  appointmentType: string
+  appointmentTypeCode: string
+  appointmentTypeDescription: string
   appointmentLocationDescription: string
   tags: string[] // TODO: Logic for displaying "New" and "Updated" tags
   videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
-  appointmentSubtype?: string
+  appointmentSubtypeDescription: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
   cancelledTime?: string
@@ -76,6 +78,7 @@ export default class ScheduleService {
   public async getSchedule(
     prisonId: string,
     date: Date,
+    filters: ScheduleFilters,
     showStatus: 'ACTIVE' | 'CANCELLED',
     user: Express.User,
   ): Promise<DailySchedule> {
@@ -93,8 +96,9 @@ export default class ScheduleService {
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
-    // TODO: Apply filter rules here
-    const filteredItems = scheduleItems.filter(() => true)
+    const filteredItems = scheduleItems.filter(
+      i => !filters?.appointmentType || filters.appointmentType.includes(i.appointmentTypeCode),
+    )
 
     const displayItems = filteredItems.filter(item => item.status === showStatus)
 
@@ -159,12 +163,13 @@ export default class ScheduleService {
       status: scheduledAppointment.status,
       startTime: scheduledAppointment.startTime,
       endTime: scheduledAppointment.endTime,
-      appointmentType: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
+      appointmentTypeCode: scheduledAppointment.appointmentTypeCode,
+      appointmentTypeDescription: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
       videoLink: videoLinkRequired && bvlsAppointment?.videoUrl,
-      appointmentSubtype:
+      appointmentSubtypeDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
       externalAgencyDescription:

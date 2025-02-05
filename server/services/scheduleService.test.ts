@@ -56,6 +56,7 @@ describe('Schedule service', () => {
         endTime: '08:00',
         locationId: 1,
         locationDescription: 'ROOM 1',
+        appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
@@ -69,6 +70,7 @@ describe('Schedule service', () => {
         endTime: '09:00',
         locationId: 1,
         locationDescription: 'ROOM 1',
+        appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
@@ -82,6 +84,7 @@ describe('Schedule service', () => {
         endTime: '09:15',
         locationId: 1,
         locationDescription: 'ROOM 1',
+        appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
@@ -95,6 +98,7 @@ describe('Schedule service', () => {
         endTime: '09:00',
         locationId: 2,
         locationDescription: 'ROOM 2',
+        appointmentTypeCode: 'VLOO',
         appointmentTypeDescription: 'Video Link - Official Other',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
@@ -108,6 +112,7 @@ describe('Schedule service', () => {
         endTime: '09:00',
         locationId: 2,
         locationDescription: 'ROOM 2',
+        appointmentTypeCode: 'VLOO',
         appointmentTypeDescription: 'Video Link - Official Other',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
@@ -121,6 +126,7 @@ describe('Schedule service', () => {
         endTime: '12:00',
         locationId: 3,
         locationDescription: 'ROOM 3',
+        appointmentTypeCode: 'VLPM',
         appointmentTypeDescription: 'Video Link - Probation',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
@@ -134,6 +140,7 @@ describe('Schedule service', () => {
         endTime: '17:30',
         locationId: 2,
         locationDescription: 'ROOM 2',
+        appointmentTypeCode: 'VLLA',
         appointmentTypeDescription: 'Video Link - Legal Appointment',
         status: 'CANCELLED',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
@@ -149,6 +156,7 @@ describe('Schedule service', () => {
         endTime: '17:30',
         locationId: 2,
         locationDescription: 'ROOM 2',
+        appointmentTypeCode: 'VLLA',
         appointmentTypeDescription: 'Video Link - Legal Appointment',
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
@@ -162,6 +170,7 @@ describe('Schedule service', () => {
         endTime: '12:00',
         locationId: 3,
         locationDescription: 'ROOM 3',
+        appointmentTypeCode: 'VLPM',
         appointmentTypeDescription: 'Video Link - Probation',
         status: 'CANCELLED',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
@@ -273,16 +282,17 @@ describe('Schedule service', () => {
   describe('getSchedule', () => {
     it('builds a daily schedule', async () => {
       const date = new Date('2024-12-12')
-      const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
       expect(result).toEqual({
         appointmentGroups: [
           [
             {
-              appointmentType: 'Pre-hearing',
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -303,10 +313,11 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             },
             {
-              appointmentType: 'Court Hearing',
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Court Hearing',
               appointmentId: 2,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtype: 'Appeal',
+              appointmentSubtypeDescription: 'Appeal',
               externalAgencyDescription: 'Aberystwyth Civil',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -326,10 +337,11 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
             },
             {
-              appointmentType: 'Post-hearing',
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -352,10 +364,11 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentType: 'Official Other',
+              appointmentTypeCode: 'VLOO',
+              appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -377,10 +390,11 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentType: 'Official Other',
+              appointmentTypeCode: 'VLOO',
+              appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -402,10 +416,11 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentType: 'Probation',
+              appointmentTypeCode: 'VLPM',
+              appointmentTypeDescription: 'Probation',
               appointmentId: 5,
               appointmentLocationDescription: 'ROOM 3',
-              appointmentSubtype: 'Recall report',
+              appointmentSubtypeDescription: 'Recall report',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -428,10 +443,11 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentType: 'Legal Appointment',
+              appointmentTypeCode: 'VLLA',
+              appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               endTime: '17:30',
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -469,18 +485,127 @@ describe('Schedule service', () => {
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
     })
 
-    it('builds a view of the cancelled appointments', async () => {
+    it('filters the daily schedule by appointment type', async () => {
       const date = new Date('2024-12-12')
-      const result = await scheduleService.getSchedule('MDI', date, 'CANCELLED', user)
+      const result = await scheduleService.getSchedule(
+        'MDI',
+        date,
+        { appointmentType: ['VLLA', 'VLOO'] },
+        'ACTIVE',
+        user,
+      )
 
       expect(result).toEqual({
         appointmentGroups: [
           [
             {
-              appointmentType: 'Probation',
+              appointmentTypeCode: 'VLOO',
+              appointmentTypeDescription: 'Official Other',
+              appointmentId: 4,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentSubtypeDescription: false,
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'Out of prison',
+                firstName: 'John',
+                hasAlerts: true,
+                inPrison: false,
+                lastName: 'Smith',
+                prisonerNumber: 'ZXY321',
+              },
+              startTime: '08:30',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+            },
+          ],
+          [
+            {
+              appointmentTypeCode: 'VLOO',
+              appointmentTypeDescription: 'Official Other',
+              appointmentId: 4,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentSubtypeDescription: false,
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'MDI-1-1-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:30',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+            },
+          ],
+          [
+            {
+              appointmentTypeCode: 'VLLA',
+              appointmentTypeDescription: 'Legal Appointment',
+              appointmentId: 7,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentSubtypeDescription: false,
+              endTime: '17:30',
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'MDI-1-1-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '16:30',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
+            },
+          ],
+        ],
+        appointmentsListed: 3,
+        numberOfPrisoners: 2,
+        cancelledAppointments: 1,
+        missingVideoLinks: 0,
+      })
+
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
+    })
+
+    it('builds a view of the cancelled appointments', async () => {
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'CANCELLED', user)
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentTypeCode: 'VLPM',
+              appointmentTypeDescription: 'Probation',
               appointmentId: 8,
               appointmentLocationDescription: 'ROOM 3',
-              appointmentSubtype: 'Recall report',
+              appointmentSubtypeDescription: 'Recall report',
               endTime: '12:00',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: '2024-12-12T11:59:00Z',
@@ -505,10 +630,11 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentType: 'Legal Appointment',
+              appointmentTypeCode: 'VLLA',
+              appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 6,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtype: false,
+              appointmentSubtypeDescription: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -581,7 +707,7 @@ describe('Schedule service', () => {
         bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
       })
@@ -608,7 +734,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
       })
@@ -635,7 +761,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
@@ -662,7 +788,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
@@ -689,7 +815,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
       })
@@ -716,7 +842,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
@@ -744,7 +870,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
       })
@@ -772,7 +898,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
@@ -800,7 +926,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
       })
@@ -828,7 +954,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
@@ -856,7 +982,7 @@ describe('Schedule service', () => {
         appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
 
         const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, 'ACTIVE', user)
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })

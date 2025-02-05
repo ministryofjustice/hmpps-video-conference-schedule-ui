@@ -13,6 +13,7 @@ export default class DownloadCsvHandler implements PageHandler {
 
   GET = async (req: Request, res: Response) => {
     const { user } = res.locals
+    const filters = req.session.journey?.scheduleFilters
 
     const dateFromQueryParam = new Date(req.query.date?.toString())
     const statusFromQueryParam = req.query.status as 'ACTIVE' | 'CANCELLED'
@@ -23,6 +24,7 @@ export default class DownloadCsvHandler implements PageHandler {
     const schedule = await this.scheduleService.getSchedule(
       user.activeCaseLoadId,
       startOfDay(isValid(date) ? date : new Date()),
+      filters,
       status,
       user,
     )
@@ -41,8 +43,8 @@ export default class DownloadCsvHandler implements PageHandler {
         cellNumber: a.prisoner.cellLocation,
         appointmentStartTime: a.startTime,
         appointmentEndTime: a.endTime || '',
-        appointmentType: a.appointmentType,
-        appointmentSubtype: a.appointmentSubtype || '',
+        appointmentType: a.appointmentTypeDescription,
+        appointmentSubtype: a.appointmentSubtypeDescription || '',
         roomLocation: a.appointmentLocationDescription,
         courtOrProbationTeam: a.externalAgencyDescription || '',
         videoLink: a.videoLink || '',
