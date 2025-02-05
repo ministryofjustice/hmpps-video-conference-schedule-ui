@@ -3,6 +3,7 @@ import { Router } from 'express'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import DailyScheduleHandler from './handlers/dailyScheduleHandler'
+import ClearFilterHandler from './handlers/clearFilterHandler'
 import SelectDateHandler from './handlers/selectDateHandler'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
@@ -27,6 +28,7 @@ export default function Index({
   )
 
   route('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
+  route('/clear-filter', new ClearFilterHandler())
   route('/download-csv', new DownloadCsvHandler(scheduleService))
   route('/select-date', new SelectDateHandler())
 

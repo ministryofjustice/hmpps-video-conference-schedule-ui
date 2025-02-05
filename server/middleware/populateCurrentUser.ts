@@ -9,6 +9,11 @@ export default function populateCurrentUser(userService: UserService): RequestHa
         const user = await userService.getUser(res.locals.user)
         if (user) {
           res.locals.user = { ...user, ...res.locals.user }
+          if (req.session.activeCaseLoadId !== user.activeCaseLoadId) {
+            delete req.session.journey
+            delete req.session.journeyData
+            req.session.activeCaseLoadId = user.activeCaseLoadId
+          }
         } else {
           logger.info('No user available')
         }
