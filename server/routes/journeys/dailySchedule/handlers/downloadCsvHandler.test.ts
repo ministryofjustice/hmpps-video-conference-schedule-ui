@@ -27,7 +27,7 @@ beforeEach(() => {
           prisoner: { firstName: 'John', lastName: 'Smith', prisonerNumber: 'ABC123', cellLocation: 'A-1-001' },
           startTime: '11:00',
           endTime: '12:00',
-          appointmentDescription: 'Court Hearing',
+          appointmentType: 'Court Hearing',
           appointmentLocationDescription: 'A Wing Video Link',
           lastUpdatedOrCreated: '2024-12-10T00:00:00Z',
         },

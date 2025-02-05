@@ -98,11 +98,11 @@
                             classes: classes
                         },
                         {
-                            text: scheduleItem.startTime + ' to ' + scheduleItem.endTime,
+                            text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime),
                             classes: classes
                         },
                         {
-                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentType + '</div>' if scheduleItem.appointmentType),
+                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentType + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentSubtype + '</div>' if scheduleItem.appointmentSubtype),
                             classes: classes
                         },
                         {

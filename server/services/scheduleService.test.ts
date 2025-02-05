@@ -279,10 +279,10 @@ describe('Schedule service', () => {
         appointmentGroups: [
           [
             {
-              appointmentDescription: 'Pre-hearing',
+              appointmentType: 'Pre-hearing',
               appointmentId: 1,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentType: false,
+              appointmentSubtype: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -303,10 +303,10 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             },
             {
-              appointmentDescription: 'Court Hearing',
+              appointmentType: 'Court Hearing',
               appointmentId: 2,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentType: 'Appeal',
+              appointmentSubtype: 'Appeal',
               externalAgencyDescription: 'Aberystwyth Civil',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -326,10 +326,10 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
             },
             {
-              appointmentDescription: 'Post-hearing',
+              appointmentType: 'Post-hearing',
               appointmentId: 3,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentType: false,
+              appointmentSubtype: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -352,10 +352,10 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentDescription: 'Official Other',
+              appointmentType: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentType: false,
+              appointmentSubtype: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -377,10 +377,10 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentDescription: 'Official Other',
+              appointmentType: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentType: false,
+              appointmentSubtype: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -402,10 +402,10 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentDescription: 'Probation',
+              appointmentType: 'Probation',
               appointmentId: 5,
               appointmentLocationDescription: 'ROOM 3',
-              appointmentType: 'Recall report',
+              appointmentSubtype: 'Recall report',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -428,10 +428,10 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentDescription: 'Legal Appointment',
+              appointmentType: 'Legal Appointment',
               appointmentId: 7,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentType: false,
+              appointmentSubtype: false,
               endTime: '17:30',
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -477,10 +477,10 @@ describe('Schedule service', () => {
         appointmentGroups: [
           [
             {
-              appointmentDescription: 'Probation',
+              appointmentType: 'Probation',
               appointmentId: 8,
               appointmentLocationDescription: 'ROOM 3',
-              appointmentType: 'Recall report',
+              appointmentSubtype: 'Recall report',
               endTime: '12:00',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: '2024-12-12T11:59:00Z',
@@ -505,10 +505,10 @@ describe('Schedule service', () => {
           ],
           [
             {
-              appointmentDescription: 'Legal Appointment',
+              appointmentType: 'Legal Appointment',
               appointmentId: 6,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentType: false,
+              appointmentSubtype: false,
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {

@@ -41,14 +41,14 @@ type ScheduleItem = {
   }
   status: 'ACTIVE' | 'CANCELLED'
   startTime: string
-  endTime: string
-  appointmentDescription: string
+  endTime?: string
+  appointmentType: string
   appointmentLocationDescription: string
   tags: string[] // TODO: Logic for displaying "New" and "Updated" tags
   videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
-  appointmentType?: string
+  appointmentSubtype?: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
   cancelledTime?: string
@@ -159,12 +159,12 @@ export default class ScheduleService {
       status: scheduledAppointment.status,
       startTime: scheduledAppointment.startTime,
       endTime: scheduledAppointment.endTime,
-      appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),
+      appointmentType: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
       videoLink: videoLinkRequired && bvlsAppointment?.videoUrl,
-      appointmentType:
+      appointmentSubtype:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
       externalAgencyDescription:
@@ -191,7 +191,7 @@ export default class ScheduleService {
     }
   }
 
-  private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
+  private getAppointmentType(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
     return scheduledAppointment.appointmentTypeDescription.replaceAll(/Video Link - /g, '')
