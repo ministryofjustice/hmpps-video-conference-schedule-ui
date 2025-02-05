@@ -73,4 +73,19 @@ describe('activitiesAndAppointmentsApiClient', () => {
       expect(output).toEqual(true)
     })
   })
+
+  describe('getAppointmentCategories', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeActivitiesAndAppointmentsApiClient
+        .get('/appointment-categories')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .matchHeader('Caseload-Id', `MDI`)
+        .reply(200, response)
+
+      const output = await activitiesAndAppointmentsApiClient.getAppointmentCategories(user)
+      expect(output).toEqual(response)
+    })
+  })
 })

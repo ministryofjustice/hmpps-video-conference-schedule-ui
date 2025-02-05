@@ -15,11 +15,10 @@
 
   &__options-container {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 30px;
   }
 
-  &__option {
+  &__option:last-child {
     flex: 1;
   }
 

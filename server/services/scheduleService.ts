@@ -41,18 +41,19 @@ type ScheduleItem = {
   }
   status: 'ACTIVE' | 'CANCELLED'
   startTime: string
-  endTime: string
-  appointmentDescription: string
+  endTime?: string
+  appointmentType: string
   appointmentLocationDescription: string
   tags: string[] // TODO: Logic for displaying "New" and "Updated" tags
   videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
-  appointmentType?: string
+  appointmentSubtype?: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
   cancelledTime?: string
   cancelledBy?: string
+  lastUpdatedOrCreated: string
 }
 
 export type DailySchedule = {
@@ -92,9 +93,10 @@ export default class ScheduleService {
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
-    // TODO: Filter scheduleItems by user defined filters here
+    // TODO: Apply filter rules here
+    const filteredItems = scheduleItems.filter(() => true)
 
-    const displayItems = scheduleItems.filter(item => item.status === showStatus)
+    const displayItems = filteredItems.filter(item => item.status === showStatus)
 
     const groupedAppointments = _.chain(displayItems)
       .groupBy(item => item.videoBookingId ?? item.appointmentId + item.prisoner.prisonerNumber)
@@ -102,9 +104,9 @@ export default class ScheduleService {
       .value()
 
     return {
+      cancelledAppointments: filteredItems.filter(item => item.status === 'CANCELLED').length,
       appointmentsListed: displayItems.length,
       numberOfPrisoners: _.uniq(displayItems.map(item => item.prisoner.prisonerNumber)).length,
-      cancelledAppointments: scheduleItems.filter(item => item.status === 'CANCELLED').length,
       missingVideoLinks: displayItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
       appointmentGroups: Object.values(groupedAppointments),
     }
@@ -157,12 +159,12 @@ export default class ScheduleService {
       status: scheduledAppointment.status,
       startTime: scheduledAppointment.startTime,
       endTime: scheduledAppointment.endTime,
-      appointmentDescription: this.getAppointmentDescription(bvlsAppointment, scheduledAppointment),
+      appointmentType: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
       videoLink: videoLinkRequired && bvlsAppointment?.videoUrl,
-      appointmentType:
+      appointmentSubtype:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
       externalAgencyDescription:
@@ -172,6 +174,7 @@ export default class ScheduleService {
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
       cancelledTime: scheduledAppointment.cancelledTime,
       cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
+      lastUpdatedOrCreated: updatedTime || createdTime,
     }
   }
 
@@ -188,7 +191,7 @@ export default class ScheduleService {
     }
   }
 
-  private getAppointmentDescription(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
+  private getAppointmentType(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_PRE') return 'Pre-hearing'
     if (bvlsAppointment?.appointmentType === 'VLB_COURT_POST') return 'Post-hearing'
     return scheduledAppointment.appointmentTypeDescription.replaceAll(/Video Link - /g, '')

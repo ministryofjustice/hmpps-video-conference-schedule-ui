@@ -36,4 +36,29 @@ describe('bookAVideoLinkApiClient', () => {
       expect(output).toEqual(response)
     })
   })
+
+  describe('getCourts', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient.get('/courts').matchHeader('authorization', `Bearer systemToken`).reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getCourts(user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getProbationTeams', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/probation-teams')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getProbationTeams(user)
+      expect(output).toEqual(response)
+    })
+  })
 })

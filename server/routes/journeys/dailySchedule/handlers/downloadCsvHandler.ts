@@ -1,9 +1,10 @@
 import * as converter from 'json-2-csv'
 import { Request, Response } from 'express'
-import { startOfDay, isValid, formatDate } from 'date-fns'
+import { startOfDay, isValid } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import ScheduleService from '../../../../services/scheduleService'
+import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
+import { convertToTitleCase, formatDate } from '../../../../utils/utils'
 
 export default class DownloadCsvHandler implements PageHandler {
   public PAGE_NAME = Page.DOWNLOAD_DAILY_SCHEDULE
@@ -26,9 +27,28 @@ export default class DownloadCsvHandler implements PageHandler {
       user,
     )
 
-    const csv = converter.json2csv(schedule.appointmentGroups.flat())
+    const csv = converter.json2csv(this.convertScheduleToCsvRows(schedule))
     res.header('Content-Type', 'text/csv')
     res.attachment(`daily-schedule${status === 'CANCELLED' ? '-cancelled' : ''}-${formatDate(date, 'yyyy-MM-dd')}.csv`)
     res.send(csv)
+  }
+
+  private convertScheduleToCsvRows = (schedule: DailySchedule) => {
+    return schedule.appointmentGroups.flatMap(group =>
+      group.map(a => ({
+        prisonerName: convertToTitleCase(`${a.prisoner.firstName} ${a.prisoner.lastName}`),
+        prisonerNumber: a.prisoner.prisonerNumber,
+        cellNumber: a.prisoner.cellLocation,
+        appointmentStartTime: a.startTime,
+        appointmentEndTime: a.endTime || '',
+        appointmentType: a.appointmentType,
+        appointmentSubtype: a.appointmentSubtype || '',
+        roomLocation: a.appointmentLocationDescription,
+        courtOrProbationTeam: a.externalAgencyDescription || '',
+        videoLink: a.videoLink || '',
+        lastUpdated: formatDate(a.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
+        dateExported: formatDate(new Date(), "d MMMM yyyy 'at' HH:mm"),
+      })),
+    )
   }
 }

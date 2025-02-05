@@ -8,12 +8,15 @@ import PrisonService from '../../../../services/prisonService'
 import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import ScheduleService from '../../../../services/scheduleService'
 import { existsByDataQa } from '../../../testutils/cheerio'
+import ReferenceDataService from '../../../../services/referenceDataService'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/scheduleService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const scheduleService = new ScheduleService(null, null, null, null, null) as jest.Mocked<ScheduleService>
 
@@ -21,7 +24,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { auditService, prisonService, scheduleService },
+    services: { auditService, referenceDataService, prisonService, scheduleService },
     userSupplier: () => user,
   })
 
@@ -42,13 +45,19 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(existsByDataQa($, 'warning-text')).toBe(false)
+
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: { query: {} },
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
-        expect(existsByDataQa($, 'warning-text')).toBe(false)
+        expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
+        expect(referenceDataService.getAppointmentCategories).toHaveBeenLastCalledWith(user)
+        expect(referenceDataService.getAppointmentLocations).toHaveBeenLastCalledWith('MDI', user)
+        expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
+        expect(referenceDataService.getCellsByWing).toHaveBeenLastCalledWith('MDI', user)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
       })
   })

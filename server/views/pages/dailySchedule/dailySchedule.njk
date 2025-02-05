@@ -19,7 +19,7 @@
             <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                 <span class="govuk-caption-m govuk-!-display-inline-block">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
-                <a class="govuk-link govuk-link--no-visited-state" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
             </div>
         </div>
     </div>
@@ -39,6 +39,12 @@
     {% endif %}
 
     {% include "partials/filters.njk" %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-column-full">
+            <p class="govuk-body">Filter returned <span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> results. <a class="govuk-link govuk-link--no-visited-state" href="#">Clear filters</a></p>
+        </div>
+    </div>
 
     <div class="govuk-grid-row govuk-!-margin-top-6">
         <div class="govuk-grid-column-full">
@@ -74,7 +80,7 @@
         </div>
     </div>
 
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row govuk-!-margin-top-6">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
 
@@ -92,11 +98,11 @@
                             classes: classes
                         },
                         {
-                            text: scheduleItem.startTime + ' to ' + scheduleItem.endTime,
+                            text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime),
                             classes: classes
                         },
                         {
-                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentType + '</div>' if scheduleItem.appointmentType),
+                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentType + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentSubtype + '</div>' if scheduleItem.appointmentSubtype),
                             classes: classes
                         },
                         {
@@ -135,42 +141,38 @@
                     <button class="hmpps-print-and-export--print">Print schedule</button>
                 </div>
             </div>
-            {% if rows | length %}
-                {{ govukTable({
-                    attributes: {
-                        'data-module': 'moj-sortable-table'
-                    },
-                    head: [
-                        {
-                            text: "Prisoner",
-                            attributes: {
-                                "aria-sort": "none"
-                            }
-                        },
-                        {
-                            text: "Time"
-                        },
-                        {
-                            text: "Appointment"
-                        },
-                        {
-                            text: "Location"
-                        },
-                        {
-                            text: "Video link"
-                        },
-                        {
-                            text: "Status"
-                        },
-                        {
-                            text: "Action"
+            {{ govukTable({
+                attributes: {
+                    'data-module': 'moj-sortable-table'
+                },
+                head: [
+                    {
+                        text: "Prisoner",
+                        attributes: {
+                            "aria-sort": "none"
                         }
-                    ],
-                    rows: rows
-                }) }}
-            {% else %}
-                <p class="govuk-body">There are no video appointments scheduled for {{ date | formatDate('iiii d MMMM yyyy') }}</p>
-            {% endif %}
+                    },
+                    {
+                        text: "Time"
+                    },
+                    {
+                        text: "Appointment"
+                    },
+                    {
+                        text: "Location"
+                    },
+                    {
+                        text: "Video link"
+                    },
+                    {
+                        text: "Status"
+                    },
+                    {
+                        text: "Action"
+                    }
+                ],
+                rows: rows
+            }) }}
         </div>
     </div>
 {% endblock %}

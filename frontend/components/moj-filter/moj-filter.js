@@ -3,7 +3,7 @@ function MojFilter($filter) {
 
   new MOJFrontend.FilterToggleButton({
     bigModeMediaQuery: '(min-width: 48.063em)',
-    startHidden: true,
+    startHidden: false,
     toggleButton: {
       container: this.toggleButton,
       showText: 'Show filter',

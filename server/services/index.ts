@@ -4,6 +4,7 @@ import UserService from './userService'
 import PrisonService from './prisonService'
 import ScheduleService from './scheduleService'
 import AppointmentService from './appointmentService'
+import ReferenceDataService from './referenceDataService'
 
 export const services = () => {
   const {
@@ -16,12 +17,18 @@ export const services = () => {
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
     activitiesAndAppointmentsApiClient,
+    locationsInsidePrisonApiClient,
   } = dataAccess()
 
   const userService = new UserService(manageUsersApiClient)
   const auditService = new AuditService(hmppsAuditClient)
   const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
   const appointmentService = new AppointmentService(prisonApiClient, activitiesAndAppointmentsApiClient)
+  const referenceDataService = new ReferenceDataService(
+    locationsInsidePrisonApiClient,
+    activitiesAndAppointmentsApiClient,
+    bookAVideoLinkApiClient,
+  )
   const scheduleService = new ScheduleService(
     appointmentService,
     nomisMappingApiClient,
@@ -32,6 +39,7 @@ export const services = () => {
 
   return {
     applicationInfo,
+    referenceDataService,
     userService,
     auditService,
     prisonService,
