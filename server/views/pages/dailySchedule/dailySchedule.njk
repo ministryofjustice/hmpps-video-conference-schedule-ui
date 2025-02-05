@@ -10,7 +10,14 @@
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 
 {% block meta %}
-    <meta name="autocompleteElements" content="location,agency"/>
+    {% set content = "appointmentLocation,courtOrProbationTeam" %}
+    {% for selectedLocation in session.journey.scheduleFilters.appointmentLocation or [] %}
+        {% set content = content + ",appointmentLocation-" + selectedLocation %}
+    {% endfor %}
+    {% for selectedCourtOrProbationTeam in session.journey.scheduleFilters.courtOrProbationTeam or [] %}
+        {% set content = content + ",courtOrProbationTeam-" + selectedCourtOrProbationTeam %}
+    {% endfor %}
+    <meta name="autocompleteElements" content="{{ content }}"/>
 {% endblock %}
 
 {% block content %}
@@ -40,11 +47,13 @@
 
     {% include "partials/filters.njk" %}
 
-    <div class="govuk-grid-row govuk-!-margin-top-6">
-        <div class="govuk-grid-column-full">
-            <p class="govuk-body">Filter returned <span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> results. <a class="govuk-link govuk-link--no-visited-state" href="#">Clear filters</a></p>
+    {% if session.journey.scheduleFilters %}
+        <div class="govuk-grid-row govuk-!-margin-top-6">
+            <div class="govuk-grid-column-full">
+                <p class="govuk-body">Filter returned <span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> results. <a class="govuk-link govuk-link--no-visited-state" href="/clear-filter?all=true">Clear filters</a></p>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <div class="govuk-grid-row govuk-!-margin-top-6">
         <div class="govuk-grid-column-full">

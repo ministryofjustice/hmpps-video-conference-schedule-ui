@@ -1,7 +1,7 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
-<div class="govuk-grid-row" data-module="moj-filter">
+<div class="govuk-grid-row" data-module="moj-filter" filters-applied="{{ 'true' if session.journey.scheduleFilters else 'false' }}">
     <div class="govuk-grid-column-full">
         <div class="moj-action-bar">
             <div class="moj-action-bar__filter"></div>
@@ -14,31 +14,59 @@
             </div>
 
             <div class="moj-filter__content">
-                <div class="moj-filter__selected">
-                    <div class="moj-filter__selected-heading">
-                        <div class="moj-filter__heading-title">
-                            <h2 class="govuk-heading-m">Selected filters</h2>
+                {% if session.journey.scheduleFilters %}
+                    <div class="moj-filter__selected">
+                        <div class="moj-filter__selected-heading">
+                            <div class="moj-filter__heading-title">
+                                <h2 class="govuk-heading-m">Selected filters</h2>
+                            </div>
+                            <div class="moj-filter__heading-action">
+                                <p><a class="govuk-link govuk-link--no-visited-state" href="/clear-filter?all=true">Clear filters</a></p>
+                            </div>
                         </div>
-                        <div class="moj-filter__heading-action">
-                            <p><a class="govuk-link govuk-link--no-visited-state" href="#">Clear filters</a></p>
-                        </div>
-                    </div>
 
-                    <ul class="moj-filter-tags">
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> A wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> B wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> C wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> D wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> E wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> F wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> G wing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Video link - Probation meeting</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Video link - Court hearing</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Morning (AM)</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span>VCC-crown-conference-room-2</a></li>
-                        <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove</span> Aberystwyth Family</a></li>
-                    </ul>
-                </div>
+                        <ul class="moj-filter-tags">
+                            {% for wing in wings %}
+                                {% set selectedFilters = session.journey.scheduleFilters.wing or [] %}
+                                {% if wing.fullLocationPath in selectedFilters %}
+                                    <li><a class="moj-filter__tag" href="/clear-filter?wing={{ wing.fullLocationPath }}"><span class="govuk-visually-hidden">Remove</span> {{ wing.localName }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for appointmentType in appointmentTypes %}
+                                {% set selectedFilters = session.journey.scheduleFilters.appointmentType or [] %}
+                                {% if appointmentType.code in selectedFilters %}
+                                    <li><a class="moj-filter__tag" href="/clear-filter?appointmentType={{ appointmentType.code }}"><span class="govuk-visually-hidden">Remove</span> {{ appointmentType.description }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% set selectedFilters = session.journey.scheduleFilters.period or [] %}
+                            {% if 'AM' in selectedFilters %}
+                                <li><a class="moj-filter__tag" href="/clear-filter?period=AM"><span class="govuk-visually-hidden">Remove</span> Morning (AM)</a></li>
+                            {% endif %}
+                            {% if 'PM' in selectedFilters %}
+                                <li><a class="moj-filter__tag" href="/clear-filter?period=PM"><span class="govuk-visually-hidden">Remove</span> Afternoon (PM)</a></li>
+                            {% endif %}
+                            {% if 'ED' in selectedFilters %}
+                                <li><a class="moj-filter__tag" href="/clear-filter?period=ED"><span class="govuk-visually-hidden">Remove</span> Evening (ED)</a></li>
+                            {% endif %}
+
+                            {% for appointmentLocation in appointmentLocations %}
+                                {% set selectedFilters = session.journey.scheduleFilters.appointmentLocation or [] %}
+                                {% if appointmentLocation.code in selectedFilters %}
+                                    <li><a class="moj-filter__tag" href="/clear-filter?appointmentLocation={{ appointmentLocation.code }}"><span class="govuk-visually-hidden">Remove</span> {{ appointmentLocation.localName }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for courtOrProbationTeam in courtsAndProbationTeams %}
+                                {% set selectedFilters = session.journey.scheduleFilters.courtOrProbationTeam or [] %}
+                                {% if courtOrProbationTeam.code in selectedFilters %}
+                                    <li><a class="moj-filter__tag" href="/clear-filter?courtOrProbationTeam={{ courtOrProbationTeam.code }}"><span class="govuk-visually-hidden">Remove</span> {{ courtOrProbationTeam.description }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
 
                 <div class="moj-filter__options">
                     <form method="POST">
@@ -50,7 +78,8 @@
                                 {% for wing in wings %}
                                     {% set items = (items.push({
                                         value: wing.fullLocationPath,
-                                        text: wing.localName
+                                        text: wing.localName,
+                                        checked: wing.fullLocationPath in (session.journey.scheduleFilters.wing or [])
                                     }), items) %}
                                 {% endfor %}
 
@@ -71,7 +100,8 @@
                                 {% for appointmentType in appointmentTypes %}
                                     {% set items = (items.push({
                                         value: appointmentType.code,
-                                        text: appointmentType.description
+                                        text: appointmentType.description,
+                                        checked: appointmentType.code in (session.journey.scheduleFilters.appointmentType or [])
                                     }), items) %}
                                 {% endfor %}
 
@@ -100,21 +130,50 @@
                                     items: [
                                         {
                                             value: "AM",
-                                            text: "Morning (AM)"
+                                            text: "Morning (AM)",
+                                            checked: 'AM' in (session.journey.scheduleFilters.period or [])
                                         },
                                         {
                                             value: "PM",
-                                            text: "Afternoon (PM)"
+                                            text: "Afternoon (PM)",
+                                            checked: 'PM' in (session.journey.scheduleFilters.period or [])
                                         },
                                         {
                                             value: "ED",
-                                            text: "Evening (ED)"
+                                            text: "Evening (ED)",
+                                            checked: 'ED' in (session.journey.scheduleFilters.period or [])
                                         }
                                     ]
                                 }) }}
                             </div>
                             <div class="moj-filter__option">
                                 <div class="govuk-!-margin-bottom-6">
+                                    {% for selectedLocation in session.journey.scheduleFilters.appointmentLocation or [] %}
+                                        {% set items = [{value: '', text: ''}] %}
+                                        {% for appointmentLocation in appointmentLocations %}
+                                            {% set items = (items.push({
+                                                value: appointmentLocation.code,
+                                                text: appointmentLocation.localName,
+                                                selected: selectedLocation == appointmentLocation.code
+                                            }), items) %}
+                                        {% endfor %}
+
+                                        {{ govukSelect({
+                                            id: "appointmentLocation-" + selectedLocation,
+                                            name: "appointmentLocation",
+                                            label: {
+                                                text: "Appointment location",
+                                                classes: "govuk-label--m" + (" govuk-visually-hidden" if loop.index > 1)
+                                            },
+                                            items: items,
+                                            disabled: true,
+                                            attributes: {
+                                                'clear-link': '/clear-filter?appointmentLocation=' + selectedLocation
+                                            }
+                                        }) }}
+                                        <input type="hidden" name="appointmentLocation" value="{{ selectedLocation }}">
+                                    {% endfor %}
+
                                     {% set items = [{value: '', text: ''}] %}
                                     {% for appointmentLocation in appointmentLocations %}
                                         {% set items = (items.push({
@@ -124,12 +183,12 @@
                                     {% endfor %}
 
                                     {{ govukSelect({
-                                        id: "location",
-                                        name: "location",
+                                        id: "appointmentLocation",
+                                        name: "appointmentLocation",
                                         label: {
                                             text: "Appointment location",
                                             classes: "govuk-label--m"
-                                        },
+                                        } if not session.journey.scheduleFilters.appointmentLocation,
                                         items: items
                                     }) }}
 
@@ -137,6 +196,32 @@
                                 </div>
 
                                 <div>
+                                    {% for selectedCourtOrProbationTeam in session.journey.scheduleFilters.courtOrProbationTeam or [] %}
+                                        {% set items = [{value: '', text: ''}] %}
+                                        {% for courtOrProbationTeam in courtsAndProbationTeams %}
+                                            {% set items = (items.push({
+                                                value: courtOrProbationTeam.code,
+                                                text: courtOrProbationTeam.description,
+                                                selected: selectedCourtOrProbationTeam == courtOrProbationTeam.code
+                                            }), items) %}
+                                        {% endfor %}
+
+                                        {{ govukSelect({
+                                            id: "courtOrProbationTeam-" + selectedCourtOrProbationTeam,
+                                            name: "courtOrProbationTeam",
+                                            label: {
+                                                text: "Court or probation team",
+                                                classes: "govuk-label--m" + (" govuk-visually-hidden" if loop.index > 1)
+                                            },
+                                            items: items,
+                                            disabled: true,
+                                            attributes: {
+                                                'clear-link': '/clear-filter?appointmentLocation=' + selectedLocation
+                                            }
+                                        }) }}
+                                        <input type="hidden" name="courtOrProbationTeam" value="{{ selectedCourtOrProbationTeam }}">
+                                    {% endfor %}
+
                                     {% set items = [{value: '', text: ''}] %}
                                     {% for courtOrProbationTeam in courtsAndProbationTeams %}
                                         {% set items = (items.push({
@@ -146,12 +231,12 @@
                                     {% endfor %}
 
                                     {{ govukSelect({
-                                        id: "agency",
-                                        name: "agency",
+                                        id: "courtOrProbationTeam",
+                                        name: "courtOrProbationTeam",
                                         label: {
                                             text: "Court or probation team",
                                             classes: "govuk-label--m"
-                                        },
+                                        } if not session.journey.scheduleFilters.courtOrProbationTeam,
                                         items: items
                                     }) }}
 

@@ -1,13 +1,39 @@
 import { Request, Response } from 'express'
 import { startOfDay, isValid } from 'date-fns'
+import { Expose, Transform } from 'class-transformer'
+import _ from 'lodash'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 
+class Body {
+  @Expose()
+  @Transform(({ value }) => (value ? _.uniq([value].flat()).filter(Boolean) : undefined))
+  wing: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? _.uniq([value].flat()).filter(Boolean) : undefined))
+  appointmentType: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? _.uniq([value].flat()).filter(Boolean) : undefined))
+  period: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? _.uniq([value].flat()).filter(Boolean) : undefined))
+  appointmentLocation: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? _.uniq([value].flat()).filter(Boolean) : undefined))
+  courtOrProbationTeam: string[]
+}
+
 export default class DailyScheduleHandler implements PageHandler {
   public PAGE_NAME = Page.DAILY_SCHEDULE_PAGE
+
+  public BODY = Body
 
   constructor(
     private readonly referenceDataService: ReferenceDataService,
@@ -64,5 +90,17 @@ export default class DailyScheduleHandler implements PageHandler {
           schedule,
           date,
         })
+  }
+
+  POST = async (req: Request, res: Response) => {
+    const { wing, appointmentType, period, appointmentLocation, courtOrProbationTeam } = req.body
+
+    req.session.journey ??= {}
+    req.session.journey.scheduleFilters =
+      wing || appointmentType || period || appointmentLocation || courtOrProbationTeam
+        ? { wing, appointmentType, period, appointmentLocation, courtOrProbationTeam }
+        : undefined
+
+    res.redirect('.')
   }
 }

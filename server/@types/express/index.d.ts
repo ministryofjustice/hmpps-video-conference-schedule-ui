@@ -1,4 +1,5 @@
 import type { UserDetails } from '../../services/userService'
+import { ScheduleFilters } from '../../routes/journeys/dailySchedule/journey'
 
 export default {}
 
@@ -7,7 +8,7 @@ export interface JourneyData extends Journey {
 }
 
 export interface Journey {
-  exampleJourney?: unknown
+  scheduleFilters?: ScheduleFilters
 }
 
 declare module 'express-session' {

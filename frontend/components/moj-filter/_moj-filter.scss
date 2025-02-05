@@ -38,4 +38,26 @@
     cursor: pointer;
     padding: 0;
   }
+
+  .autocomplete__wrapper:has(input:disabled) {
+    display: flex;
+    align-items: center;
+
+    input {
+      cursor: default;
+    }
+
+    .autocomplete__wrapper--clear {
+      background-image: url('/assets/images/icon-tag-remove-cross.svg');
+      cursor: pointer;
+      content: "";
+      position: absolute;
+      right: 10px;
+      font-weight: bold;
+      height: 10px;
+      margin-left: 5px;
+      vertical-align: middle;
+      width: 10px;
+    }
+  }
 }

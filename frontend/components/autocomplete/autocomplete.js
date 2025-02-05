@@ -7,6 +7,9 @@ function AutoComplete(meta) {
   var autocompleteElements = this.meta.content.split(',')
   autocompleteElements.forEach(el => {
     var selectElement = document.querySelector('#' + el)
+    var isDisabled = selectElement.getAttribute('disabled') === ''
+    var clearLink = selectElement.getAttribute('clear-link')
+
     accessibleAutocomplete.enhanceSelectElement({
       selectElement,
       showAllValues: true,
@@ -20,6 +23,16 @@ function AutoComplete(meta) {
     // By default accessible-autocomplete creates an input element with type="text".
     // We want to use type="search" to enable the clear button (cross) on these inputs
     selectElement.setAttribute('type', 'search')
+
+    if (isDisabled) {
+      selectElement.setAttribute('disabled', 'true')
+
+      var clearButton = document.createElement('div');
+      clearButton.classList = "autocomplete__wrapper--clear";
+      clearButton.addEventListener('click', () => window.location.href = clearLink)
+
+      selectElement.parentNode.appendChild(clearButton)
+    }
 
     // There is a bug(?) where the scroll bar of a child element will trigger a "blur" event when it has a parent with a
     // tabindex of -1. Because dialogs typically use tabindex=-1 to recieve programmatic focus, and this autocomplete
