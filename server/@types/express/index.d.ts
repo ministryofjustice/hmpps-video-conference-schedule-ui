@@ -16,6 +16,7 @@ declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    activeCaseLoadId: string
     journey: Journey
     journeyData: Record<string, JourneyData>
   }
