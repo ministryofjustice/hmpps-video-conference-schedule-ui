@@ -20,6 +20,7 @@ import { parseDate } from '../utils/utils'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
+import ReferenceDataService, { CellsByWing } from './referenceDataService'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -69,6 +70,7 @@ export type DailySchedule = {
 export default class ScheduleService {
   constructor(
     private readonly appointmentService: AppointmentService,
+    private readonly referenceDataService: ReferenceDataService,
     private readonly nomisMappingApiClient: NomisMappingApiClient,
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
@@ -87,18 +89,19 @@ export default class ScheduleService {
       this.bookAVideoLinkApiClient.getVideoLinkAppointments(prisonId, date, user),
     ])
 
-    const prisoners = await this.prisonerSearchApiClient.getByPrisonerNumbers(
-      _.uniq(scheduledAppointments.map(appointment => appointment.offenderNo)),
-      user,
-    )
+    const prisonerNumbers = _.uniq(scheduledAppointments.map(appointment => appointment.offenderNo))
+    const [prisoners, cellsByWing] = await Promise.all([
+      this.prisonerSearchApiClient.getByPrisonerNumbers(prisonerNumbers, user),
+      this.referenceDataService.getCellsByWing(prisonId, user),
+    ])
 
     const scheduleItems = await Promise.all(
       scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
-    const filteredItems = scheduleItems.filter(
-      i => !filters?.appointmentType || filters.appointmentType.includes(i.appointmentTypeCode),
-    )
+    const filteredItems = scheduleItems
+      .filter(i => this.filterByResidentialWing(i, filters, cellsByWing))
+      .filter(i => this.filterByAppointmentType(i, filters))
 
     const displayItems = filteredItems.filter(item => item.status === showStatus)
 
@@ -240,5 +243,16 @@ export default class ScheduleService {
       }
     }
     return undefined
+  }
+
+  private filterByResidentialWing = (item: ScheduleItem, filters: ScheduleFilters, cellsByWing: CellsByWing) => {
+    return (
+      !filters?.wing ||
+      filters.wing.some(f => cellsByWing.find(w => w.fullLocationPath === f).cells.includes(item.prisoner.cellLocation))
+    )
+  }
+
+  private filterByAppointmentType = (item: ScheduleItem, filters: ScheduleFilters) => {
+    return !filters?.appointmentType || filters.appointmentType.includes(item.appointmentTypeCode)
   }
 }

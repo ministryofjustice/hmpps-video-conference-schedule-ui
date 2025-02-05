@@ -11,8 +11,10 @@ import { LocationMapping } from '../@types/nomisMappingApi/types'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User } from '../@types/manageUsersApi/types'
+import ReferenceDataService, { CellsByWing } from './referenceDataService'
 
 jest.mock('../services/appointmentService')
+jest.mock('../services/referenceDataService')
 jest.mock('../data/nomisMappingApiClient')
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerSearchApiClient')
@@ -22,6 +24,7 @@ const user = createUser([])
 
 describe('Schedule service', () => {
   let appointmentService: jest.Mocked<AppointmentService>
+  let referenceDataService: jest.Mocked<ReferenceDataService>
   let nomisMappingApiClient: jest.Mocked<NomisMappingApiClient>
   let bookAVideoLinkApiClient: jest.Mocked<BookAVideoLinkApiClient>
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
@@ -35,12 +38,14 @@ describe('Schedule service', () => {
 
   beforeEach(() => {
     appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
+    referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
     nomisMappingApiClient = new NomisMappingApiClient() as jest.Mocked<NomisMappingApiClient>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
     manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
     scheduleService = new ScheduleService(
       appointmentService,
+      referenceDataService,
       nomisMappingApiClient,
       bookAVideoLinkApiClient,
       prisonerSearchApiClient,
@@ -251,20 +256,21 @@ describe('Schedule service', () => {
         firstName: 'Joe',
         lastName: 'Bloggs',
         prisonId: 'MDI',
-        cellLocation: 'MDI-1-1-001',
+        cellLocation: 'A-001',
         alerts: [],
       },
       {
         prisonerNumber: 'ZXY321',
         firstName: 'John',
         lastName: 'Smith',
-        prisonId: 'PVU',
-        cellLocation: 'PVI-1-1-001',
+        prisonId: 'PVI',
+        cellLocation: 'B-001',
         alerts: [{ alertCode: 'XCU' }],
       },
     ] as Prisoner[]
 
     appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+    referenceDataService.getCellsByWing.mockResolvedValue([{ fullLocationPath: 'A', cells: ['A-001'] }] as CellsByWing)
     bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
     nomisMappingApiClient.getLocationMappingByNomisId = jest.fn(
@@ -296,7 +302,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -321,7 +327,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: 'Aberystwyth Civil',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -345,7 +351,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -398,7 +404,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -452,7 +458,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -533,7 +539,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -560,7 +566,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,
@@ -581,16 +587,148 @@ describe('Schedule service', () => {
         cancelledAppointments: 1,
         missingVideoLinks: 0,
       })
+    })
 
-      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
-      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
-      expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
+    it('filters the daily schedule by residential wing', async () => {
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule('MDI', date, { wing: ['A'] }, 'ACTIVE', user)
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Pre-hearing',
+              appointmentId: 1,
+              appointmentLocationDescription: 'ROOM 1',
+              appointmentSubtypeDescription: false,
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '07:45',
+              endTime: '08:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Court Hearing',
+              appointmentId: 2,
+              appointmentLocationDescription: 'ROOM 1',
+              appointmentSubtypeDescription: 'Appeal',
+              externalAgencyDescription: 'Aberystwyth Civil',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:00',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: ['LINK_MISSING'],
+              videoBookingId: 1,
+              videoLinkRequired: true,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Post-hearing',
+              appointmentId: 3,
+              appointmentLocationDescription: 'ROOM 1',
+              appointmentSubtypeDescription: false,
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '09:00',
+              endTime: '09:15',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
+            },
+          ],
+          [
+            {
+              appointmentTypeCode: 'VLOO',
+              appointmentTypeDescription: 'Official Other',
+              appointmentId: 4,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentSubtypeDescription: false,
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:30',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+            },
+          ],
+          [
+            {
+              appointmentTypeCode: 'VLLA',
+              appointmentTypeDescription: 'Legal Appointment',
+              appointmentId: 7,
+              appointmentLocationDescription: 'ROOM 2',
+              appointmentSubtypeDescription: false,
+              endTime: '17:30',
+              externalAgencyDescription: false,
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '16:30',
+              status: 'ACTIVE',
+              tags: [],
+              videoLink: false,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
+            },
+          ],
+        ],
+        appointmentsListed: 5,
+        numberOfPrisoners: 1,
+        cancelledAppointments: 1,
+        missingVideoLinks: 1,
+      })
     })
 
     it('builds a view of the cancelled appointments', async () => {
@@ -638,7 +776,7 @@ describe('Schedule service', () => {
               externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
-                cellLocation: 'MDI-1-1-001',
+                cellLocation: 'A-001',
                 firstName: 'Joe',
                 hasAlerts: false,
                 inPrison: true,

@@ -31,6 +31,7 @@ export const services = () => {
   )
   const scheduleService = new ScheduleService(
     appointmentService,
+    referenceDataService,
     nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
