@@ -1,9 +1,9 @@
-import { formatDate } from 'date-fns'
 import _ from 'lodash'
 import PrisonApiClient from '../data/prisonApiClient'
 import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointmentsApiClient'
 import { Appointment as PrisonApiAppointment } from '../@types/prisonApi/types'
 import config from '../config'
+import { formatDate } from '../utils/utils'
 
 export type Appointment = PrisonApiAppointment & {
   status: 'ACTIVE' | 'CANCELLED'

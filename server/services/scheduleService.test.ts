@@ -195,6 +195,7 @@ describe('Schedule service', () => {
         prisonLocKey: 'ROOM_1',
         dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_PRE',
+        courtCode: 'ABERCV',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
       },
@@ -207,6 +208,7 @@ describe('Schedule service', () => {
         prisonLocKey: 'ROOM_1',
         dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_MAIN',
+        courtCode: 'ABERCV',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
       },
@@ -219,6 +221,7 @@ describe('Schedule service', () => {
         prisonLocKey: 'ROOM_1',
         dpsLocationId: 'abc-123',
         appointmentType: 'VLB_COURT_POST',
+        courtCode: 'ABERCV',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
       },
@@ -231,6 +234,7 @@ describe('Schedule service', () => {
         prisonLocKey: 'ROOM_3',
         dpsLocationId: 'zyx-321',
         appointmentType: 'VLB_PROBATION',
+        probationTeamCode: 'BURPP',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
       },
@@ -243,6 +247,7 @@ describe('Schedule service', () => {
         prisonLocKey: 'ROOM_3',
         dpsLocationId: 'zyx-321',
         appointmentType: 'VLB_PROBATION',
+        probationTeamCode: 'BURPP',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
         updatedBy: 'jsmith',
@@ -298,8 +303,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
+              externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -314,7 +318,6 @@ describe('Schedule service', () => {
               status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             },
@@ -324,6 +327,7 @@ describe('Schedule service', () => {
               appointmentId: 2,
               appointmentLocationDescription: 'ROOM 1',
               appointmentSubtypeDescription: 'Appeal',
+              externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -347,8 +351,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
+              externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -363,7 +366,6 @@ describe('Schedule service', () => {
               status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
             },
@@ -374,8 +376,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'Out of prison',
@@ -389,7 +389,6 @@ describe('Schedule service', () => {
               endTime: '09:00',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
@@ -400,8 +399,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -415,7 +412,6 @@ describe('Schedule service', () => {
               endTime: '09:00',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
@@ -427,6 +423,7 @@ describe('Schedule service', () => {
               appointmentId: 5,
               appointmentLocationDescription: 'ROOM 3',
               appointmentSubtypeDescription: 'Recall report',
+              externalAgencyCode: 'BURPP',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -442,7 +439,6 @@ describe('Schedule service', () => {
               status: 'ACTIVE',
               tags: [],
               videoBookingId: 2,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
@@ -453,9 +449,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
               endTime: '17:30',
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -468,7 +462,6 @@ describe('Schedule service', () => {
               startTime: '16:30',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
             },
@@ -509,8 +502,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'Out of prison',
@@ -524,7 +515,6 @@ describe('Schedule service', () => {
               endTime: '09:00',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
@@ -535,8 +525,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -550,7 +538,6 @@ describe('Schedule service', () => {
               endTime: '09:00',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
@@ -561,9 +548,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
               endTime: '17:30',
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -576,7 +561,6 @@ describe('Schedule service', () => {
               startTime: '16:30',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
             },
@@ -601,8 +585,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
+              externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -617,7 +600,6 @@ describe('Schedule service', () => {
               status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             },
@@ -627,6 +609,7 @@ describe('Schedule service', () => {
               appointmentId: 2,
               appointmentLocationDescription: 'ROOM 1',
               appointmentSubtypeDescription: 'Appeal',
+              externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -650,8 +633,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
               appointmentLocationDescription: 'ROOM 1',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
+              externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -666,7 +648,6 @@ describe('Schedule service', () => {
               status: 'ACTIVE',
               tags: [],
               videoBookingId: 1,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
             },
@@ -677,8 +658,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -692,7 +671,6 @@ describe('Schedule service', () => {
               endTime: '09:00',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
             },
@@ -703,9 +681,7 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
               endTime: '17:30',
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -718,7 +694,6 @@ describe('Schedule service', () => {
               startTime: '16:30',
               status: 'ACTIVE',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/7',
             },
@@ -737,6 +712,126 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, ['AM'], user)
     })
 
+    it('filters the daily schedule by court or probation team', async () => {
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule(
+        'MDI',
+        date,
+        { courtOrProbationTeam: ['ABERCV', 'BURPP'] },
+        'ACTIVE',
+        user,
+      )
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Pre-hearing',
+              appointmentId: 1,
+              appointmentLocationDescription: 'ROOM 1',
+              externalAgencyCode: 'ABERCV',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '07:45',
+              endTime: '08:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Court Hearing',
+              appointmentId: 2,
+              appointmentLocationDescription: 'ROOM 1',
+              appointmentSubtypeDescription: 'Appeal',
+              externalAgencyCode: 'ABERCV',
+              externalAgencyDescription: 'Aberystwyth Civil',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:00',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: ['LINK_MISSING'],
+              videoBookingId: 1,
+              videoLinkRequired: true,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Post-hearing',
+              appointmentId: 3,
+              appointmentLocationDescription: 'ROOM 1',
+              externalAgencyCode: 'ABERCV',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '09:00',
+              endTime: '09:15',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
+            },
+          ],
+          [
+            {
+              appointmentTypeCode: 'VLPM',
+              appointmentTypeDescription: 'Probation',
+              appointmentId: 5,
+              appointmentLocationDescription: 'ROOM 3',
+              appointmentSubtypeDescription: 'Recall report',
+              externalAgencyCode: 'BURPP',
+              externalAgencyDescription: 'Burnley PP',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'Out of prison',
+                firstName: 'John',
+                hasAlerts: true,
+                inPrison: false,
+                lastName: 'Smith',
+                prisonerNumber: 'ZXY321',
+              },
+              startTime: '11:00',
+              endTime: '12:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 2,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
+            },
+          ],
+        ],
+        appointmentsListed: 4,
+        numberOfPrisoners: 2,
+        cancelledAppointments: 1,
+        missingVideoLinks: 1,
+      })
+    })
+
     it('builds a view of the cancelled appointments', async () => {
       const date = new Date('2024-12-12')
       const result = await scheduleService.getSchedule('MDI', date, undefined, 'CANCELLED', user)
@@ -751,6 +846,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'ROOM 3',
               appointmentSubtypeDescription: 'Recall report',
               endTime: '12:00',
+              externalAgencyCode: 'BURPP',
               externalAgencyDescription: 'Burnley PP',
               lastUpdatedOrCreated: '2024-12-12T11:59:00Z',
               prisoner: {
@@ -765,7 +861,6 @@ describe('Schedule service', () => {
               status: 'CANCELLED',
               tags: [],
               videoBookingId: 3,
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
               cancelledBy: 'External user',
@@ -778,8 +873,6 @@ describe('Schedule service', () => {
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 6,
               appointmentLocationDescription: 'ROOM 2',
-              appointmentSubtypeDescription: false,
-              externalAgencyDescription: false,
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -793,7 +886,6 @@ describe('Schedule service', () => {
               endTime: '17:30',
               status: 'CANCELLED',
               tags: [],
-              videoLink: false,
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/6',
               cancelledBy: 'Joe Bloggs',
@@ -883,6 +975,33 @@ describe('Schedule service', () => {
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
       })
 
+      it("should add the NEW tag to appointments created today after 3pm, if viewing tomorrow's appointments", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: set(startOfToday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
+      })
+
       it("should not add the NEW tag to appointments created yesterday after 3pm, if viewing today's appointments and now is after 10pm", async () => {
         clock = sinon.useFakeTimers(new Date('2024-12-12T10:00:00Z').getTime())
 
@@ -937,33 +1056,6 @@ describe('Schedule service', () => {
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
 
-      it("should add the NEW tag to appointments created today after 3pm, if viewing tomorrow's appointments", async () => {
-        clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
-
-        appointments = [
-          {
-            id: 1,
-            date: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
-            offenderNo: 'ABC123',
-            startTime: '07:45',
-            endTime: '08:00',
-            locationId: 1,
-            locationDescription: 'ROOM 1',
-            appointmentTypeDescription: 'Video Link - Court Hearing',
-            status: 'ACTIVE',
-            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
-            createdTime: set(startOfToday(), { hours: 15, seconds: 1 }).toISOString(),
-          },
-        ]
-
-        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
-
-        const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
-
-        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['NEW'] })
-      })
-
       it("should not add the NEW tag to appointments created today before 3pm, if viewing tomorrow's appointments", async () => {
         clock = sinon.useFakeTimers(new Date('2024-12-12T15:59:00Z').getTime())
 
@@ -1016,6 +1108,34 @@ describe('Schedule service', () => {
         const date = new Date()
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: expect.arrayContaining(['UPDATED']) })
+      })
+
+      it("should add the UPDATED tag to appointments updated after 3pm yesterday, if viewing today's appointments and now is before 10am", async () => {
+        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
+
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+            updatedTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
+          },
+        ]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
       })
 
@@ -1045,34 +1165,6 @@ describe('Schedule service', () => {
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
-      })
-
-      it("should add the UPDATED tag to appointments updated after 3pm yesterday, if viewing today's appointments and now is before 10am", async () => {
-        clock = sinon.useFakeTimers(new Date('2024-12-12T09:59:00Z').getTime())
-
-        appointments = [
-          {
-            id: 1,
-            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
-            offenderNo: 'ABC123',
-            startTime: '07:45',
-            endTime: '08:00',
-            locationId: 1,
-            locationDescription: 'ROOM 1',
-            appointmentTypeDescription: 'Video Link - Court Hearing',
-            status: 'ACTIVE',
-            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
-            createdTime: startOfYesterday().toISOString(),
-            updatedTime: set(startOfYesterday(), { hours: 15, seconds: 1 }).toISOString(),
-          },
-        ]
-
-        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
-
-        const date = new Date()
-        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
-
-        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['UPDATED'] })
       })
 
       it("should not add the UPDATED tag to appointments updated after 3pm yesterday, if viewing today's appointments and now is after 10am", async () => {

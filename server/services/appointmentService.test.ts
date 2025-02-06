@@ -29,7 +29,6 @@ describe('Appointment service', () => {
         offenderNo: 'ABC123',
         appointmentTypeCode: 'VLBP',
         startTime: '2024-12-12T09:00:00Z',
-        endTime: '2024-12-12T10:00:00Z',
       },
       {
         id: 2,
@@ -130,7 +129,6 @@ describe('Appointment service', () => {
           offenderNo: 'ABC123',
           appointmentTypeCode: 'VLBP',
           startTime: '09:00',
-          endTime: '10:00',
           status: 'ACTIVE',
           viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
         },
