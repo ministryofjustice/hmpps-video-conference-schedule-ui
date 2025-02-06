@@ -240,7 +240,6 @@ export default class ScheduleService {
         if (err.status !== 404) {
           throw err
         }
-        return undefined
       })
 
       if (cancelledByUser) {
