@@ -19,9 +19,10 @@ jest.mock('../../../../services/scheduleService')
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-const scheduleService = new ScheduleService(null, null, null, null, null) as jest.Mocked<ScheduleService>
+const scheduleService = new ScheduleService(null, null, null, null, null, null) as jest.Mocked<ScheduleService>
 
 let app: Express
+const filters = { wing: ['A'] }
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
@@ -32,7 +33,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup()
+  appSetup({ scheduleFilters: filters })
 
   prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
 })
@@ -64,7 +65,7 @@ describe('GET', () => {
         expect(referenceDataService.getAppointmentLocations).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getCellsByWing).toHaveBeenLastCalledWith('MDI', user)
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
       })
   })
 
@@ -84,7 +85,7 @@ describe('GET', () => {
           details: { query: { date: '2024-12-12' } },
         })
         expect(existsByDataQa($, 'warning-text')).toBe(true)
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), 'ACTIVE', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
       })
   })
 
@@ -97,7 +98,13 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(new Date()), 'ACTIVE', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith(
+          'MDI',
+          startOfDay(new Date()),
+          filters,
+          'ACTIVE',
+          user,
+        )
       })
   })
 
@@ -115,7 +122,7 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: { query: { status: 'CANCELLED' } },
         })
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'CANCELLED', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
       })
   })
 
@@ -128,7 +135,7 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
-        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), 'ACTIVE', user)
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
       })
   })
 })

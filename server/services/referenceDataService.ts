@@ -3,6 +3,12 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointmentsApiClient'
 import { ResidentialHierarchy } from '../@types/locationsInsidePrisonApi/types'
 
+export type CellsByWing = {
+  fullLocationPath: string
+  localName: string
+  cells: string[]
+}[]
+
 export default class ReferenceDataService {
   constructor(
     private readonly locationsInsidePrisonApiClient: LocationsInsidePrisonApiClient,
@@ -20,7 +26,7 @@ export default class ReferenceDataService {
       .then(categories => categories.filter(c => c.code.startsWith('VL')))
   }
 
-  public async getCellsByWing(prisonId: string, user: Express.User) {
+  public async getCellsByWing(prisonId: string, user: Express.User): Promise<CellsByWing> {
     const extractCells = (subLocations: ResidentialHierarchy[]): string[] =>
       subLocations.flatMap(loc =>
         loc.locationType === 'CELL' ? [loc.fullLocationPath] : extractCells(loc.subLocations || []),

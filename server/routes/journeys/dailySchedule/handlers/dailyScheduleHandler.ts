@@ -44,6 +44,7 @@ export default class DailyScheduleHandler implements PageHandler {
 
   GET = async (req: Request, res: Response) => {
     const { user } = res.locals
+    const filters = req.session.journey?.scheduleFilters
 
     const dateFromQueryParam = new Date(req.query.date?.toString())
     const statusFromQueryParam = req.query.status as 'ACTIVE' | 'CANCELLED'
@@ -69,6 +70,7 @@ export default class DailyScheduleHandler implements PageHandler {
       this.scheduleService.getSchedule(
         user.activeCaseLoadId,
         startOfDay(isValid(date) ? date : new Date()),
+        filters,
         status,
         user,
       ),

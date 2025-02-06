@@ -106,7 +106,12 @@ describe('Appointment service', () => {
       appointmentsApiClient.isAppointmentsRolledOutAt.mockResolvedValue(false)
       prisonApiClient.getAppointments.mockResolvedValue(prisonApiAppointments)
 
-      const result = await appointmentService.getVideoLinkAppointments('MDI', new Date('2024-12-12'), user)
+      const result = await appointmentService.getVideoLinkAppointments(
+        'MDI',
+        new Date('2024-12-12'),
+        ['AM', 'PM'],
+        user,
+      )
 
       expect(result).toEqual([
         {
@@ -130,14 +135,22 @@ describe('Appointment service', () => {
           viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
         },
       ])
-      expect(prisonApiClient.getAppointments).toHaveBeenLastCalledWith('MDI', new Date('2024-12-12'), user)
+
+      expect(prisonApiClient.getAppointments).toBeCalledTimes(2)
+      expect(prisonApiClient.getAppointments).toHaveBeenNthCalledWith(1, 'MDI', new Date('2024-12-12'), 'AM', user)
+      expect(prisonApiClient.getAppointments).toHaveBeenNthCalledWith(2, 'MDI', new Date('2024-12-12'), 'PM', user)
     })
 
     it('Retrieves appointments for a date and filters by VLBs for a prison which is rolled out with A&A', async () => {
       appointmentsApiClient.isAppointmentsRolledOutAt.mockResolvedValue(true)
       appointmentsApiClient.getAppointments.mockResolvedValue(appointmentsApiAppointments)
 
-      const result = await appointmentService.getVideoLinkAppointments('MDI', new Date('2024-12-12'), user)
+      const result = await appointmentService.getVideoLinkAppointments(
+        'MDI',
+        new Date('2024-12-12'),
+        ['AM', 'PM'],
+        user,
+      )
 
       expect(result).toEqual([
         {
@@ -195,9 +208,11 @@ describe('Appointment service', () => {
           viewAppointmentLink: 'http://localhost:3000/appointments/1',
         },
       ])
+
+      expect(appointmentsApiClient.getAppointments).toHaveBeenCalledTimes(1)
       expect(appointmentsApiClient.getAppointments).toHaveBeenLastCalledWith(
         'MDI',
-        { date: new Date('2024-12-12') },
+        { date: new Date('2024-12-12'), timeSlots: ['AM', 'PM'] },
         user,
       )
     })
