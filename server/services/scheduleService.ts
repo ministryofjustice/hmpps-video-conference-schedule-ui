@@ -173,14 +173,16 @@ export default class ScheduleService {
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
-      videoLink: videoLinkRequired && bvlsAppointment?.videoUrl,
+      videoLink: videoLinkRequired ? bvlsAppointment?.videoUrl : undefined,
       appointmentSubtypeDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
-        (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
+        (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription) ||
+        undefined,
       externalAgencyCode: bvlsAppointment?.courtCode || bvlsAppointment?.probationTeamCode,
       externalAgencyDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
-        (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
+        (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription) ||
+        undefined,
       tags: buildTags(),
       viewAppointmentLink: scheduledAppointment.viewAppointmentLink,
       cancelledTime: scheduledAppointment.cancelledTime,
