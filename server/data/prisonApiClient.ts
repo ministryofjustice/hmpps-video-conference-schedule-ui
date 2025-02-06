@@ -8,9 +8,9 @@ export default class PrisonApiClient extends RestClient {
     super('Prison API', config.apis.prisonApi)
   }
 
-  public getAppointments(prisonId: string, date: Date, user: Express.User): Promise<Appointment[]> {
+  public getAppointments(prisonId: string, date: Date, timeSlot: string, user: Express.User): Promise<Appointment[]> {
     return this.get(
-      { path: `/api/schedules/${prisonId}/appointments`, query: { date: formatDate(date, 'yyyy-MM-dd') } },
+      { path: `/api/schedules/${prisonId}/appointments`, query: { date: formatDate(date, 'yyyy-MM-dd'), timeSlot } },
       user,
     )
   }

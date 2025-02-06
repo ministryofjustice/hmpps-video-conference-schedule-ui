@@ -29,11 +29,11 @@ describe('prisonApiClient', () => {
       const response = { data: 'data' }
 
       fakePrisonApiClient
-        .get('/api/schedules/MDI/appointments?date=2024-12-12')
+        .get('/api/schedules/MDI/appointments?date=2024-12-12&timeSlot=AM')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await prisonApiClient.getAppointments('MDI', new Date('2024-12-12'), user)
+      const output = await prisonApiClient.getAppointments('MDI', new Date('2024-12-12'), 'AM', user)
       expect(output).toEqual(response)
     })
   })

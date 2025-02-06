@@ -47,7 +47,7 @@ type ScheduleItem = {
   appointmentTypeCode: string
   appointmentTypeDescription: string
   appointmentLocationDescription: string
-  tags: string[] // TODO: Logic for displaying "New" and "Updated" tags
+  tags: string[]
   videoLinkRequired: boolean
   videoBookingId?: number
   videoLink?: string
@@ -85,7 +85,7 @@ export default class ScheduleService {
     user: Express.User,
   ): Promise<DailySchedule> {
     const [scheduledAppointments, bvlsAppointments] = await Promise.all([
-      this.appointmentService.getVideoLinkAppointments(prisonId, date, user),
+      this.appointmentService.getVideoLinkAppointments(prisonId, date, filters?.period, user),
       this.bookAVideoLinkApiClient.getVideoLinkAppointments(prisonId, date, user),
     ])
 

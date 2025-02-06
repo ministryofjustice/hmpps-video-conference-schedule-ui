@@ -480,7 +480,7 @@ describe('Schedule service', () => {
         missingVideoLinks: 1,
       })
 
-      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
@@ -731,6 +731,12 @@ describe('Schedule service', () => {
       })
     })
 
+    it('filters the daily schedule by time period', async () => {
+      const date = new Date('2024-12-12')
+      await scheduleService.getSchedule('MDI', date, { period: ['AM'] }, 'ACTIVE', user)
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, ['AM'], user)
+    })
+
     it('builds a view of the cancelled appointments', async () => {
       const date = new Date('2024-12-12')
       const result = await scheduleService.getSchedule('MDI', date, undefined, 'CANCELLED', user)
@@ -801,7 +807,7 @@ describe('Schedule service', () => {
         missingVideoLinks: 0,
       })
 
-      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
       expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
