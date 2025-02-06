@@ -21,6 +21,7 @@ import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
 import ReferenceDataService, { CellsByWing } from './referenceDataService'
+import { LocationMapping } from '../@types/nomisMappingApi/types'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -46,6 +47,7 @@ type ScheduleItem = {
   endTime?: string
   appointmentTypeCode: string
   appointmentTypeDescription: string
+  appointmentLocationId: string
   appointmentLocationDescription: string
   tags: string[]
   videoLinkRequired: boolean
@@ -103,6 +105,7 @@ export default class ScheduleService {
     const filteredItems = scheduleItems
       .filter(i => this.filterByResidentialWing(i, filters, cellsByWing))
       .filter(i => this.filterByAppointmentType(i, filters))
+      .filter(i => this.filterByAppointmentLocation(i, filters))
       .filter(i => this.filterByCourtOrProbationTeam(i, filters))
 
     const displayItems = filteredItems.filter(item => item.status === showStatus)
@@ -127,7 +130,8 @@ export default class ScheduleService {
     prisoners: Prisoner[],
     user: Express.User,
   ): Promise<ScheduleItem> {
-    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, user)
+    const location = await this.nomisMappingApiClient.getLocationMappingByNomisId(scheduledAppointment.locationId, user)
+    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, location)
     const createdTime = bvlsAppointment?.createdTime || scheduledAppointment.createdTime
     const updatedTime = bvlsAppointment?.updatedTime || scheduledAppointment.updatedTime
     const videoLinkRequired = bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN'
@@ -170,6 +174,7 @@ export default class ScheduleService {
       endTime: scheduledAppointment.endTime,
       appointmentTypeCode: scheduledAppointment.appointmentTypeCode,
       appointmentTypeDescription: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
+      appointmentLocationId: location.dpsLocationId,
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
@@ -213,24 +218,17 @@ export default class ScheduleService {
   private async matchBvlsAppointmentTo(
     appointment: Appointment,
     bvlsAppointments: BvlsAppointment[],
-    user: Express.User,
+    locationMapping: LocationMapping,
   ): Promise<BvlsAppointment> {
-    const basicMatch = bvlsAppointments.filter(bvlsAppointment => {
+    return bvlsAppointments.find(bvlsAppointment => {
       return (
         bvlsAppointment.statusCode === appointment.status &&
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
-        bvlsAppointment.endTime === appointment.endTime
+        bvlsAppointment.endTime === appointment.endTime &&
+        bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId
       )
     })
-
-    if (basicMatch.length) {
-      const locationMapping = await this.nomisMappingApiClient.getLocationMappingByNomisId(appointment.locationId, user)
-
-      return basicMatch.find(bvlsAppointment => bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId)
-    }
-
-    return undefined
   }
 
   private async getCancelledBy(appointment: Appointment, bvlsAppointment: BvlsAppointment, user: Express.User) {
@@ -258,6 +256,10 @@ export default class ScheduleService {
 
   private filterByAppointmentType = (item: ScheduleItem, filters: ScheduleFilters) => {
     return !filters?.appointmentType || filters.appointmentType.includes(item.appointmentTypeCode)
+  }
+
+  private filterByAppointmentLocation = (item: ScheduleItem, filters: ScheduleFilters) => {
+    return !filters?.appointmentLocation || filters.appointmentLocation.includes(item.appointmentLocationId)
   }
 
   private filterByCourtOrProbationTeam = (item: ScheduleItem, filters: ScheduleFilters) => {
