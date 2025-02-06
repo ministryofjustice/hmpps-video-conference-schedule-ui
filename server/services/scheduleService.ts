@@ -52,6 +52,7 @@ type ScheduleItem = {
   videoBookingId?: number
   videoLink?: string
   appointmentSubtypeDescription: string
+  externalAgencyCode?: string
   externalAgencyDescription?: string
   viewAppointmentLink: string
   cancelledTime?: string
@@ -102,6 +103,7 @@ export default class ScheduleService {
     const filteredItems = scheduleItems
       .filter(i => this.filterByResidentialWing(i, filters, cellsByWing))
       .filter(i => this.filterByAppointmentType(i, filters))
+      .filter(i => this.filterByCourtOrProbationTeam(i, filters))
 
     const displayItems = filteredItems.filter(item => item.status === showStatus)
 
@@ -175,6 +177,7 @@ export default class ScheduleService {
       appointmentSubtypeDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription),
+      externalAgencyCode: bvlsAppointment?.courtCode || bvlsAppointment?.probationTeamCode,
       externalAgencyDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.courtDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationTeamDescription),
@@ -254,5 +257,9 @@ export default class ScheduleService {
 
   private filterByAppointmentType = (item: ScheduleItem, filters: ScheduleFilters) => {
     return !filters?.appointmentType || filters.appointmentType.includes(item.appointmentTypeCode)
+  }
+
+  private filterByCourtOrProbationTeam = (item: ScheduleItem, filters: ScheduleFilters) => {
+    return !filters?.courtOrProbationTeam || filters.courtOrProbationTeam.includes(item.externalAgencyCode)
   }
 }
