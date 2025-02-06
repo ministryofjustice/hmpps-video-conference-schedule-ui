@@ -143,8 +143,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '16:30',
         endTime: '17:30',
-        locationId: 2,
-        locationDescription: 'ROOM 2',
+        locationDescription: 'In Cell',
         appointmentTypeCode: 'VLLA',
         appointmentTypeDescription: 'Video Link - Legal Appointment',
         status: 'CANCELLED',
@@ -486,7 +485,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(9)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(8)
     })
 
     it('filters the daily schedule by appointment type', async () => {
@@ -986,8 +985,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLLA',
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 6,
-              appointmentLocationId: 'asd-987',
-              appointmentLocationDescription: 'ROOM 2',
+              appointmentLocationDescription: 'In Cell',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
@@ -1017,7 +1015,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(9)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(8)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(2)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)

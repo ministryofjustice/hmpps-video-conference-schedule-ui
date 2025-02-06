@@ -130,8 +130,10 @@ export default class ScheduleService {
     prisoners: Prisoner[],
     user: Express.User,
   ): Promise<ScheduleItem> {
-    const location = await this.nomisMappingApiClient.getLocationMappingByNomisId(scheduledAppointment.locationId, user)
-    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, location)
+    const locationMapping = scheduledAppointment.locationId
+      ? await this.nomisMappingApiClient.getLocationMappingByNomisId(scheduledAppointment.locationId, user)
+      : undefined
+    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, locationMapping)
     const createdTime = bvlsAppointment?.createdTime || scheduledAppointment.createdTime
     const updatedTime = bvlsAppointment?.updatedTime || scheduledAppointment.updatedTime
     const videoLinkRequired = bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN'
@@ -174,7 +176,7 @@ export default class ScheduleService {
       endTime: scheduledAppointment.endTime,
       appointmentTypeCode: scheduledAppointment.appointmentTypeCode,
       appointmentTypeDescription: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
-      appointmentLocationId: location.dpsLocationId,
+      appointmentLocationId: locationMapping?.dpsLocationId,
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
@@ -226,7 +228,7 @@ export default class ScheduleService {
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
         bvlsAppointment.endTime === appointment.endTime &&
-        bvlsAppointment.dpsLocationId === locationMapping.dpsLocationId
+        bvlsAppointment.dpsLocationId === locationMapping?.dpsLocationId
       )
     })
   }
