@@ -53,8 +53,8 @@
 
                             {% for appointmentLocation in appointmentLocations %}
                                 {% set selectedFilters = session.journey.scheduleFilters.appointmentLocation or [] %}
-                                {% if appointmentLocation.code in selectedFilters %}
-                                    <li><a class="moj-filter__tag" href="/clear-filter?appointmentLocation={{ appointmentLocation.code }}"><span class="govuk-visually-hidden">Remove</span> {{ appointmentLocation.localName }}</a></li>
+                                {% if appointmentLocation.id in selectedFilters %}
+                                    <li><a class="moj-filter__tag" href="/clear-filter?appointmentLocation={{ appointmentLocation.id }}"><span class="govuk-visually-hidden">Remove</span> {{ appointmentLocation.localName }}</a></li>
                                 {% endif %}
                             {% endfor %}
 
@@ -152,9 +152,9 @@
                                         {% set items = [{value: '', text: ''}] %}
                                         {% for appointmentLocation in appointmentLocations %}
                                             {% set items = (items.push({
-                                                value: appointmentLocation.code,
+                                                value: appointmentLocation.id,
                                                 text: appointmentLocation.localName,
-                                                selected: selectedLocation == appointmentLocation.code
+                                                selected: selectedLocation == appointmentLocation.id
                                             }), items) %}
                                         {% endfor %}
 
@@ -177,7 +177,7 @@
                                     {% set items = [{value: '', text: ''}] %}
                                     {% for appointmentLocation in appointmentLocations %}
                                         {% set items = (items.push({
-                                            value: appointmentLocation.code,
+                                            value: appointmentLocation.id,
                                             text: appointmentLocation.localName
                                         }), items) %}
                                     {% endfor %}

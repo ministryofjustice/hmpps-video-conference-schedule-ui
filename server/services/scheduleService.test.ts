@@ -279,7 +279,10 @@ describe('Schedule service', () => {
     bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
     nomisMappingApiClient.getLocationMappingByNomisId = jest.fn(
-      async (id, _) => ({ 1: { dpsLocationId: 'abc-123' }, 3: { dpsLocationId: 'zyx-321' } })[id] as LocationMapping,
+      async (id, _) =>
+        ({ 1: { dpsLocationId: 'abc-123' }, 2: { dpsLocationId: 'asd-987' }, 3: { dpsLocationId: 'zyx-321' } })[
+          id
+        ] as LocationMapping,
     )
     manageUsersApiClient.getUserByUsername.mockImplementation(
       async username =>
@@ -302,6 +305,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -325,6 +329,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Court Hearing',
               appointmentId: 2,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               appointmentSubtypeDescription: 'Appeal',
               externalAgencyCode: 'ABERCV',
@@ -350,6 +355,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -375,6 +381,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLOO',
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -398,6 +405,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLOO',
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -421,6 +429,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLPM',
               appointmentTypeDescription: 'Probation',
               appointmentId: 5,
+              appointmentLocationId: 'zyx-321',
               appointmentLocationDescription: 'ROOM 3',
               appointmentSubtypeDescription: 'Recall report',
               externalAgencyCode: 'BURPP',
@@ -448,6 +457,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLLA',
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               endTime: '17:30',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -476,12 +486,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(9)
     })
 
     it('filters the daily schedule by appointment type', async () => {
@@ -501,6 +506,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLOO',
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -524,6 +530,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLOO',
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -547,6 +554,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLLA',
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               endTime: '17:30',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -584,6 +592,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -607,6 +616,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Court Hearing',
               appointmentId: 2,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               appointmentSubtypeDescription: 'Appeal',
               externalAgencyCode: 'ABERCV',
@@ -632,6 +642,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -657,6 +668,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLOO',
               appointmentTypeDescription: 'Official Other',
               appointmentId: 4,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -680,6 +692,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLLA',
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 7,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               endTime: '17:30',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -712,12 +725,12 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, ['AM'], user)
     })
 
-    it('filters the daily schedule by court or probation team', async () => {
+    it('filters the daily schedule by appointment location', async () => {
       const date = new Date('2024-12-12')
       const result = await scheduleService.getSchedule(
         'MDI',
         date,
-        { courtOrProbationTeam: ['ABERCV', 'BURPP'] },
+        { appointmentLocation: ['abc-123'] },
         'ACTIVE',
         user,
       )
@@ -729,6 +742,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Pre-hearing',
               appointmentId: 1,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -752,6 +766,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Court Hearing',
               appointmentId: 2,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               appointmentSubtypeDescription: 'Appeal',
               externalAgencyCode: 'ABERCV',
@@ -777,6 +792,103 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLB',
               appointmentTypeDescription: 'Post-hearing',
               appointmentId: 3,
+              appointmentLocationId: 'abc-123',
+              appointmentLocationDescription: 'ROOM 1',
+              externalAgencyCode: 'ABERCV',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '09:00',
+              endTime: '09:15',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
+            },
+          ],
+        ],
+        appointmentsListed: 3,
+        numberOfPrisoners: 1,
+        cancelledAppointments: 0,
+        missingVideoLinks: 1,
+      })
+    })
+
+    it('filters the daily schedule by court or probation team', async () => {
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule(
+        'MDI',
+        date,
+        { courtOrProbationTeam: ['ABERCV', 'BURPP'] },
+        'ACTIVE',
+        user,
+      )
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Pre-hearing',
+              appointmentId: 1,
+              appointmentLocationId: 'abc-123',
+              appointmentLocationDescription: 'ROOM 1',
+              externalAgencyCode: 'ABERCV',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '07:45',
+              endTime: '08:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: 1,
+              videoLinkRequired: false,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Court Hearing',
+              appointmentId: 2,
+              appointmentLocationId: 'abc-123',
+              appointmentLocationDescription: 'ROOM 1',
+              appointmentSubtypeDescription: 'Appeal',
+              externalAgencyCode: 'ABERCV',
+              externalAgencyDescription: 'Aberystwyth Civil',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              startTime: '08:00',
+              endTime: '09:00',
+              status: 'ACTIVE',
+              tags: ['LINK_MISSING'],
+              videoBookingId: 1,
+              videoLinkRequired: true,
+              viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
+            },
+            {
+              appointmentTypeCode: 'VLB',
+              appointmentTypeDescription: 'Post-hearing',
+              appointmentId: 3,
+              appointmentLocationId: 'abc-123',
               appointmentLocationDescription: 'ROOM 1',
               externalAgencyCode: 'ABERCV',
               lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -802,6 +914,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLPM',
               appointmentTypeDescription: 'Probation',
               appointmentId: 5,
+              appointmentLocationId: 'zyx-321',
               appointmentLocationDescription: 'ROOM 3',
               appointmentSubtypeDescription: 'Recall report',
               externalAgencyCode: 'BURPP',
@@ -843,6 +956,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLPM',
               appointmentTypeDescription: 'Probation',
               appointmentId: 8,
+              appointmentLocationId: 'zyx-321',
               appointmentLocationDescription: 'ROOM 3',
               appointmentSubtypeDescription: 'Recall report',
               endTime: '12:00',
@@ -872,6 +986,7 @@ describe('Schedule service', () => {
               appointmentTypeCode: 'VLLA',
               appointmentTypeDescription: 'Legal Appointment',
               appointmentId: 6,
+              appointmentLocationId: 'asd-987',
               appointmentLocationDescription: 'ROOM 2',
               lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
@@ -902,12 +1017,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(5)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(1, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(2, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(3, 1, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(4, 3, user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenNthCalledWith(5, 3, user)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(9)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(2)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)
