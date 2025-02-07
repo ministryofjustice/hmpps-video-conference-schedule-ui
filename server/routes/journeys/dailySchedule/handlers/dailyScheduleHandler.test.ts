@@ -7,7 +7,7 @@ import AuditService, { Page } from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import ScheduleService from '../../../../services/scheduleService'
-import { existsByDataQa } from '../../../testutils/cheerio'
+import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/cheerio'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 
@@ -109,6 +109,8 @@ describe('GET', () => {
   })
 
   it('should render index page for cancelled appointments', () => {
+    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
+
     return request(app)
       .get('/?status=CANCELLED')
       .expect('Content-Type', /html/)
@@ -117,12 +119,29 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
 
         expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
+        expect(existsByClass($, 'govuk-warning-text')).toBe(false)
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: { query: { status: 'CANCELLED' } },
         })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
+      })
+  })
+
+  it('should show warning text for the cancelled appointments page when the prison is not rolled out for A&A', () => {
+    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(false)
+
+    return request(app)
+      .get('/?status=CANCELLED')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+        const warningText = getByClass($, 'govuk-warning-text').text().trim()
+
+        expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
+        expect(warningText).toContain('Only court hearings and probation meetings are shown.')
       })
   })
 

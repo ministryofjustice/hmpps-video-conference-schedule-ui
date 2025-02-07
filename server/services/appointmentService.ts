@@ -3,23 +3,27 @@ import PrisonApiClient from '../data/prisonApiClient'
 import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointmentsApiClient'
 import { Appointment as PrisonApiAppointment } from '../@types/prisonApi/types'
 import config from '../config'
-import { formatDate } from '../utils/utils'
+import { formatDate, parseDate } from '../utils/utils'
+import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 
 export type Appointment = PrisonApiAppointment & {
-  status: 'ACTIVE' | 'CANCELLED'
-  viewAppointmentLink: string
+  status?: Status
+  dpsLocationId?: string
+  viewAppointmentLink?: string
   createdTime?: string
   updatedTime?: string
   cancelledTime?: string
   cancelledBy?: string
 }
 
+export type Status = 'ACTIVE' | 'CANCELLED'
 export type Period = 'AM' | 'PM' | 'ED'
 
 export default class AppointmentService {
   constructor(
     private readonly prisonApiClient: PrisonApiClient,
     private readonly activitiesAndAppointmentsApiClient: ActivitiesAndAppointmentsApiClient,
+    private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
   ) {}
 
   public async getVideoLinkAppointments(prisonId: string, date: Date, periods: Period[], user: Express.User) {
@@ -76,8 +80,8 @@ export default class AppointmentService {
     periods: Period[],
     user: Express.User,
   ): Promise<Appointment[]> {
-    const periodList = periods ?? [undefined]
-    return Promise.all(periodList.map(p => this.prisonApiClient.getAppointments(prisonId, date, p, user)))
+    return this.prisonApiClient
+      .getAppointments(prisonId, date, user)
       .then(appts => appts.flat())
       .then(appts => _.uniq(appts))
       .then(appts =>
@@ -85,8 +89,51 @@ export default class AppointmentService {
           ...a,
           startTime: formatDate(a.startTime, 'HH:mm'),
           endTime: formatDate(a.endTime, 'HH:mm'),
-          status: 'ACTIVE', // All appointments returned by Prison API are active appointments
+          status: <Status>'ACTIVE', // All appointments returned by Prison API are active appointments
           viewAppointmentLink: `${config.dpsUrl}/appointment-details/${a.id}`,
+        })),
+      )
+      .then(async appts => [...appts, ...(await this.supplementWithCancelledBvlsAppointments(prisonId, date, user))])
+      .then(appts =>
+        appts.filter(a => {
+          const hours = parseDate(a.startTime, 'HH:mm').getHours()
+          return (
+            !periods?.length ||
+            periods.some(
+              p =>
+                (p === 'AM' && hours < 12) || (p === 'PM' && hours >= 12 && hours < 17) || (p === 'ED' && hours >= 17),
+            )
+          )
+        }),
+      )
+  }
+
+  private async supplementWithCancelledBvlsAppointments(
+    prisonId: string,
+    date: Date,
+    user: Express.User,
+  ): Promise<Appointment[]> {
+    // Since prison-api does not return CANCELLED video appointments, we supplement here using the cancelled appointments we know about in BVLS
+    // We map the BVLS bookings onto the same model as prison API appointments, so that it appears as if it has come from prison API.
+
+    return this.bookAVideoLinkApiClient
+      .getVideoLinkAppointments(prisonId, date, user)
+      .then(appts => appts.filter(a => a.statusCode === 'CANCELLED'))
+      .then(appts =>
+        appts.map(a => ({
+          id: a.prisonAppointmentId,
+          offenderNo: a.prisonerNumber,
+          startTime: a.startTime,
+          endTime: a.endTime,
+          appointmentTypeCode: 'VL+', // BVLS bookings do not have an appointmentTypeCode, so we give it one here which matches the `VL` prefix in order to be displayed on the daily schedule
+          appointmentTypeDescription: a.appointmentTypeDescription,
+          dpsLocationId: a.dpsLocationId,
+          locationDescription: a.prisonLocDesc,
+          status: a.statusCode,
+          createdTime: a.createdTime,
+          updatedTime: a.updatedTime,
+          cancelledTime: a.updatedTime,
+          cancelledBy: a.updatedBy,
         })),
       )
   }

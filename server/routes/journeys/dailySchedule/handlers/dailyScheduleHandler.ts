@@ -82,7 +82,6 @@ export default class DailyScheduleHandler implements PageHandler {
           schedule,
           date,
           isPastDay: startOfDay(date) < startOfDay(new Date()),
-          appointmentsRolledOut,
           appointmentTypes,
           appointmentLocations,
           courtsAndProbationTeams,
@@ -90,6 +89,7 @@ export default class DailyScheduleHandler implements PageHandler {
         })
       : res.render('pages/dailySchedule/cancelledAppointments', {
           prisonName: prison.prisonName,
+          appointmentsRolledOut,
           schedule,
           date,
         })
