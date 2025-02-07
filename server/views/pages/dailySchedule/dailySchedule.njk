@@ -8,6 +8,7 @@
 {% from "partials/stat.njk" import stat %}
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
+{% set noAppointmentsForDay = not session.journey.scheduleFilters and schedule.appointmentsListed == 0 %}
 
 {% block meta %}
     {% set content = "appointmentLocation,courtOrProbationTeam" %}
@@ -23,9 +24,9 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-1">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
-                <span class="govuk-caption-m govuk-!-display-inline-block">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
+                <span class="govuk-caption-m govuk-!-display-inline-block govuk-!-margin-right-3">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
                 <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19 govuk-!-display-none-print" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
                 <span class="govuk-caption-m govuk-!-display-inline-block print-only">Last updated {{ now() | formatDate('HH:mm') }}</span>
             </div>
@@ -49,7 +50,7 @@
     {% include "partials/filters.njk" %}
 
     {% if session.journey.scheduleFilters %}
-        <div class="govuk-grid-row govuk-!-margin-top-6 govuk-!-display-none-print">
+        <div class="govuk-grid-row govuk-!-display-none-print">
             <div class="govuk-grid-column-full">
                 <p class="govuk-body">Filter returned <span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> results. <a class="govuk-link govuk-link--no-visited-state" href="/clear-filter?all=true">Clear filters</a></p>
             </div>
@@ -96,7 +97,7 @@
         </div>
     </div>
 
-    <div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-row govuk-!-margin-top-9">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
 
@@ -145,52 +146,54 @@
                 {% endfor %}
             {% endfor %}
 
-            <div class="hmpps-action-bar govuk-!-display-none-print">
-                {% if not isPastDay %}
-                    <div class="hmpps-last-updated">
-                        <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
-                        {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
+            {% if not noAppointmentsForDay %}
+                <div class="hmpps-action-bar govuk-!-display-none-print">
+                    {% if not isPastDay %}
+                        <div class="hmpps-last-updated">
+                            <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
+                            {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
+                        </div>
+                    {% endif %}
+                    <div class="hmpps-print-and-export">
+                        <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                        <button class="hmpps-print-and-export--print">Print schedule</button>
                     </div>
-                {% endif %}
-                <div class="hmpps-print-and-export">
-                    <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
-                    <button class="hmpps-print-and-export--print">Print schedule</button>
                 </div>
-            </div>
-            {{ govukTable({
-                attributes: {
-                    'data-module': 'moj-sortable-table'
-                },
-                head: [
-                    {
-                        text: "Prisoner",
-                        attributes: {
-                            "aria-sort": "none"
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        {
+                            text: "Prisoner",
+                            attributes: {
+                                "aria-sort": "none"
+                            }
+                        },
+                        {
+                            text: "Time"
+                        },
+                        {
+                            text: "Appointment"
+                        },
+                        {
+                            text: "Location"
+                        },
+                        {
+                            text: "Video link"
+                        },
+                        {
+                            text: "Status",
+                            classes: 'govuk-!-display-none-print'
+                        },
+                        {
+                            text: "Action",
+                            classes: 'govuk-!-display-none-print'
                         }
-                    },
-                    {
-                        text: "Time"
-                    },
-                    {
-                        text: "Appointment"
-                    },
-                    {
-                        text: "Location"
-                    },
-                    {
-                        text: "Video link"
-                    },
-                    {
-                        text: "Status",
-                        classes: 'govuk-!-display-none-print'
-                    },
-                    {
-                        text: "Action",
-                        classes: 'govuk-!-display-none-print'
-                    }
-                ],
-                rows: rows
-            }) }}
+                    ],
+                    rows: rows
+                }) }}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

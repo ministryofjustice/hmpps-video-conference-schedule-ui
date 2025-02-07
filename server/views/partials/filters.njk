@@ -1,7 +1,8 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
-<div class="govuk-grid-row govuk-!-margin-bottom-6 govuk-!-display-none-print" data-module="moj-filter" filters-applied="{{ 'true' if session.journey.scheduleFilters else 'false' }}">
+{% if not noAppointmentsForDay %}
+<div class="govuk-grid-row govuk-!-margin-bottom-9 govuk-!-display-none-print" data-module="moj-filter" filters-applied="{{ 'true' if session.journey.scheduleFilters else 'false' }}">
     <div class="govuk-grid-column-full">
         <div class="moj-action-bar">
             <div class="moj-action-bar__filter"></div>
@@ -254,3 +255,6 @@
         </div>
     </div>
 </div>
+{% else %}
+    <p class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-9">There are no video link appointments on the date selected.</p>
+{% endif %}

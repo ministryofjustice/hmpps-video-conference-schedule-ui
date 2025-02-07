@@ -25,6 +25,7 @@ export default class SelectDateHandler implements PageHandler {
 
   POST = async (req: Request, res: Response) => {
     const { date } = req.body
+    if (req.session.journey?.scheduleFilters) delete req.session.journey.scheduleFilters
     return res.redirect(`/?date=${formatDate(date, 'yyyy-MM-dd')}`)
   }
 }
