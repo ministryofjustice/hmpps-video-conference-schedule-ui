@@ -26,7 +26,7 @@
                         classes: 'govuk-label--s'
                     },
                     hint: {
-                        text: 'Enter the date, for example ' + now() | formatDate('dd/MM/yyyy') + ', or select the calendar to pick a date'
+                        text: 'For example, ' + now() | formatDate('dd/MM/yyyy')
                     },
                     errorMessage: validationErrors | findError('date'),
                     value: formResponses.date

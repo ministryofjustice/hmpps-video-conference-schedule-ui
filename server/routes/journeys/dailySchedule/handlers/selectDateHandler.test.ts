@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
 
@@ -11,11 +12,16 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
 let app: Express
 
-beforeEach(() => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService },
     userSupplier: () => user,
+    journeySessionSupplier: () => journeySession,
   })
+}
+
+beforeEach(() => {
+  appSetup({ scheduleFilters: { wing: ['A'] } })
 })
 
 afterEach(() => {
@@ -78,5 +84,6 @@ describe('POST', () => {
       .send({ date: '12/12/2024' })
       .expect(302)
       .expect('location', '/?date=2024-12-12')
+      .then(() => expectJourneySession(app, 'scheduleFilters', undefined))
   })
 })
