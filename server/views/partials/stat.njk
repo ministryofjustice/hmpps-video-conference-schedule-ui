@@ -7,7 +7,7 @@
         </span>
 
         {% if params.link and params.number > 0 %}
-            <p class="govuk-!-margin-bottom-0">
+            <p class="govuk-!-margin-bottom-0 {{ params.link.classes }}">
                 <a href="{{ params.link.href }}" data-qa="{{ params.link.dataQa }}" class="govuk-link govuk-link--no-visited-state">
                     {{ params.link.text }}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>
                 </a>

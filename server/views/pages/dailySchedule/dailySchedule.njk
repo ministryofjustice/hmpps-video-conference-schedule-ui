@@ -26,13 +26,14 @@
             <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                 <span class="govuk-caption-m govuk-!-display-inline-block">{{ date | formatDate('iiii d MMMM yyyy') }}.</span>
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19 govuk-!-display-none-print" href="/select-date{{'?date=' + date | formatDate('yyyy-MM-dd') }}">Choose a different date</a>
+                <span class="govuk-caption-m govuk-!-display-inline-block print-only">Last updated {{ now() | formatDate('HH:mm') }}</span>
             </div>
         </div>
     </div>
 
     {% if isPastDay %}
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row govuk-!-display-none-print">
             <div class="govuk-grid-column-full">
                 {{ govukWarningText({
                     text: "You can not edit details of appointments that have already happened.",
@@ -48,15 +49,15 @@
     {% include "partials/filters.njk" %}
 
     {% if session.journey.scheduleFilters %}
-        <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-row govuk-!-margin-top-6 govuk-!-display-none-print">
             <div class="govuk-grid-column-full">
                 <p class="govuk-body">Filter returned <span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> results. <a class="govuk-link govuk-link--no-visited-state" href="/clear-filter?all=true">Clear filters</a></p>
             </div>
         </div>
     {% endif %}
 
-    <div class="govuk-grid-row govuk-!-margin-top-6">
-        <div class="govuk-grid-column-full">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-!-display-none-print">
             {{ stat({
                 heading: "Appointments listed",
                 number: schedule.appointmentsListed,
@@ -76,7 +77,8 @@
                     visuallyHiddenText: "cancelled appointments",
                     link: {
                         href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
-                        text: 'View'
+                        text: 'View',
+                        classes: 'govuk-!-display-none-print'
                     }
                 }) }}
             {% endif %}
@@ -86,6 +88,11 @@
                 number: schedule.missingVideoLinks,
                 visuallyHiddenText: "missing video links"
             }) }}
+        </div>
+
+        <div class="govuk-grid-column-full print-only">
+            <p class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">{{ schedule.appointmentsListed }}</span> Appointments listed</p>
+            <p class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">{{ schedule.missingVideoLinks }}</span> Missing video links</p>
         </div>
     </div>
 
@@ -124,7 +131,7 @@
                         },
                         {
                             html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
-                            classes: classes
+                            classes: classes + ' govuk-!-display-none-print'
                         },
                         {
                             html: '
@@ -132,13 +139,13 @@
                                         View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
                                     </a>
                                   ' if loop.index == 1,
-                            classes: classes
+                            classes: classes + ' govuk-!-display-none-print'
                         }
                     ]), rows) %}
                 {% endfor %}
             {% endfor %}
 
-            <div class="hmpps-action-bar">
+            <div class="hmpps-action-bar govuk-!-display-none-print">
                 {% if not isPastDay %}
                     <div class="hmpps-last-updated">
                         <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
@@ -174,10 +181,12 @@
                         text: "Video link"
                     },
                     {
-                        text: "Status"
+                        text: "Status",
+                        classes: 'govuk-!-display-none-print'
                     },
                     {
-                        text: "Action"
+                        text: "Action",
+                        classes: 'govuk-!-display-none-print'
                     }
                 ],
                 rows: rows
