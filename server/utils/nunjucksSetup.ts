@@ -55,6 +55,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
+  njkEnv.addFilter('filterFalsy', list => list.filter(Boolean))
 
   njkEnv.addGlobal('now', () => new Date())
 }

@@ -71,18 +71,16 @@
                 visuallyHiddenText: "prisoners"
             }) }}
 
-            {% if appointmentsRolledOut %}
-                {{ stat({
-                    heading: "Cancelled appointments",
-                    number: schedule.cancelledAppointments,
-                    visuallyHiddenText: "cancelled appointments",
-                    link: {
-                        href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
-                        text: 'View',
-                        classes: 'govuk-!-display-none-print'
-                    }
-                }) }}
-            {% endif %}
+            {{ stat({
+                heading: "Cancelled appointments",
+                number: schedule.cancelledAppointments,
+                visuallyHiddenText: "cancelled appointments",
+                link: {
+                    href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
+                    text: 'View',
+                    classes: 'govuk-!-display-none-print'
+                }
+            }) }}
 
             {{ stat({
                 heading: "Missing video links",

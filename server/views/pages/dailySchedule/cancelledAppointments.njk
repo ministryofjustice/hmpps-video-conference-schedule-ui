@@ -2,6 +2,7 @@
 
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "partials/stat.njk" import stat %}
 
 {% set pageTitle = "Cancelled video appointments: " + prisonName %}
@@ -17,6 +18,13 @@
         </div>
     </div>
 
+    {% if not appointmentsRolledOut %}
+        {{ govukWarningText({
+            text: "Only court hearings and probation meetings are shown.",
+            iconFallbackText: "Warning"
+        }) }}
+    {% endif %}
+
     <div class="govuk-grid-row govuk-!-margin-bottom-9">
         <div class="govuk-grid-column-full">
             {{ stat({
@@ -30,7 +38,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
-
             {% for appointmentGroup in schedule.appointmentGroups %}
                 {% for scheduleItem in appointmentGroup %}
                     {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
@@ -61,7 +68,7 @@
                             classes: classes
                         },
                         {
-                            html: (scheduleItem.cancelledBy | initialiseName) if (appointmentGroup.length == 1 or loop.index == 2),
+                            html: ((scheduleItem.cancelledBy | initialiseName) or 'DPS') if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
                         },
                         {
@@ -71,47 +78,43 @@
                                     </a>
                                   ' if loop.index == 1,
                             classes: classes
-                        }
-                    ]), rows) %}
+                        } if appointmentsRolledOut
+                    ] | filterFalsy), rows) %}
                 {% endfor %}
             {% endfor %}
 
-            {% if rows | length %}
-                {{ govukTable({
-                    attributes: {
-                        'data-module': 'moj-sortable-table'
-                    },
-                    head: [
-                        {
-                            text: "Prisoner",
-                            attributes: {
-                                "aria-sort": "none"
-                            }
-                        },
-                        {
-                            text: "Time"
-                        },
-                        {
-                            text: "Appointment"
-                        },
-                        {
-                            text: "Location"
-                        },
-                        {
-                            text: "Cancelled at"
-                        },
-                        {
-                            text: "Cancelled by"
-                        },
-                        {
-                            text: "Action"
+            {{ govukTable({
+                attributes: {
+                    'data-module': 'moj-sortable-table'
+                },
+                head: [
+                    {
+                        text: "Prisoner",
+                        attributes: {
+                            "aria-sort": "none"
                         }
-                    ],
-                    rows: rows
-                }) }}
-            {% else %}
-                <p class="govuk-body">There are no cancelled video appointments on {{ date | formatDate('iiii d MMMM yyyy') }}</p>
-            {% endif %}
+                    },
+                    {
+                        text: "Time"
+                    },
+                    {
+                        text: "Appointment"
+                    },
+                    {
+                        text: "Location"
+                    },
+                    {
+                        text: "Cancelled at"
+                    },
+                    {
+                        text: "Cancelled by"
+                    },
+                    {
+                        text: "Action"
+                    } if appointmentsRolledOut
+                ] | filterFalsy,
+                rows: rows
+            }) }}
         </div>
     </div>
 {% endblock %}

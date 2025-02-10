@@ -37,7 +37,7 @@ describe('Schedule service', () => {
   let prisoners: Prisoner[]
 
   beforeEach(() => {
-    appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
+    appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
     referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
     nomisMappingApiClient = new NomisMappingApiClient() as jest.Mocked<NomisMappingApiClient>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
@@ -172,7 +172,7 @@ describe('Schedule service', () => {
         offenderNo: 'ZXY321',
         startTime: '11:00',
         endTime: '12:00',
-        locationId: 3,
+        dpsLocationId: 'zyx-321',
         locationDescription: 'ROOM 3',
         appointmentTypeCode: 'VLPM',
         appointmentTypeDescription: 'Video Link - Probation',
@@ -485,7 +485,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(8)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(7)
     })
 
     it('filters the daily schedule by appointment type', async () => {
@@ -1015,7 +1015,7 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(8)
+      expect(nomisMappingApiClient.getLocationMappingByNomisId).toHaveBeenCalledTimes(7)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(2)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)
