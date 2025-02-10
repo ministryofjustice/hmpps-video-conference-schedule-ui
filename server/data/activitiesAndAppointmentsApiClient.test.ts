@@ -62,7 +62,7 @@ describe('activitiesAndAppointmentsApiClient', () => {
 
   describe('isAppointmentsRolledOutAt', () => {
     it('should return a boolean', async () => {
-      const response = { appointmentsRolledOut: true }
+      const response = { prisonLive: true }
 
       fakeActivitiesAndAppointmentsApiClient
         .get('/rollout/MDI')

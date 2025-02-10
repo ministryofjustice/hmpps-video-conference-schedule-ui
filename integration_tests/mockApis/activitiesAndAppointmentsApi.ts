@@ -2,8 +2,7 @@ import { stubGet, stubPost } from './wiremock'
 
 export default {
   stubActivitiesAndAppointmentsPing: () => stubGet('/activities-and-appointments-api/health/ping'),
-  stubIsAppointmentsRolledOut: () =>
-    stubGet('/activities-and-appointments-api/rollout/MDI', { appointmentsRolledOut: true }),
+  stubIsAppointmentsRolledOut: () => stubGet('/activities-and-appointments-api/rollout/MDI', { prisonLive: true }),
   stubGetAppointments: () =>
     stubPost('/activities-and-appointments-api/appointments/MDI/search', [
       {
