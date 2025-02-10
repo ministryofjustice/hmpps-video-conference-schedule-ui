@@ -12,7 +12,7 @@ export interface PageViewEventDetails {
   subjectId?: string
   subjectType?: string
   correlationId?: string
-  details?: object
+  details?: string
 }
 
 export default class AuditService {

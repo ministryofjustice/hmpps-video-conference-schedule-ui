@@ -7,7 +7,7 @@ export interface AuditEvent {
   subjectId?: string
   subjectType?: string
   correlationId?: string
-  details?: object
+  details?: string
 }
 
 export interface SqsMessage {
@@ -18,7 +18,7 @@ export interface SqsMessage {
   subjectId?: string
   subjectType?: string
   correlationId?: string
-  details?: object
+  details?: string
 }
 
 export interface AuditClientConfig {
