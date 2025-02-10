@@ -41,7 +41,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_DATE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: {} },
+          details: JSON.stringify({ query: {} }),
         })
       })
   })

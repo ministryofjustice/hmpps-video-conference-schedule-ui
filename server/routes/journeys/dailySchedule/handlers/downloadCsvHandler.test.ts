@@ -59,7 +59,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: {} },
+          details: JSON.stringify({ query: {} }),
         })
 
         expect(res.text).toEqual(expectedCsv)
@@ -77,7 +77,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: { date: '2024-12-12' } },
+          details: JSON.stringify({ query: { date: '2024-12-12' } }),
         })
 
         const date = new Date('2024-12-12')
@@ -113,7 +113,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: { status: 'CANCELLED' } },
+          details: JSON.stringify({ query: { status: 'CANCELLED' } }),
         })
 
         expect(res.text).toEqual(expectedCsv)

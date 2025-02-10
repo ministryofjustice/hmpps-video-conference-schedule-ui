@@ -33,7 +33,7 @@ describe('hmppsAuditClient', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: JSON.stringify({ extraDetails: 'example' }),
       })
 
       const expectedSqsMessageBody: SqsMessage = {
@@ -44,7 +44,7 @@ describe('hmppsAuditClient', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: '{"extraDetails":"example"}',
       }
 
       expect(actualResponse).toEqual({ MessageId: '123' })
