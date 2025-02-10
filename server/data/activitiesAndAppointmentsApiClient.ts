@@ -9,7 +9,7 @@ export default class ActivitiesAndAppointmentsApiClient extends RestClient {
   }
 
   public async isAppointmentsRolledOutAt(prisonId: string, user: Express.User): Promise<boolean> {
-    return this.get<RolloutPrisonPlan>({ path: `/rollout/${prisonId}` }, user).then(r => r.appointmentsRolledOut)
+    return this.get<RolloutPrisonPlan>({ path: `/rollout/${prisonId}` }, user).then(r => r.prisonLive)
   }
 
   public async getAppointmentCategories(user: Express.User): Promise<AppointmentCategory[]> {
