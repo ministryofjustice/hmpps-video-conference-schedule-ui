@@ -57,7 +57,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: {} },
+          details: JSON.stringify({ query: {} }),
         })
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
         expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
@@ -82,7 +82,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: { date: '2024-12-12' } },
+          details: JSON.stringify({ query: { date: '2024-12-12' } }),
         })
         expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
@@ -120,7 +120,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: { query: { status: 'CANCELLED' } },
+          details: JSON.stringify({ query: { status: 'CANCELLED' } }),
         })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
       })

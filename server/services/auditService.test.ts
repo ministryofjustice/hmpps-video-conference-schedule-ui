@@ -20,7 +20,7 @@ describe('Audit service', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: '{"extraDetails":"example"}',
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
@@ -29,7 +29,7 @@ describe('Audit service', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: '{"extraDetails":"example"}',
       })
     })
   })
@@ -41,7 +41,7 @@ describe('Audit service', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: '{"extraDetails":"example"}',
       })
 
       expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
@@ -50,7 +50,7 @@ describe('Audit service', () => {
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
-        details: { extraDetails: 'example' },
+        details: '{"extraDetails":"example"}',
       })
     })
   })

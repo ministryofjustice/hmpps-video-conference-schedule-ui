@@ -8,7 +8,7 @@ export default function logPageViewMiddleware(auditService: AuditService, pageHa
     await auditService.logPageView(pageHandler.PAGE_NAME, {
       who: res.locals.user.username,
       correlationId: req.id,
-      details: { query: req.query },
+      details: JSON.stringify({ query: req.query }),
     })
     return next()
   })
