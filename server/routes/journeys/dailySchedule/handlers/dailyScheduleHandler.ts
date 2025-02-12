@@ -86,6 +86,7 @@ export default class DailyScheduleHandler implements PageHandler {
           appointmentLocations,
           courtsAndProbationTeams,
           wings,
+          appointmentsRolledOut,
         })
       : res.render('pages/dailySchedule/cancelledAppointments', {
           prisonName: prison.prisonName,

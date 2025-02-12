@@ -58,4 +58,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('filterFalsy', list => list.filter(Boolean))
 
   njkEnv.addGlobal('now', () => new Date())
+  njkEnv.addGlobal('dpsUrl', config.dpsUrl)
+  njkEnv.addGlobal('activitiesAndAppointmentsUrl', config.activitiesAndAppointmentsUrl)
 }

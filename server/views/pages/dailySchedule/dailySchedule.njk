@@ -7,6 +7,9 @@
 {% from "partials/showProfileLink.njk" import showProfileLink %}
 {% from "partials/stat.njk" import stat %}
 
+{% set backLinkText = "Back to all appointments tasks" if appointmentsRolledOut else "Back to prisoner whereabouts" %}
+{% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') if appointmentsRolledOut else (dpsUrl + '/manage-prisoner-whereabouts') %}
+
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 {% set noAppointmentsForDay = not session.journey.scheduleFilters and schedule.appointmentsListed == 0 %}
 
@@ -37,7 +40,7 @@
         <div class="govuk-grid-row govuk-!-display-none-print">
             <div class="govuk-grid-column-full">
                 {{ govukWarningText({
-                    text: "You can not edit details of appointments that have already happened.",
+                    text: "You cannot edit details of appointments that have already happened.",
                     iconFallbackText: "Warning",
                     attributes: {
                         "data-qa": "warning-text"
