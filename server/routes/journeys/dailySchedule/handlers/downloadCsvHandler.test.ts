@@ -13,7 +13,7 @@ const scheduleService = new ScheduleService(null, null, null, null, null, null) 
 
 let app: Express
 const filters = { wing: ['A'] }
-const expectedCsv = `prisonerName,prisonerNumber,cellNumber,appointmentStartTime,appointmentEndTime,appointmentType,appointmentSubtype,roomLocation,courtOrProbationTeam,videoLink,lastUpdated,dateExported\nJohn Smith,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,,10 December 2024 at 00:00,${formatDate(new Date(), "d MMMM yyyy 'at' HH:mm")}`
+const expectedCsv = `prisonerName,prisonerNumber,cellNumber,appointmentStartTime,appointmentEndTime,appointmentType,appointmentSubtype,roomLocation,courtOrProbationTeam,videoLink,lastUpdated\nJohn Smith,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,,10 December 2024 at 00:00`
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({

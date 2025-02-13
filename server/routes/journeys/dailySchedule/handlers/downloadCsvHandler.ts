@@ -49,7 +49,6 @@ export default class DownloadCsvHandler implements PageHandler {
         courtOrProbationTeam: a.externalAgencyDescription || '',
         videoLink: a.videoLink || '',
         lastUpdated: formatDate(a.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
-        dateExported: formatDate(new Date(), "d MMMM yyyy 'at' HH:mm"),
       })),
     )
   }
