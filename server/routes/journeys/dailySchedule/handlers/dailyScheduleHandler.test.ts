@@ -157,6 +157,38 @@ describe('GET', () => {
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
       })
   })
+
+  it('should render back link to A&A if prison is rolled out for A&A', () => {
+    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+        const backLinkText = $('.govuk-back-link').text().trim()
+
+        expect(heading).toEqual('Video daily schedule: Moorland (HMP)')
+        expect(backLinkText).toEqual('Back to all appointments tasks')
+      })
+  })
+
+  it('should render back link to Whereabouts if prison is not rolled out for A&A', () => {
+    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(false)
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+        const backLinkText = $('.govuk-back-link').text().trim()
+
+        expect(heading).toEqual('Video daily schedule: Moorland (HMP)')
+        expect(backLinkText).toEqual('Back to prisoner whereabouts')
+      })
+  })
 })
 
 describe('POST', () => {
