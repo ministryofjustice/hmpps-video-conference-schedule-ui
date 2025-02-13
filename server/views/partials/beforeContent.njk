@@ -16,7 +16,8 @@
   <nav>
     {{ govukBackLink({
       text: backLinkText or "Back",
-      href: backLinkHref
+      href: backLinkHref,
+      classes: 'govuk-!-display-none-print'
     }) }}
   </nav>
 {% endif %}
