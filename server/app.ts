@@ -20,6 +20,7 @@ import type { Services } from './services'
 import setUpFlash from './middleware/setUpFlash'
 import setUpFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
 import { DataAccess } from './data'
+import authorisationMiddleware from './middleware/authorisationMiddleware'
 
 export default function createApp(services: Services, dataAccess: DataAccess): express.Application {
   const app = express()
@@ -36,6 +37,7 @@ export default function createApp(services: Services, dataAccess: DataAccess): e
   app.use(setUpStaticResources())
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
+  app.use(authorisationMiddleware(['ROLE_PRISON']))
   app.use(setUpCsrf())
   app.use(setUpFlash())
   app.use(setUpCurrentUser(services))

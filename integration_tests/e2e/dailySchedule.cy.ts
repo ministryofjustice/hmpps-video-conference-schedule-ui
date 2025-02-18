@@ -5,7 +5,7 @@ import Page from '../pages/page'
 context('Daily schedule', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', ['ROLE_PRISON'])
     cy.task('stubUser')
     cy.task('stubGetPrison')
     cy.task('stubIsAppointmentsRolledOut')
