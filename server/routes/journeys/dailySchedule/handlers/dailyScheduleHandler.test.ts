@@ -77,8 +77,10 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
         const date = new Date('2024-12-12')
+        const backLinkText = $('.govuk-back-link').text().trim()
 
         expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(backLinkText).toEqual("Back to today's schedule")
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),

@@ -17,7 +17,10 @@
     {{ govukBackLink({
       text: backLinkText or "Back",
       href: backLinkHref,
-      classes: 'govuk-!-display-none-print'
+      classes: 'govuk-!-display-none-print',
+      attributes: {
+        rel: 'noreferrer'
+      }
     }) }}
   </nav>
 {% endif %}
