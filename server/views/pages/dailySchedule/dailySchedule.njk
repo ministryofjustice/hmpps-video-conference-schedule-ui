@@ -7,8 +7,14 @@
 {% from "partials/showProfileLink.njk" import showProfileLink %}
 {% from "partials/stat.njk" import stat %}
 
-{% set backLinkText = "Back to all appointments tasks" if appointmentsRolledOut else "Back to prisoner whereabouts" %}
-{% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') if appointmentsRolledOut else (dpsUrl + '/manage-prisoner-whereabouts') %}
+{% set isToday = (date | formatDate('yyyy-MM-dd')) == (now() | formatDate('yyyy-MM-dd'))  %}
+{% if isToday %}
+    {% set backLinkText = "Back to all appointments tasks" if appointmentsRolledOut else "Back to prisoner whereabouts" %}
+    {% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') if appointmentsRolledOut else (dpsUrl + '/manage-prisoner-whereabouts') %}
+{% else %}
+    {% set backLinkText = "Back to today's schedule" %}
+    {% set backLinkHref = '/clear-filter?all=true' %}
+{% endif %}
 
 {% set pageTitle = "Video daily schedule: " + prisonName %}
 {% set noAppointmentsForDay = not session.journey.scheduleFilters and schedule.appointmentsListed == 0 %}
