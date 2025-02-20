@@ -38,17 +38,17 @@ export default class DownloadCsvHandler implements PageHandler {
   private convertScheduleToCsvRows = (schedule: DailySchedule) => {
     return schedule.appointmentGroups.flatMap(group =>
       group.map(a => ({
-        prisonerName: convertToTitleCase(`${a.prisoner.firstName} ${a.prisoner.lastName}`),
-        prisonerNumber: a.prisoner.prisonerNumber,
-        cellNumber: a.prisoner.cellLocation,
-        appointmentStartTime: a.startTime,
-        appointmentEndTime: a.endTime || '',
-        appointmentType: a.appointmentTypeDescription,
-        appointmentSubtype: a.appointmentSubtypeDescription || '',
-        roomLocation: a.appointmentLocationDescription,
-        courtOrProbationTeam: a.externalAgencyDescription || '',
-        videoLink: a.videoLink || '',
-        lastUpdated: formatDate(a.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
+        'Prisoner name': convertToTitleCase(`${a.prisoner.firstName} ${a.prisoner.lastName}`),
+        'Prison number': a.prisoner.prisonerNumber,
+        'Cell number': a.prisoner.cellLocation,
+        'Appointment start time': a.startTime,
+        'Appointment end time': a.endTime || '',
+        'Appointment type': a.appointmentTypeDescription,
+        'Appointment subtype': a.appointmentSubtypeDescription || '',
+        'Room location': a.appointmentLocationDescription,
+        'Court or probation team': a.externalAgencyDescription || '',
+        'Video link': a.videoLink || '',
+        'Last updated': formatDate(a.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
       })),
     )
   }
