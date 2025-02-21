@@ -28,9 +28,9 @@ export default class ReferenceDataService {
 
   public async getCellsByWing(prisonId: string, user: Express.User): Promise<CellsByWing> {
     const extractCells = (subLocations: ResidentialHierarchy[]): string[] =>
-      subLocations.flatMap(loc =>
-        loc.locationType === 'CELL' ? [loc.fullLocationPath] : extractCells(loc.subLocations || []),
-      )
+      subLocations?.flatMap(loc =>
+        loc.locationType === 'CELL' ? [loc.fullLocationPath] : extractCells(loc.subLocations),
+      ) || []
 
     return this.locationsInsidePrisonApiClient.getResidentialHierarchy(prisonId, user).then(wings =>
       wings.map(w => ({
