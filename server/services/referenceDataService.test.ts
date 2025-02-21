@@ -113,6 +113,12 @@ describe('Reference data service', () => {
             },
           ],
         },
+        {
+          locationType: 'WING',
+          fullLocationPath: 'C',
+          localName: 'C Wing',
+          subLocations: undefined,
+        },
       ] as ResidentialHierarchy[])
 
       const result = await referenceDataService.getCellsByWing('MDI', user)
@@ -120,6 +126,7 @@ describe('Reference data service', () => {
       expect(result).toEqual([
         { localName: 'A Wing', fullLocationPath: 'A', cells: ['A-1-001', 'A-1-002', 'A-2-001'] },
         { localName: 'B Wing', fullLocationPath: 'B', cells: ['B-1-001'] },
+        { localName: 'C Wing', fullLocationPath: 'C', cells: [] },
       ])
       expect(locationsInsidePrisonApiClient.getResidentialHierarchy).toHaveBeenCalledWith('MDI', user)
     })
