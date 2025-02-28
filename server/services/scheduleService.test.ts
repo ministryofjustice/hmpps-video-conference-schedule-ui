@@ -236,6 +236,7 @@ describe('Schedule service', () => {
         probationTeamCode: 'BURPP',
         probationTeamDescription: 'Burnley PP',
         probationMeetingTypeDescription: 'Recall report',
+        videoUrl: 'http://video.url',
       },
       {
         videoBookingId: 3,
@@ -448,6 +449,7 @@ describe('Schedule service', () => {
               tags: [],
               videoBookingId: 2,
               videoLinkRequired: false,
+              videoLink: 'http://video.url',
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],
@@ -933,6 +935,7 @@ describe('Schedule service', () => {
               tags: [],
               videoBookingId: 2,
               videoLinkRequired: false,
+              videoLink: 'http://video.url',
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],

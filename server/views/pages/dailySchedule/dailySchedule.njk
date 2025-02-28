@@ -134,7 +134,7 @@
                             classes: classes
                         },
                         {
-                            html: scheduleItem.videoLink or 'None entered' if scheduleItem.videoLinkRequired else (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
+                            html: scheduleItem.videoLink or ('None entered' if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             classes: classes
                         },
                         {
