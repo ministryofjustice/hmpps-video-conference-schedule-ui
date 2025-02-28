@@ -182,7 +182,7 @@ export default class ScheduleService {
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
-      videoLink: videoLinkRequired ? bvlsAppointment?.videoUrl : undefined,
+      videoLink: bvlsAppointment?.videoUrl,
       appointmentSubtypeDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription) ||
