@@ -139,6 +139,10 @@ export default class ScheduleService {
     const createdTime = bvlsAppointment?.createdTime || scheduledAppointment.createdTime
     const updatedTime = bvlsAppointment?.updatedTime || scheduledAppointment.updatedTime
     const videoLinkRequired = bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN'
+    const isMainAppointmentOfBooking =
+      bvlsAppointment &&
+      bvlsAppointment?.appointmentType !== 'VLB_COURT_PRE' &&
+      bvlsAppointment?.appointmentType !== 'VLB_COURT_POST'
 
     const buildTags = () => {
       const appointmentDate = parseDate(scheduledAppointment.date)
@@ -182,7 +186,7 @@ export default class ScheduleService {
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
-      videoLink: bvlsAppointment?.videoUrl,
+      videoLink: isMainAppointmentOfBooking ? bvlsAppointment.videoUrl : undefined,
       appointmentSubtypeDescription:
         (bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN' && bvlsAppointment?.hearingTypeDescription) ||
         (bvlsAppointment?.appointmentType === 'VLB_PROBATION' && bvlsAppointment?.probationMeetingTypeDescription) ||
