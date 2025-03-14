@@ -480,7 +480,6 @@ describe('Schedule service', () => {
               tags: [],
               videoBookingId: 2,
               videoLinkRequired: false,
-              videoLink: 'http://video.url',
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],
@@ -519,7 +518,7 @@ describe('Schedule service', () => {
               endTime: '20:00',
               externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
-              lastUpdatedOrCreated: '2025-03-10T00:00:00.000Z',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
@@ -783,7 +782,7 @@ describe('Schedule service', () => {
               endTime: '20:00',
               externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
-              lastUpdatedOrCreated: '2025-03-10T00:00:00.000Z',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
@@ -914,7 +913,7 @@ describe('Schedule service', () => {
               endTime: '20:00',
               externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
-              lastUpdatedOrCreated: '2025-03-10T00:00:00.000Z',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
@@ -1053,7 +1052,6 @@ describe('Schedule service', () => {
               tags: [],
               videoBookingId: 2,
               videoLinkRequired: false,
-              videoLink: 'http://video.url',
               viewAppointmentLink: 'http://localhost:3000/appointment-details/5',
             },
           ],
@@ -1068,7 +1066,7 @@ describe('Schedule service', () => {
               endTime: '20:00',
               externalAgencyCode: 'ABERCV',
               externalAgencyDescription: 'Aberystwyth Civil',
-              lastUpdatedOrCreated: '2025-03-10T00:00:00.000Z',
+              lastUpdatedOrCreated: startOfToday().toISOString(),
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
