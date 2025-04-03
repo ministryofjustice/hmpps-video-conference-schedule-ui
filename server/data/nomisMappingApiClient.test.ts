@@ -24,16 +24,16 @@ describe('nomisMappingApiClient', () => {
     nock.cleanAll()
   })
 
-  describe('getLocationMappingByNomisId', () => {
+  describe('getLocationMappingsByNomisIds', () => {
     it('should return data from api', async () => {
-      const response = { data: 'data' }
+      const response = [{ data: 'data' }]
 
       fakeNomisMappingApiClient
-        .get('/api/locations/nomis/1')
+        .post('/api/locations/nomis', [1])
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await nomisMappingApiClient.getLocationMappingByNomisId(1, user)
+      const output = await nomisMappingApiClient.getLocationMappingsByNomisIds([1], user)
       expect(output).toEqual(response)
     })
   })

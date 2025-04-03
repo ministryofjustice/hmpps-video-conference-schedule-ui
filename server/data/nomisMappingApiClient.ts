@@ -7,7 +7,7 @@ export default class NomisMappingApiClient extends RestClient {
     super('Nomis Mapping API', config.apis.nomisMappingApi)
   }
 
-  getLocationMappingByNomisId(nomisLocationId: number, user: Express.User): Promise<LocationMapping> {
-    return this.get({ path: `/api/locations/nomis/${nomisLocationId}` }, user)
+  getLocationMappingsByNomisIds(nomisLocationIds: number[], user: Express.User): Promise<LocationMapping[]> {
+    return this.post({ path: `/api/locations/nomis`, data: nomisLocationIds }, user)
   }
 }

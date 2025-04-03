@@ -97,8 +97,21 @@ export default class ScheduleService {
       this.referenceDataService.getCellsByWing(prisonId, user),
     ])
 
+    const nomisLocationIds = scheduledAppointments.map(a => a.locationId).filter(Boolean)
+    const nomisLocationIdMappings = await this.nomisMappingApiClient.getLocationMappingsByNomisIds(
+      nomisLocationIds,
+      user,
+    )
+
     const scheduleItems = await Promise.all(
-      scheduledAppointments.map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
+      scheduledAppointments
+        .map(appointment => ({
+          ...appointment,
+          dpsLocationId:
+            appointment.dpsLocationId ||
+            nomisLocationIdMappings.find(m => m.nomisLocationId === appointment.locationId)?.dpsLocationId,
+        }))
+        .map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
     )
 
     const filteredItems = scheduleItems
@@ -129,13 +142,7 @@ export default class ScheduleService {
     prisoners: Prisoner[],
     user: Express.User,
   ): Promise<ScheduleItem> {
-    const dpsLocationId =
-      scheduledAppointment.dpsLocationId ||
-      (scheduledAppointment.locationId
-        ? (await this.nomisMappingApiClient.getLocationMappingByNomisId(scheduledAppointment.locationId, user))
-            .dpsLocationId
-        : undefined)
-    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments, dpsLocationId)
+    const bvlsAppointment = await this.matchBvlsAppointmentTo(scheduledAppointment, bvlsAppointments)
     const createdTime = bvlsAppointment?.createdTime || scheduledAppointment.createdTime
     const updatedTime = bvlsAppointment?.updatedTime || scheduledAppointment.updatedTime
     const videoLinkRequired = bvlsAppointment?.appointmentType === 'VLB_COURT_MAIN'
@@ -178,7 +185,7 @@ export default class ScheduleService {
       endTime: scheduledAppointment.endTime,
       appointmentTypeCode: scheduledAppointment.appointmentTypeCode,
       appointmentTypeDescription: this.getAppointmentType(bvlsAppointment, scheduledAppointment),
-      appointmentLocationId: dpsLocationId,
+      appointmentLocationId: scheduledAppointment.dpsLocationId,
       appointmentLocationDescription: scheduledAppointment.locationDescription,
       videoBookingId: bvlsAppointment?.videoBookingId,
       videoLinkRequired,
@@ -222,7 +229,6 @@ export default class ScheduleService {
   private async matchBvlsAppointmentTo(
     appointment: Appointment,
     bvlsAppointments: BvlsAppointment[],
-    dpsLocationId: string,
   ): Promise<BvlsAppointment> {
     return bvlsAppointments.find(bvlsAppointment => {
       return (
@@ -230,7 +236,7 @@ export default class ScheduleService {
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
         bvlsAppointment.endTime === appointment.endTime &&
-        bvlsAppointment.dpsLocationId === dpsLocationId
+        bvlsAppointment.dpsLocationId === appointment.dpsLocationId
       )
     })
   }
