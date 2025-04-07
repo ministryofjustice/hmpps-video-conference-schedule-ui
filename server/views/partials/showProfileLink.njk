@@ -7,7 +7,14 @@
             {% if params.inPrison %}
                 <a href="{{ dpsUrl }}/prisoner/{{ params.prisonerNumber }}" rel="noreferrer noopener"
                    target="_blank"
-                   class="govuk-link govuk-link--no-visited-state">
+                   class="govuk-link govuk-link--no-visited-state"
+                   data-track-click-event="Daily-Schedule-View-Prisoner-Profile"
+                   data-track-event-properties="{{
+                       {
+                           hasAlerts: params.hasAlerts
+                       } | dump
+                   }}"
+                >
                     {{ name | safe }}
                     <span class="govuk-visually-hidden">(opens in new tab)</span>
                 </a>
