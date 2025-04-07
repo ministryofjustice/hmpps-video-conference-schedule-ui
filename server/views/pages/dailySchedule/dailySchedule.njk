@@ -162,8 +162,31 @@
                         </div>
                     {% endif %}
                     <div class="hmpps-print-and-export">
-                        <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
-                        <button class="hmpps-print-and-export--print">Print schedule</button>
+                        <button class="hmpps-print-and-export--export"
+                                data-track-click-event="Daily-Schedule-CSV-Export"
+                                data-track-event-properties="{{
+                                    {
+                                        user: user.username,
+                                        prisonCode: user.activeCaseLoadId,
+                                        scheduleDate: date | formatDate('yyyy-MM-dd'),
+                                        exportedDate: now() | formatDate('yyyy-MM-dd'),
+                                        filtersApplied: true if session.journey.scheduleFilters else false
+                                    } | dump
+                                }}"
+                        >Export as spreadsheet (.csv file)</button>
+
+                        <button class="hmpps-print-and-export--print"
+                                data-track-click-event="Daily-Schedule-Print"
+                                data-track-event-properties="{{
+                                    {
+                                        user: user.username,
+                                        prisonCode: user.activeCaseLoadId,
+                                        scheduleDate: date | formatDate('yyyy-MM-dd'),
+                                        printedDate: now() | formatDate('yyyy-MM-dd'),
+                                        filtersApplied: true if session.journey.scheduleFilters else false
+                                    } | dump
+                                }}"
+                        >Print schedule</button>
                     </div>
                 </div>
                 {{ govukTable({
