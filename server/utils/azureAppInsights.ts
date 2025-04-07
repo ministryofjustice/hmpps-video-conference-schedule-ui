@@ -7,12 +7,12 @@ import {
 } from 'applicationinsights'
 import { RequestHandler } from 'express'
 import type { ApplicationInfo } from '../applicationInfo'
+import logger from '../../logger'
+import config from '../config'
 
 export function initialiseAppInsights(): void {
-  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    // eslint-disable-next-line no-console
-    console.log('Enabling azure application insights')
-
+  if (config.applicationInsightsConnectionString) {
+    logger.info('Enabling azure application insights')
     setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
   }
 }

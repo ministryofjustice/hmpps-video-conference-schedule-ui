@@ -182,4 +182,5 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),
+  applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }
