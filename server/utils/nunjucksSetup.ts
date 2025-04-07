@@ -20,6 +20,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.feedbackUrl = config.feedbackUrl
+  app.locals.applicationInsightsConnectionString = config.applicationInsightsConnectionString
+  app.locals.applicationInsightsApplicationName = applicationInfo.applicationName
+  app.locals.buildNumber = config.buildNumber
 
   app.use((req, res, next) => {
     res.locals.session = req.session

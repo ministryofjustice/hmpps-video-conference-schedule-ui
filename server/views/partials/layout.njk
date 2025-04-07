@@ -28,5 +28,11 @@
   {% for js in feComponents.jsIncludes %}
     <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
   {% endfor %}
+  <script type="text/javascript" nonce="{{ cspNonce }}">
+    window.applicationInsightsConnectionString = "{{ applicationInsightsConnectionString }}"
+    window.applicationInsightsApplicationName = "{{ applicationInsightsApplicationName }}"
+    window.buildNumber = "{{ buildNumber }}"
+    window.authenticatedUser = "{{ user.username }}"
+  </script>
   <script type="module" src="/assets/javascript/videoConferenceSchedule.min.js"></script>
 {% endblock %}

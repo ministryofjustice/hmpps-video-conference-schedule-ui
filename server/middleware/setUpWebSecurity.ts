@@ -36,6 +36,7 @@ export default function setUpWebSecurity(): Router {
           ],
           fontSrc: ["'self'", config.apis.frontendComponents.url],
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`, config.apis.frontendComponents.url],
+          connectSrc: ["'self' https://northeurope-0.in.applicationinsights.azure.com https://js.monitor.azure.com"],
         },
       },
       referrerPolicy: { policy: 'same-origin' },
