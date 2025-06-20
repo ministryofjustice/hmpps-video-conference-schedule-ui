@@ -27,6 +27,10 @@
     &__updated-booking {
       @extend .govuk-tag--purple
     }
+
+    &__pin-protected {
+      @extend .govuk-tag--orange
+    }
   }
 }
 

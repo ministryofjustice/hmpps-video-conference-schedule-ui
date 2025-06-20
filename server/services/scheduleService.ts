@@ -170,10 +170,13 @@ export default class ScheduleService {
           isInRange(updatedTimeParsed, set(startOfYesterday(), { hours: 15 }), set(startOfToday(), { hours: 10 }))) ||
         (isTomorrow(appointmentDate) && isAfter(updatedTimeParsed, set(startOfToday(), { hours: 15 })))
 
+      const isPinProtected = videoLinkRequired && bvlsAppointment?.guestPin
+
       return [
         isNew ? 'NEW' : undefined,
         isUpdated ? 'UPDATED' : undefined,
         videoLinkRequired && !bvlsAppointment?.videoUrl ? 'LINK_MISSING' : undefined,
+        isPinProtected ? 'PIN_PROTECTED' : undefined,
       ].filter(Boolean)
     }
 

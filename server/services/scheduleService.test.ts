@@ -1476,6 +1476,80 @@ describe('Schedule service', () => {
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
       })
+
+      it('should add the PIN_PROTECTED tag to appointments with a guest pin', async () => {
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+        ]
+
+        bvlsAppointments = [
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_PRE',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+            videoUrl: 'http://video.url',
+            guestPin: '54321',
+          },
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_MAIN',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+            videoUrl: 'http://video.url',
+            guestPin: '54321',
+          },
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '09:00',
+            endTime: '09:15',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_POST',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+            videoUrl: 'http://video.url',
+            guestPin: '54321',
+          },
+        ] as BvlsAppointment[]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+        bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['PIN_PROTECTED'] })
+      })
     })
   })
 })

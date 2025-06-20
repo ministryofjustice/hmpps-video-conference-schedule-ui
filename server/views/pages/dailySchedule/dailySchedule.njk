@@ -251,6 +251,13 @@
                     classes: "govuk-tag--status govuk-tag--status__link-missing"
                 }) }}
             {% endif %}
+
+            {% if tag == 'PIN_PROTECTED' %}
+                {{ govukTag({
+                    text: "Pin protected",
+                    classes: "govuk-tag--status govuk-tag--status__pin-protected"
+                }) }}
+            {% endif %}
         {% endfor %}
     </div>
 {% endmacro %}
