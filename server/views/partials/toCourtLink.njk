@@ -1,0 +1,17 @@
+{# Macro to format the CVP link based on known information and the feature switch value #}
+
+{% macro toCourtLink(item, feature) %}
+    {% if feature and item.hmctsNumber %}
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="https://HMCTS{{ item.hmctsNumber }}@meet.video.justice.gov.uk" rel="noreferrer noopener" target="_blank">
+        {{ item.hmctsNumber }}
+      </a>
+    {% elseif feature and item.videoLink %}
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="{{ item.videoLink }}" rel="noreferrer noopener" target="_blank">
+        {{ item.videoLink.substring(0,15) }}
+      </a>
+    {% elseif item.videoLink %}
+      {{ item.videoLink }}
+    {% else %}
+      None entered
+    {% endif %}
+{% endmacro %}

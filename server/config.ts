@@ -183,4 +183,7 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
+  featureToggles: {
+    hmctsLinkAndGuestPin: get('FEATURE_HMCTS_LINK_GUEST_PIN', 'false') === 'true',
+  },
 }

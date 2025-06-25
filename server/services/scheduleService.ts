@@ -31,7 +31,7 @@ const RELEVANT_ALERTS = {
   RISK_TO_FEMALES: 'XRF',
 }
 
-type ScheduleItem = {
+export type ScheduleItem = {
   appointmentId: number
   prisoner: {
     prisonerNumber: string
@@ -59,6 +59,7 @@ type ScheduleItem = {
   cancelledTime?: string
   cancelledBy?: string
   lastUpdatedOrCreated: string
+  hmctsNumber?: string
 }
 
 export type DailySchedule = {
@@ -207,6 +208,7 @@ export default class ScheduleService {
       cancelledTime: scheduledAppointment.cancelledTime,
       cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
       lastUpdatedOrCreated: updatedTime || createdTime,
+      hmctsNumber: videoLinkRequired ? bvlsAppointment.hmctsNumber : undefined,
     }
   }
 

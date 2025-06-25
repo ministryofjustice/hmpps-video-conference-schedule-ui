@@ -5,6 +5,8 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "partials/toCourtLink.njk" import toCourtLink %}
 {% from "partials/stat.njk" import stat %}
 
 {% set isToday = (date | formatDate('yyyy-MM-dd')) == (now() | formatDate('yyyy-MM-dd'))  %}
@@ -134,8 +136,12 @@
                             classes: classes
                         },
                         {
-                            html: scheduleItem.videoLink or ('None entered' if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
-                            classes: classes
+                            html: (toCourtLink(scheduleItem, hmctsLinkAndGuestPinEnabled) if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
+                            classes: classes,
+                            attributes: {
+                              'width': '14%',
+                              'word-break': 'break-all'
+                            }
                         },
                         {
                             html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
