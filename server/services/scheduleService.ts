@@ -176,7 +176,7 @@ export default class ScheduleService {
       return [
         isNew ? 'NEW' : undefined,
         isUpdated ? 'UPDATED' : undefined,
-        videoLinkRequired && !bvlsAppointment?.videoUrl ? 'LINK_MISSING' : undefined,
+        videoLinkRequired && !bvlsAppointment?.videoUrl && !bvlsAppointment?.hmctsNumber ? 'LINK_MISSING' : undefined,
         isPinProtected ? 'PIN_PROTECTED' : undefined,
       ].filter(Boolean)
     }

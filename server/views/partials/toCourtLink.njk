@@ -3,7 +3,7 @@
 {% macro toCourtLink(item, feature) %}
     {% if feature and item.hmctsNumber %}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="https://HMCTS{{ item.hmctsNumber }}@meet.video.justice.gov.uk" rel="noreferrer noopener" target="_blank">
-        {{ item.hmctsNumber }}
+        HMCTS{{ item.hmctsNumber }}
       </a>
     {% elseif feature and item.videoLink %}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="{{ item.videoLink }}" rel="noreferrer noopener" target="_blank">
