@@ -136,10 +136,12 @@
                             classes: classes
                         },
                         {
+                            id: 'videoLink',
+                            name: 'videoLink',
                             html: (toCourtLink(scheduleItem, hmctsLinkAndGuestPinEnabled) if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             classes: classes,
                             attributes: {
-                              'width': '14%',
+                              'width': '20%',
                               'word-break': 'break-all'
                             }
                         },

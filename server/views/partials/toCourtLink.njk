@@ -1,3 +1,5 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 {# Macro to format the CVP link based on known information and the feature switch value #}
 
 {% macro toCourtLink(item, feature) %}
@@ -5,10 +7,25 @@
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="https://HMCTS{{ item.hmctsNumber }}@meet.video.justice.gov.uk" rel="noreferrer noopener" target="_blank">
         HMCTS{{ item.hmctsNumber }}
       </a>
+      {{ govukButton(
+        {
+          classes: 'govuk-button--inverse govuk-button--copy',
+          html: '<img src="/assets/images/copy-to-clipboard.svg" />',
+          attributes: { 'data-link': 'https://HMCTS' + item.hmctsNumber + '@meet.video.justice.gov.uk' }
+        })
+      }}
+
     {% elseif feature and item.videoLink %}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="{{ item.videoLink }}" rel="noreferrer noopener" target="_blank">
         {{ item.videoLink.substring(0,15) }}
       </a>
+      {{ govukButton(
+        {
+          classes: 'govuk-button--inverse govuk-button--copy',
+          html: '<img src="/assets/images/copy-to-clipboard.svg" />',
+          attributes: { 'data-link': item.videoLink }
+        })
+      }}
     {% elseif item.videoLink %}
       {{ item.videoLink }}
     {% else %}
