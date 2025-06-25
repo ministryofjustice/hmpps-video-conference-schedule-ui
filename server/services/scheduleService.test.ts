@@ -1550,6 +1550,134 @@ describe('Schedule service', () => {
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['PIN_PROTECTED'] })
       })
+
+      it('should add the LINK_MISSING tag for appointments without video link or HMCTS number', async () => {
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+        ]
+
+        bvlsAppointments = [
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_MAIN',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+          },
+        ] as BvlsAppointment[]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+        bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['LINK_MISSING'] })
+      })
+
+      it('should not add the LINK_MISSING tag for appointments with a video link', async () => {
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+        ]
+
+        bvlsAppointments = [
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_MAIN',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+            videoUrl: 'http://video.url',
+          },
+        ] as BvlsAppointment[]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+        bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
+
+      it('should not add the LINK_MISSING tag for appointments with a HMCTS number', async () => {
+        appointments = [
+          {
+            id: 1,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+        ]
+
+        bvlsAppointments = [
+          {
+            videoBookingId: 1,
+            statusCode: 'ACTIVE',
+            prisonerNumber: 'ABC123',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'ROOM_1',
+            dpsLocationId: 'abc-123',
+            appointmentType: 'VLB_COURT_MAIN',
+            courtCode: 'ABERCV',
+            courtDescription: 'Aberystwyth Civil',
+            hearingTypeDescription: 'Appeal',
+            hmctsNumber: '12345678',
+          },
+        ] as BvlsAppointment[]
+
+        appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+        bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+        const date = new Date()
+        const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+      })
     })
   })
 })
