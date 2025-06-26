@@ -13,7 +13,10 @@ const scheduleService = new ScheduleService(null, null, null, null, null, null) 
 
 let app: Express
 const filters = { wing: ['A'] }
-const expectedCsv = `Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated\nJohn Smith,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,,10 December 2024 at 00:00`
+const expectedCsv =
+  `Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated\nJohn Smith,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00` +
+  '\nJohn Doe,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS54321@meet.video.justice.gov.uk,10 December 2024 at 00:00' +
+  '\nJane Doe,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00'
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
@@ -36,6 +39,27 @@ beforeEach(() => {
           appointmentTypeDescription: 'Court Hearing',
           appointmentLocationDescription: 'A Wing Video Link',
           lastUpdatedOrCreated: '2024-12-10T00:00:00Z',
+          videoLink: 'http://video.url',
+          videoLinkRequired: true,
+        },
+        {
+          prisoner: { firstName: 'John', lastName: 'Doe', prisonerNumber: 'DEF123', cellLocation: 'B-1-001' },
+          startTime: '11:00',
+          endTime: '12:00',
+          appointmentTypeDescription: 'Court Hearing',
+          appointmentLocationDescription: 'B Wing Video Link',
+          lastUpdatedOrCreated: '2024-12-10T00:00:00Z',
+          hmctsNumber: '54321',
+          videoLinkRequired: true,
+        },
+        {
+          prisoner: { firstName: 'Jane', lastName: 'Doe', prisonerNumber: 'HIJ123', cellLocation: 'C-1-001' },
+          startTime: '11:00',
+          endTime: '12:00',
+          appointmentTypeDescription: 'Court Hearing',
+          appointmentLocationDescription: 'C Wing Video Link',
+          lastUpdatedOrCreated: '2024-12-10T00:00:00Z',
+          videoLinkRequired: true,
         },
       ],
     ],
