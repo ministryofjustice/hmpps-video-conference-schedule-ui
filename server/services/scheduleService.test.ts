@@ -1591,6 +1591,7 @@ describe('Schedule service', () => {
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['LINK_MISSING'] })
+        expect(result).toMatchObject({ missingVideoLinks: 1 })
       })
 
       it('should not add the LINK_MISSING tag for appointments with a video link', async () => {
@@ -1634,6 +1635,7 @@ describe('Schedule service', () => {
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+        expect(result).toMatchObject({ missingVideoLinks: 0 })
       })
 
       it('should not add the LINK_MISSING tag for appointments with a HMCTS number', async () => {
@@ -1677,6 +1679,7 @@ describe('Schedule service', () => {
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
+        expect(result).toMatchObject({ missingVideoLinks: 0 })
       })
     })
   })

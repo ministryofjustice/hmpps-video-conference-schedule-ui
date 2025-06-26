@@ -55,3 +55,10 @@ export const parseDatePickerDate = (datePickerDate: string): Date => {
 
   return date
 }
+
+export const toFullCourtLink = (hmctsNumber: string) => {
+  if (!hmctsNumber || hmctsNumber.length < 1) {
+    return undefined
+  }
+  return `HMCTS${hmctsNumber}@meet.video.justice.gov.uk`
+}

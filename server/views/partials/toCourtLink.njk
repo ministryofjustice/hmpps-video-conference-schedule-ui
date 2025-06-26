@@ -2,7 +2,7 @@
 
 {% macro toCourtLink(item, feature) %}
     {% if feature and item.hmctsNumber %}
-      <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="https://HMCTS{{ item.hmctsNumber }}@meet.video.justice.gov.uk" rel="noreferrer noopener" target="_blank">
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word" href="https://{{ (item.hmctsNumber | toFullCourtLink) }}" rel="noreferrer noopener" target="_blank">
         HMCTS{{ item.hmctsNumber }}
       </a>
     {% elseif feature and item.videoLink %}

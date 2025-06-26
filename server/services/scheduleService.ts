@@ -132,7 +132,8 @@ export default class ScheduleService {
       cancelledAppointments: filteredItems.filter(item => item.status === 'CANCELLED').length,
       appointmentsListed: displayItems.length,
       numberOfPrisoners: _.uniq(displayItems.map(item => item.prisoner.prisonerNumber)).length,
-      missingVideoLinks: displayItems.filter(item => item.videoLinkRequired && !item.videoLink).length,
+      missingVideoLinks: displayItems.filter(item => item.videoLinkRequired && !item.videoLink && !item.hmctsNumber)
+        .length,
       appointmentGroups: Object.values(groupedAppointments),
     }
   }
