@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { startOfDay, isValid } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
+import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
 import { convertToTitleCase, formatDate } from '../../../../utils/utils'
 
 export default class DownloadCsvHandler implements PageHandler {
@@ -47,9 +47,22 @@ export default class DownloadCsvHandler implements PageHandler {
         'Appointment subtype': a.appointmentSubtypeDescription || '',
         'Room location': a.appointmentLocationDescription,
         'Court or probation team': a.externalAgencyDescription || '',
-        'Video link': a.videoLink || '',
+        'Video link': this.toFullCourtLink(a) || '',
         'Last updated': formatDate(a.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
       })),
     )
+  }
+
+  private toFullCourtLink = (item: ScheduleItem) => {
+    if (item.videoLinkRequired) {
+      if (item.videoLink) {
+        return item.videoLink
+      }
+      if (item.hmctsNumber) {
+        return `HMCTS${item.hmctsNumber}@meet.video.justice.gov.uk`
+      }
+    }
+
+    return undefined
   }
 }
