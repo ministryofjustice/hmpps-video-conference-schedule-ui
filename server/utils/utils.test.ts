@@ -1,5 +1,5 @@
 import { isValid, parse } from 'date-fns'
-import { convertToTitleCase, initialiseName, parseDate, parseDatePickerDate } from './utils'
+import { convertToTitleCase, initialiseName, parseDate, parseDatePickerDate, toFullCourtLink } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -71,5 +71,17 @@ describe('parseDatePickerDate', () => {
     const date = parseDatePickerDate('02/09/223')
 
     expect(date).toEqual(parse('0223-09-02', 'yyyy-MM-dd', new Date()))
+  })
+})
+
+describe('toFullCourtLink', () => {
+  it.each([
+    ['1234', 'HMCTS1234@meet.video.justice.gov.uk'],
+    ['0878', 'HMCTS0878@meet.video.justice.gov.uk'],
+    ['12', 'HMCTS12@meet.video.justice.gov.uk'],
+    ['', undefined],
+    [undefined, undefined],
+  ])("expands court link [%s] to full link '%s'", (input, expected) => {
+    expect(toFullCourtLink(input)).toEqual(expected)
   })
 })

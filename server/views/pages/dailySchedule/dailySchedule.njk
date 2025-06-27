@@ -109,6 +109,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-9">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
+            {% set printRows = [] %}
 
             {% for appointmentGroup in schedule.appointmentGroups %}
                 {% for scheduleItem in appointmentGroup %}
@@ -145,7 +146,7 @@
                         },
                         {
                             html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
-                            classes: classes + ' govuk-!-display-none-print'
+                            classes: classes
                         },
                         {
                             html: '
@@ -153,9 +154,34 @@
                                         View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
                                     </a>
                                   ' if loop.index == 1,
-                            classes: classes + ' govuk-!-display-none-print'
+                            classes: classes
                         }
                     ]), rows) %}
+
+                    {% set printRows = (printRows.push([
+                        {
+                            html: showProfileLink(dpsUrl, scheduleItem.prisoner) if loop.index == 1,
+                            attributes: {
+                                "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName
+                            }
+                        },
+                        {
+                            text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime)
+                        },
+                        {
+                            html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentTypeDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentSubtypeDescription + '</div>' if scheduleItem.appointmentSubtypeDescription)
+                        },
+                        {
+                            html:  '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentLocationDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.externalAgencyDescription + '</div>' if scheduleItem.externalAgencyDescription)
+                        },
+                        {
+                            html: ((scheduleItem.videoLink or scheduleItem.hmctsNumber | toFullCourtLink) or 'None entered' if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
+                            attributes: {
+                              'width': '20%',
+                              'word-break': 'break-all'
+                            }
+                        }
+                    ]), printRows) %}
                 {% endfor %}
             {% endfor %}
 
@@ -195,6 +221,8 @@
                         >Print schedule</button>
                     </div>
                 </div>
+
+                <div class="govuk-!-display-none-print">
                 {{ govukTable({
                     attributes: {
                         'data-module': 'moj-sortable-table'
@@ -219,16 +247,43 @@
                             text: "Video link"
                         },
                         {
-                            text: "Status",
-                            classes: 'govuk-!-display-none-print'
+                            text: "Status"
                         },
                         {
-                            text: "Action",
-                            classes: 'govuk-!-display-none-print'
+                            text: "Action"
                         }
                     ],
                     rows: rows
                 }) }}
+                </div>
+                <div class="print-only">
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        {
+                            text: "Prisoner",
+                            attributes: {
+                                "aria-sort": "none"
+                            }
+                        },
+                        {
+                            text: "Time"
+                        },
+                        {
+                            text: "Appointment"
+                        },
+                        {
+                            text: "Location"
+                        },
+                        {
+                            text: "Video link"
+                        }
+                    ],
+                    rows: printRows
+                }) }}
+                </div>
             {% endif %}
         </div>
     </div>
