@@ -10,6 +10,8 @@ import ScheduleService from '../../../../services/scheduleService'
 import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/cheerio'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import config from '../../../../config'
+import { Location } from '../../../../@types/locationsInsidePrisonApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -33,6 +35,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.pickUpTimes = false
   appSetup({ scheduleFilters: filters })
 
   prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
@@ -189,6 +192,114 @@ describe('GET', () => {
 
         expect(heading).toEqual('Video daily schedule: Moorland (HMP)')
         expect(backLinkText).toEqual('Back to prisoner whereabouts')
+      })
+  })
+})
+
+describe('GET - with pick-up time enabled', () => {
+  beforeEach(() => {
+    config.featureToggles.pickUpTimes = true
+    appSetup({ scheduleFilters: filters })
+    prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
+  })
+
+  it('should render page with pick-up times toggled on', () => {
+    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
+    referenceDataService.getAppointmentCategories.mockResolvedValue([
+      { code: 'VLB', description: 'Video link - court hearing' },
+    ])
+    referenceDataService.getAppointmentLocations.mockResolvedValue([{ id: 'test' } as Location])
+    referenceDataService.getCourtsAndProbationTeams.mockResolvedValue([
+      { courtId: 1, code: 'MANCM', description: 'Manchester Magistrates', enabled: true },
+    ])
+    referenceDataService.getCellsByWing.mockResolvedValue([
+      { localName: 'A Wing', fullLocationPath: 'A', cells: ['A-1-001', 'A-1-002', 'A-2-001'] },
+    ])
+
+    scheduleService.getSchedule.mockResolvedValue({
+      appointmentsListed: 2,
+      numberOfPrisoners: 1,
+      cancelledAppointments: 0,
+      missingVideoLinks: 0,
+      appointmentGroups: [
+        [
+          {
+            appointmentTypeCode: 'VLB',
+            appointmentTypeDescription: 'Pre-hearing',
+            appointmentId: 1,
+            appointmentLocationId: 'test',
+            appointmentLocationDescription: 'ROOM 1',
+            externalAgencyCode: 'MANCM',
+            externalAgencyDescription: 'Manchester Magistrates',
+            lastUpdatedOrCreated: startOfToday().toISOString(),
+            prisoner: {
+              cellLocation: 'A-1-001',
+              firstName: 'Joe',
+              hasAlerts: false,
+              inPrison: true,
+              lastName: 'Bloggs',
+              prisonerNumber: 'ABC123',
+            },
+            startTime: '07:45',
+            endTime: '08:00',
+            status: 'ACTIVE',
+            tags: [],
+            videoBookingId: 1,
+            videoLinkRequired: false,
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            appointmentSubtypeDescription: '',
+          },
+          {
+            appointmentTypeCode: 'VLB',
+            appointmentTypeDescription: 'Court Hearing',
+            appointmentId: 2,
+            appointmentLocationId: 'test',
+            appointmentLocationDescription: 'ROOM 1',
+            appointmentSubtypeDescription: 'Appeal',
+            externalAgencyCode: 'MANCM',
+            externalAgencyDescription: 'Manchester Magistrates',
+            lastUpdatedOrCreated: startOfToday().toISOString(),
+            prisoner: {
+              cellLocation: 'A-1-001',
+              firstName: 'Joe',
+              hasAlerts: false,
+              inPrison: true,
+              lastName: 'Bloggs',
+              prisonerNumber: 'ABC123',
+            },
+            startTime: '08:00',
+            endTime: '09:00',
+            status: 'ACTIVE',
+            tags: [],
+            videoBookingId: 1,
+            videoLink: 'http://video.url',
+            videoLinkRequired: true,
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
+          },
+        ],
+      ],
+    })
+
+    return request(app)
+      .get('/?date=2024-12-12')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+        const date = new Date('2024-12-12')
+        const backLinkText = $('.govuk-back-link').text().trim()
+
+        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(backLinkText).toEqual("Back to today's schedule")
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: JSON.stringify({ query: { date: '2024-12-12' } }),
+        })
+
+        const pickUps = getByClass($, 'pick-up-time')
+        expect(pickUps.text()).toContain('Show pick-up time')
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
       })
   })
 })

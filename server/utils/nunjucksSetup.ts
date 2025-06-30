@@ -3,7 +3,7 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
-import { initialiseName, formatDate, convertToTitleCase, toFullCourtLink } from './utils'
+import { initialiseName, formatDate, convertToTitleCase, toFullCourtLink, removeThirtyMinutes } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { FieldValidationError } from '../middleware/setUpFlash'
@@ -64,5 +64,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('dpsUrl', config.dpsUrl)
   njkEnv.addGlobal('activitiesAndAppointmentsUrl', config.activitiesAndAppointmentsUrl)
   njkEnv.addGlobal('hmctsLinkAndGuestPinEnabled', config.featureToggles.hmctsLinkAndGuestPin)
+  njkEnv.addGlobal('pickUpTimesEnabled', config.featureToggles.pickUpTimes)
   njkEnv.addFilter('toFullCourtLink', toFullCourtLink)
+  njkEnv.addFilter('removeThirtyMinutes', removeThirtyMinutes)
 }

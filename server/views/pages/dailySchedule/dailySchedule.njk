@@ -6,6 +6,7 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "partials/showProfileLink.njk" import showProfileLink %}
 {% from "partials/showProfileLink.njk" import showProfileLink %}
+{% from "partials/showStartAndEndTime.njk" import showStartAndEndTime %}
 {% from "partials/toCourtLink.njk" import toCourtLink %}
 {% from "partials/stat.njk" import stat %}
 
@@ -112,9 +113,11 @@
             {% set printRows = [] %}
 
             {% for appointmentGroup in schedule.appointmentGroups %}
+
                 {% for scheduleItem in appointmentGroup %}
                     {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
                     {% set classes = (classes + ' govuk-table__cell--alternate-shade') | trim if appointmentGroup.length > 1 %}
+                    {% set pickUpTime = (scheduleItem.startTime | removeThirtyMinutes) if pickUpTimesEnabled and loop.index == 1 %}
 
                     {% set rows = (rows.push([
                         {
@@ -125,8 +128,11 @@
                             classes: classes
                         },
                         {
-                            text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime),
-                            classes: classes
+                            html: showStartAndEndTime(scheduleItem.startTime, scheduleItem.endTime, pickUpTime),
+                            classes: classes,
+                            attributes: {
+                              'width': '14%'
+                            }
                         },
                         {
                             html: '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentTypeDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.appointmentSubtypeDescription + '</div>' if scheduleItem.appointmentSubtypeDescription),
@@ -166,6 +172,9 @@
                             }
                         },
                         {
+                            text: pickUpTime
+                        } if pickUpTimesEnabled,
+                        {
                             text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime)
                         },
                         {
@@ -182,6 +191,7 @@
                             }
                         }
                     ]), printRows) %}
+
                 {% endfor %}
             {% endfor %}
 
@@ -268,6 +278,9 @@
                                 "aria-sort": "none"
                             }
                         },
+                        {
+                          text: "Pick-up time"
+                        } if pickUpTimesEnabled,
                         {
                             text: "Time"
                         },

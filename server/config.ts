@@ -185,5 +185,6 @@ export default {
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     hmctsLinkAndGuestPin: get('FEATURE_HMCTS_LINK_GUEST_PIN', 'false') === 'true',
+    pickUpTimes: get('FEATURE_PICK_UP_TIMES', 'false') === 'true',
   },
 }
