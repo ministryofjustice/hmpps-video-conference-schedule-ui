@@ -1,5 +1,12 @@
 import { isValid, parse } from 'date-fns'
-import { convertToTitleCase, initialiseName, parseDate, parseDatePickerDate, toFullCourtLink } from './utils'
+import {
+  convertToTitleCase,
+  initialiseName,
+  parseDate,
+  parseDatePickerDate,
+  toFullCourtLink,
+  removeThirtyMinutes,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -83,5 +90,19 @@ describe('toFullCourtLink', () => {
     [undefined, undefined],
   ])("expands court link [%s] to full link '%s'", (input, expected) => {
     expect(toFullCourtLink(input)).toEqual(expected)
+  })
+})
+
+describe('removeThirtyMinutes', () => {
+  it.each([
+    ['10:30', '10:00'],
+    ['09:30', '09:00'],
+    ['12:15', '11:45'],
+    ['00:15', '23:45'],
+    ['AABB', undefined],
+    ['', undefined],
+    [undefined, undefined],
+  ])("returns a time 30 minutes before [%s] as '%s'", (input, expected) => {
+    expect(removeThirtyMinutes(input)).toEqual(expected)
   })
 })

@@ -1,4 +1,4 @@
-import { format, isValid, parse, parseISO, startOfToday } from 'date-fns'
+import { format, isValid, parse, parseISO, startOfToday, subMinutes } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -61,4 +61,16 @@ export const toFullCourtLink = (hmctsNumber: string) => {
     return undefined
   }
   return `HMCTS${hmctsNumber}@meet.video.justice.gov.uk`
+}
+
+export const removeThirtyMinutes = (timeValue: string) => {
+  if (!timeValue || timeValue.length < 1) {
+    return undefined
+  }
+  const date = parse(timeValue, 'HH:mm', startOfToday())
+  if (!isValid(date)) {
+    return undefined
+  }
+  const newTime = subMinutes(date, 30)
+  return format(newTime, 'HH:mm')
 }
