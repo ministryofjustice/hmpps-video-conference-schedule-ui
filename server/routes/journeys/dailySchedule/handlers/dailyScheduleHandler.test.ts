@@ -297,7 +297,7 @@ describe('GET - with pick-up time enabled', () => {
           details: JSON.stringify({ query: { date: '2024-12-12' } }),
         })
 
-        const pickUps = getByClass($, 'pick-up-time')
+        const pickUps = getByClass($, 'show-hide-details')
         expect(pickUps.text()).toContain('Show pick-up time')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
       })

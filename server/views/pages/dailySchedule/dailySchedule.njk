@@ -107,7 +107,16 @@
         </div>
     </div>
 
-    <div class="govuk-grid-row govuk-!-margin-top-9">
+    {% if pickUpTimesEnabled %}
+        {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
+        <div class="govuk-grid-row govuk-!-margin-top-4 govuk-!-display-none-print">
+            <div class="hmpps-show-hide-links">
+                <button class="govuk-!-font-size-16 hmpps-show-hide-link-button">Show all pick-up times</button>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="govuk-grid-row govuk-!-margin-top-3">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
             {% set printRows = [] %}
