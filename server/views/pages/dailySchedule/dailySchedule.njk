@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    {% if pickUpTimesEnabled %}
+    {% if pickUpTimesEnabled and schedule.appointmentsListed > 0 %}
         {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
         <div class="govuk-grid-row govuk-!-margin-top-4 govuk-!-display-none-print">
             <div class="hmpps-show-hide-links">
@@ -193,7 +193,7 @@
                             html:  '<div class="govuk-!-margin-bottom-3">' + scheduleItem.appointmentLocationDescription + '</div>' + ('<div class="govuk-hint">' + scheduleItem.externalAgencyDescription + '</div>' if scheduleItem.externalAgencyDescription)
                         },
                         {
-                            html: ((scheduleItem.videoLink or scheduleItem.hmctsNumber | toFullCourtLink) or 'None entered' if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
+                            html: ((scheduleItem.videoLink or (scheduleItem.hmctsNumber | toFullCourtLink)) or 'None entered' if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             attributes: {
                               'width': '20%',
                               'word-break': 'break-all'

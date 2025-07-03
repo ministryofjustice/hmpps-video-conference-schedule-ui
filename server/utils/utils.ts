@@ -74,3 +74,13 @@ export const removeThirtyMinutes = (timeValue: string) => {
   const newTime = subMinutes(date, 30)
   return format(newTime, 'HH:mm')
 }
+
+export const isValidUrl = (url: string): boolean => {
+  try {
+    // If it does not throw an error and its protocol is http or https, its valid
+    const check = new URL(url)
+    return ['https:', 'http:'].includes(check.protocol)
+  } catch (err) {
+    return false
+  }
+}
