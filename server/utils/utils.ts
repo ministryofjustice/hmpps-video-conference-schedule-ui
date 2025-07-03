@@ -80,6 +80,7 @@ export const isValidUrl = (url: string): boolean => {
     // If it does not throw an error and its protocol is http or https, its valid
     const check = new URL(url)
     return ['https:', 'http:'].includes(check.protocol)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return false
   }
