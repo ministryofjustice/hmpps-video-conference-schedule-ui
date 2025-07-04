@@ -6,6 +6,7 @@ import {
   parseDatePickerDate,
   toFullCourtLink,
   removeThirtyMinutes,
+  isValidUrl,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -104,5 +105,20 @@ describe('removeThirtyMinutes', () => {
     [undefined, undefined],
   ])("returns a time 30 minutes before [%s] as '%s'", (input, expected) => {
     expect(removeThirtyMinutes(input)).toEqual(expected)
+  })
+})
+
+describe('isValidUrl', () => {
+  it.each([
+    ['https://www.google.com/a-page', true],
+    ['http://www.google.co.uk/another-page', true],
+    ['bingo.net', false],
+    ['Swindon Crown Court hmtcs3456', false],
+    ['mailto:test@some.address.com', false],
+    ['hmcts1234@meet.video.justice.gov.uk', false],
+    ['https://meet.video.justice.gov.uk/#?conference=hmcts1234@meet.video.justice.gov.uk&pin=4567', true],
+    [undefined, false],
+  ])("url [%s] is valid '%s'", (input, expected) => {
+    expect(isValidUrl(input)).toEqual(expected)
   })
 })
