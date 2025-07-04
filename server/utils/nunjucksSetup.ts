@@ -8,6 +8,7 @@ import {
   formatDate,
   convertToTitleCase,
   toFullCourtLink,
+  toFullCourtLinkPrint,
   removeThirtyMinutes,
   isValidUrl,
 } from './utils'
@@ -67,6 +68,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
   njkEnv.addFilter('filterFalsy', list => list.filter(Boolean))
   njkEnv.addFilter('toFullCourtLink', toFullCourtLink)
+  njkEnv.addFilter('toFullCourtLinkPrint', toFullCourtLinkPrint)
   njkEnv.addFilter('removeThirtyMinutes', removeThirtyMinutes)
   njkEnv.addFilter('isValidUrl', isValidUrl)
 

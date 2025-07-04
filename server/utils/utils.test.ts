@@ -5,6 +5,7 @@ import {
   parseDate,
   parseDatePickerDate,
   toFullCourtLink,
+  toFullCourtLinkPrint,
   removeThirtyMinutes,
   isValidUrl,
 } from './utils'
@@ -83,14 +84,29 @@ describe('parseDatePickerDate', () => {
 })
 
 describe('toFullCourtLink', () => {
+  const prefix = 'https://join.meet.video.justice.gov.uk/#?conference='
+  const suffix = '@meet.video.justice.gov.uk'
+
   it.each([
-    ['1234', 'HMCTS1234@meet.video.justice.gov.uk'],
-    ['0878', 'HMCTS0878@meet.video.justice.gov.uk'],
-    ['12', 'HMCTS12@meet.video.justice.gov.uk'],
+    ['1234', `${prefix}hmcts1234${suffix}`],
+    ['0878', `${prefix}hmcts0878${suffix}`],
+    ['12', `${prefix}hmcts12${suffix}`],
     ['', undefined],
     [undefined, undefined],
   ])("expands court link [%s] to full link '%s'", (input, expected) => {
     expect(toFullCourtLink(input)).toEqual(expected)
+  })
+})
+
+describe('toFullCourtLinkPrint', () => {
+  it.each([
+    ['1234', 'HMCTS 1234'],
+    ['0878', 'HMCTS 0878'],
+    ['12', 'HMCTS 12'],
+    ['', undefined],
+    [undefined, undefined],
+  ])("expands court link [%s] to full link '%s'", (input, expected) => {
+    expect(toFullCourtLinkPrint(input)).toEqual(expected)
   })
 })
 
