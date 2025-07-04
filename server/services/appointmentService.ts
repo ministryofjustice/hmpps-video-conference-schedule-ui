@@ -82,7 +82,6 @@ export default class AppointmentService {
   ): Promise<Appointment[]> {
     return this.prisonApiClient
       .getAppointments(prisonId, date, user)
-      .then(appts => appts.filter(a => a.eventStatus !== 'CANC'))
       .then(appts => appts.flat())
       .then(appts => _.uniq(appts))
       .then(appts =>
