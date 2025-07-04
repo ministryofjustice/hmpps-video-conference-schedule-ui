@@ -38,7 +38,6 @@ describe('Appointment service', () => {
         appointmentTypeCode: 'VLBP',
         appointmentTypeDescription: 'Video Link - Probation Meeting',
         startTime: '2024-12-12T09:00:00Z',
-        eventStatus: 'SCH',
       },
       {
         id: 2,
@@ -50,7 +49,6 @@ describe('Appointment service', () => {
         appointmentTypeDescription: 'Visit',
         startTime: '2024-12-12T10:00:00Z',
         endTime: '2024-12-12T11:00:00Z',
-        eventStatus: 'SCH',
       },
       {
         id: 3,
@@ -62,7 +60,6 @@ describe('Appointment service', () => {
         appointmentTypeDescription: 'Chaplaincy',
         startTime: '2024-12-12T11:00:00Z',
         endTime: '2024-12-12T12:00:00Z',
-        eventStatus: 'SCH',
       },
       {
         id: 4,
@@ -74,19 +71,6 @@ describe('Appointment service', () => {
         appointmentTypeDescription: 'Video Link - Court Hearing',
         startTime: '2024-12-12T14:00:00Z',
         endTime: '2024-12-12T15:00:00Z',
-        eventStatus: 'SCH',
-      },
-      {
-        id: 5,
-        locationId: 1,
-        locationDescription: 'Video link room',
-        date: '2024-12-12',
-        offenderNo: 'ZYX321',
-        appointmentTypeCode: 'VLB',
-        appointmentTypeDescription: 'Video Link - Court Hearing',
-        startTime: '2024-12-12T14:00:00Z',
-        endTime: '2024-12-12T15:00:00Z',
-        eventStatus: 'CANC',
       },
     ]
 
@@ -185,7 +169,6 @@ describe('Appointment service', () => {
           offenderNo: 'ABC123',
           status: 'ACTIVE',
           viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
-          eventStatus: 'SCH',
         },
         {
           id: 4,
@@ -199,7 +182,6 @@ describe('Appointment service', () => {
           offenderNo: 'ZYX321',
           status: 'ACTIVE',
           viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
-          eventStatus: 'SCH',
         },
         {
           id: 2,
@@ -247,7 +229,6 @@ describe('Appointment service', () => {
                 offenderNo: 'ABC123',
                 status: 'ACTIVE',
                 viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
-                eventStatus: 'SCH',
               },
             ])
             break
@@ -265,7 +246,6 @@ describe('Appointment service', () => {
                 offenderNo: 'ZYX321',
                 status: 'ACTIVE',
                 viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
-                eventStatus: 'SCH',
               },
             ])
             break
