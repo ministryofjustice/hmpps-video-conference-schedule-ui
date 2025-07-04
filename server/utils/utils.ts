@@ -56,11 +56,22 @@ export const parseDatePickerDate = (datePickerDate: string): Date => {
   return date
 }
 
+export const toFullCourtLinkPrint = (hmctsNumber: string) => {
+  if (!hmctsNumber || hmctsNumber.length < 1) {
+    return undefined
+  }
+  return `HMCTS ${hmctsNumber}`
+}
+
 export const toFullCourtLink = (hmctsNumber: string) => {
   if (!hmctsNumber || hmctsNumber.length < 1) {
     return undefined
   }
-  return `HMCTS${hmctsNumber}@meet.video.justice.gov.uk`
+
+  const prefix = 'https://join.meet.video.justice.gov.uk/#?conference='
+  const suffix = '@meet.video.justice.gov.uk'
+
+  return `${prefix}hmcts${hmctsNumber}${suffix}`
 }
 
 export const removeThirtyMinutes = (timeValue: string) => {

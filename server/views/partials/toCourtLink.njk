@@ -1,18 +1,29 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
 {# Macro to format the CVP link based on known information and the feature switch value #}
 
 {% macro toCourtLink(item, feature) %}
     {% if feature and item.hmctsNumber %}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word"
-         href="https://{{ (item.hmctsNumber | toFullCourtLink) }}"
+         href="{{ (item.hmctsNumber | toFullCourtLink) }}"
          rel="noreferrer noopener" target="_blank">
         HMCTS{{ item.hmctsNumber }}
       </a>
-    {% elseif feature and item.videoLink %}
+    {% elseif feature and item.videoLink and (item.videoLink | isValidUrl) %}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word"
          href="{{ item.videoLink }}"
          rel="noreferrer noopener" target="_blank">
-        {{ item.videoLink.substring(0,15) }}
+        Court link
       </a>
+    {% elseif feature and item.videoLink and not (item.videoLink | isValidUrl) %}
+        <div class="govuk-body-s govuk-!-margin-top-2 govuk-link--no-visited-state">
+            {{ govukDetails({
+                summaryText: "Check booking",
+                text: "Select view or edit to check court link entered",
+                open: false,
+                classes: "govuk-body-s"
+            }) }}
+        </div>
     {% elseif item.videoLink %}
       {{ item.videoLink }}
     {% else %}

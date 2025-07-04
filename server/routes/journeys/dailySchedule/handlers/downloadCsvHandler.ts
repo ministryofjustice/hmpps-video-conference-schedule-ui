@@ -4,7 +4,7 @@ import { startOfDay, isValid } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
-import { convertToTitleCase, formatDate, removeThirtyMinutes, toFullCourtLink } from '../../../../utils/utils'
+import { convertToTitleCase, formatDate, removeThirtyMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
 import config from '../../../../config'
 
 export default class DownloadCsvHandler implements PageHandler {
@@ -82,7 +82,7 @@ export default class DownloadCsvHandler implements PageHandler {
         return item.videoLink
       }
       if (item.hmctsNumber) {
-        return toFullCourtLink(item.hmctsNumber)
+        return toFullCourtLinkPrint(item.hmctsNumber)
       }
     }
 
