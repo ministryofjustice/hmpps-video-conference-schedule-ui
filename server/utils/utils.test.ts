@@ -1,4 +1,5 @@
-import { isValid, parse } from 'date-fns'
+import { addHours, addMinutes, addSeconds, isValid, parse, startOfToday } from 'date-fns'
+
 import {
   convertToTitleCase,
   initialiseName,
@@ -8,6 +9,7 @@ import {
   toFullCourtLinkPrint,
   removeThirtyMinutes,
   isValidUrl,
+  isBeforeNow,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -136,5 +138,24 @@ describe('isValidUrl', () => {
     [undefined, false],
   ])("url [%s] is valid '%s'", (input, expected) => {
     expect(isValidUrl(input)).toEqual(expected)
+  })
+})
+
+describe('isBeforeNow - (beware - string print shows UTC date/time, not BST)', () => {
+  const dateToday = startOfToday()
+  it.each([
+    ['10:30', addMinutes(addHours(dateToday, 10), 45), true],
+    ['09:30', addMinutes(addHours(dateToday, 9), 20), false],
+    ['12:15', addMinutes(addHours(dateToday, 12), 14), false],
+    ['12:15', addMinutes(addHours(dateToday, 12), 16), true],
+    ['00:15', addMinutes(dateToday, 14), false],
+    ['00:15', addMinutes(dateToday, 16), true],
+    ['10:15', addSeconds(addMinutes(addHours(dateToday, 10), 15), 1), true],
+    ['10:15', addSeconds(addMinutes(addHours(dateToday, 10), 14), 59), false],
+    ['AABB', addHours(dateToday, 1), false],
+    ['', addHours(dateToday, 1), false],
+    [undefined, addHours(dateToday, 1), false],
+  ])("time [%s] isBeforeNow compared to '%s' expect %s", (inputTime, referenceDate: Date, expected) => {
+    expect(isBeforeNow(inputTime, referenceDate)).toBe(expected)
   })
 })

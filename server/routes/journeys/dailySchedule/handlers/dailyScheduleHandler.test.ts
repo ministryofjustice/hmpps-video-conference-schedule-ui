@@ -62,6 +62,7 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: JSON.stringify({ query: {} }),
         })
+
         expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
         expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getAppointmentCategories).toHaveBeenLastCalledWith(user)
@@ -89,8 +90,69 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { date: '2024-12-12' } }),
         })
+
         expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
+      })
+  })
+
+  it('should set isFutureDay correctly', () => {
+    const renderSpy = jest.spyOn(app, 'render')
+
+    return request(app)
+      .get('/?date=2050-01-01')
+      .expect(res => {
+        const date = new Date('2050-01-01')
+
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: JSON.stringify({ query: { date: '2050-01-01' } }),
+        })
+
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
+
+        expect(renderSpy).toHaveBeenCalledWith(
+          'pages/dailySchedule/dailySchedule',
+          {
+            prisonName: 'Moorland (HMP)',
+            date,
+            isFutureDay: true,
+            isPastDay: false,
+            _locals: expect.any(Object),
+          },
+          expect.anything(),
+        )
+      })
+  })
+
+  it('should set isPastDay correctly', () => {
+    const renderSpy = jest.spyOn(app, 'render')
+
+    return request(app)
+      .get('/?date=2024-01-01')
+      .expect(res => {
+        const date = new Date('2024-01-01')
+
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+          details: JSON.stringify({ query: { date: '2024-01-01' } }),
+        })
+
+        expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
+
+        expect(renderSpy).toHaveBeenCalledWith(
+          'pages/dailySchedule/dailySchedule',
+          {
+            prisonName: 'Moorland (HMP)',
+            date,
+            isFutureDay: false,
+            isPastDay: true,
+            _locals: expect.any(Object),
+          },
+          expect.anything(),
+        )
       })
   })
 

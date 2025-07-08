@@ -82,6 +82,7 @@ export default class DailyScheduleHandler implements PageHandler {
           schedule,
           date,
           isPastDay: startOfDay(date) < startOfDay(new Date()),
+          isFutureDay: startOfDay(date) > startOfDay(new Date()),
           appointmentTypes,
           appointmentLocations,
           courtsAndProbationTeams,
