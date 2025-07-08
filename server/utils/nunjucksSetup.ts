@@ -11,6 +11,7 @@ import {
   toFullCourtLinkPrint,
   removeThirtyMinutes,
   isValidUrl,
+  isBeforeNow,
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -71,6 +72,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('toFullCourtLinkPrint', toFullCourtLinkPrint)
   njkEnv.addFilter('removeThirtyMinutes', removeThirtyMinutes)
   njkEnv.addFilter('isValidUrl', isValidUrl)
+  njkEnv.addFilter('isBeforeNow', isBeforeNow)
 
   njkEnv.addGlobal('now', () => new Date())
   njkEnv.addGlobal('dpsUrl', config.dpsUrl)

@@ -1,4 +1,4 @@
-import { format, isValid, parse, parseISO, startOfToday, subMinutes } from 'date-fns'
+import { format, isBefore, isValid, parse, parseISO, startOfToday, subMinutes } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -95,4 +95,17 @@ export const isValidUrl = (url: string): boolean => {
   } catch (err) {
     return false
   }
+}
+
+export const isBeforeNow = (timeValue: string, referenceDate: Date = new Date()): boolean => {
+  if (!timeValue || timeValue.length < 1) {
+    return false
+  }
+
+  const dateWithTime = parse(timeValue, 'HH:mm', startOfToday())
+  if (!isValid(dateWithTime)) {
+    return false
+  }
+
+  return isBefore(dateWithTime, referenceDate)
 }

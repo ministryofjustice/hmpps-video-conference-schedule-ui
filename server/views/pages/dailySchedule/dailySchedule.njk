@@ -166,7 +166,7 @@
                         {
                             html: '
                                     <a class="govuk-link govuk-link--no-visited-state" href="' + scheduleItem.viewAppointmentLink + '" rel="noreferrer noopener" target="_blank">
-                                        View' + (' or edit' if not isPastDay) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                        View' + (' or edit' if isFutureDay or (isToday and not (scheduleItem.startTime | isBeforeNow))) + '<span class="govuk-visually-hidden">(opens in new tab)</span>
                                     </a>
                                   ' if loop.index == 1,
                             classes: classes
