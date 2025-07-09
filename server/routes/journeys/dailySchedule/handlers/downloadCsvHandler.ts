@@ -52,7 +52,9 @@ export default class DownloadCsvHandler implements PageHandler {
         'Room location': item.appointmentLocationDescription,
         'Court or probation team': item.externalAgencyDescription || '',
         'Video link': this.courtLinkFor(item) || '',
-        'Last updated': formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
+        'Last updated': item.lastUpdatedOrCreated
+          ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
+          : '',
       })),
     )
   }
@@ -71,7 +73,9 @@ export default class DownloadCsvHandler implements PageHandler {
         'Room location': item.appointmentLocationDescription,
         'Court or probation team': item.externalAgencyDescription || '',
         'Video link': this.courtLinkFor(item) || '',
-        'Last updated': formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm"),
+        'Last updated': item.lastUpdatedOrCreated
+          ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
+          : '',
       })),
     )
   }
