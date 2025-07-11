@@ -360,7 +360,7 @@ describe('GET - with pick-up time enabled', () => {
         })
 
         const pickUps = getByClass($, 'show-hide-details')
-        expect(pickUps.text()).toContain('Show pick-up time')
+        expect(pickUps.text()).toContain('Pick-up time')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
       })
   })
