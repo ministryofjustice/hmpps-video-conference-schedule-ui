@@ -19,7 +19,7 @@
     {% set backLinkHref = '/clear-filter?all=true' %}
 {% endif %}
 
-{% set pageTitle = "Video daily schedule: " + prisonName %}
+{% set pageTitle = "Video link daily schedule: " + prisonName %}
 {% set noAppointmentsForDay = not session.journey.scheduleFilters and schedule.appointmentsListed == 0 %}
 
 {% block meta %}
