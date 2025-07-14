@@ -54,7 +54,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(existsByDataQa($, 'warning-text')).toBe(false)
 
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
@@ -83,7 +83,7 @@ describe('GET', () => {
         const date = new Date('2024-12-12')
         const backLinkText = $('.govuk-back-link').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(backLinkText).toEqual("Back to today's schedule")
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
@@ -164,7 +164,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith(
           'MDI',
           startOfDay(new Date()),
@@ -220,7 +220,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
       })
   })
@@ -236,7 +236,7 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
         const backLinkText = $('.govuk-back-link').text().trim()
 
-        expect(heading).toEqual('Video daily schedule: Moorland (HMP)')
+        expect(heading).toEqual('Video link daily schedule: Moorland (HMP)')
         expect(backLinkText).toEqual('Back to all appointments tasks')
       })
   })
@@ -252,7 +252,7 @@ describe('GET', () => {
         const heading = $('h1').text().trim()
         const backLinkText = $('.govuk-back-link').text().trim()
 
-        expect(heading).toEqual('Video daily schedule: Moorland (HMP)')
+        expect(heading).toEqual('Video link daily schedule: Moorland (HMP)')
         expect(backLinkText).toEqual('Back to prisoner whereabouts')
       })
   })
@@ -351,7 +351,7 @@ describe('GET - with pick-up time enabled', () => {
         const date = new Date('2024-12-12')
         const backLinkText = $('.govuk-back-link').text().trim()
 
-        expect(heading).toContain('Video daily schedule: Moorland (HMP)')
+        expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(backLinkText).toEqual("Back to today's schedule")
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
