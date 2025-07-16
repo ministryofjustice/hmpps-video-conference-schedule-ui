@@ -8,6 +8,7 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
+import MovementSlipsHandler from './handlers/movementSlips'
 
 export default function Index({
   auditService,
@@ -24,6 +25,7 @@ export default function Index({
   route('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
   route('/clear-filter', new ClearFilterHandler())
   route('/download-csv', new DownloadCsvHandler(scheduleService))
+  route('/movement-slips', new MovementSlipsHandler(prisonService, scheduleService))
   route('/select-date', new SelectDateHandler())
 
   return router
