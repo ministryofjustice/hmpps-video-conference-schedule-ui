@@ -238,6 +238,12 @@
                                     } | dump
                                 }}"
                         >Print schedule</button>
+
+                        {% if bulkPrintMovementSlipsEnabled %}
+                            <a class="govuk-link govuk-link--no-visited-state movement-slip--print" href="/movement-slips?date={{ date | formatDate('yyyy-MM-dd') }}" rel="noreferrer noopener" target="_blank">
+                                Print all movement slips<span class="govuk-visually-hidden">(opens in new tab)</span>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
 

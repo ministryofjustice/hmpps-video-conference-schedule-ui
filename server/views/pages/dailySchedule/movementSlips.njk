@@ -1,0 +1,34 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/movement-slip.njk" import movementSlip %}
+
+{% extends "partials/layout.njk" %}
+
+{% set pageTitle = "Movement Authorisation" %}
+
+{% block header %}
+{% endblock %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l govuk-visually-hidden">Print movement slips</h1>
+
+            <div class="govuk-button-group hmpps-print-and-export--print govuk-!-display-none-print">
+                {{ govukButton({
+                    text: "Print movement slips" if movementSlips.length > 1 else "Print movement slip",
+                    classes: "govuk-button--blue js-print no-js-hidden",
+                    preventDoubleClick: true
+                }) }}
+            </div>
+        </div>
+    </div>
+    {% for ms in movementSlips %}
+      {{ movementSlip(ms, now()) }}
+    {% endfor %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

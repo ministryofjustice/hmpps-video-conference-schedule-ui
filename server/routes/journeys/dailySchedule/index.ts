@@ -8,6 +8,8 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
+import MovementSlipsHandler from './handlers/movementSlips'
+import config from '../../../config'
 
 export default function Index({
   auditService,
@@ -25,6 +27,10 @@ export default function Index({
   route('/clear-filter', new ClearFilterHandler())
   route('/download-csv', new DownloadCsvHandler(scheduleService))
   route('/select-date', new SelectDateHandler())
+
+  if (config.featureBulkPrintMovementSlips) {
+    route('/movement-slips', new MovementSlipsHandler(prisonService, scheduleService))
+  }
 
   return router
 }

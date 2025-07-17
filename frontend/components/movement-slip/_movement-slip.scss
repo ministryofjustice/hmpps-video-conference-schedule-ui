@@ -1,0 +1,115 @@
+.separate-slip-print:not(:last-child){
+  page-break-after: always;
+}
+
+.movement-slip--print {
+  a {
+    @extend .govuk-link;
+    background-size: 20px 18px;
+    padding: 12px 12px 12px 38px;
+    border: 0;
+    color: $govuk-brand-colour;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: rgba(11, 12, 12, .99);
+    }
+
+    &:focus {
+      outline: 3px solid transparent;
+      color: #0b0c0c;
+      background-color: #eadb77 !important;
+      box-shadow: 0 -2px #fd0, 0 4px #0b0c0c !important;
+      text-decoration: none;
+      box-decoration-break: clone;
+      border-color: transparent;
+    }
+  }
+}
+
+.movement-slip {
+  margin-bottom: govuk-spacing(6);
+  padding: govuk-spacing(4);
+  border: 2px dashed $govuk-border-colour;
+  page-break-inside: avoid;
+
+  .movement-slip-header {
+    @extend .govuk-heading-s;
+  }
+
+  .movement-slip-footer {
+    text-align: right;
+    color: $govuk-secondary-text-colour;
+    margin-bottom: govuk-spacing(0);
+
+    @media print {
+      font-size: 14px;
+    }
+  }
+
+  .movement-slip-warning {
+    background-color: #F5F5F5;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0px;
+
+    span {
+      @extend .govuk-warning-text__icon;
+      background-color: #F5F5F5;
+      color: #000000;
+      width: 15px;
+      height: 15px;
+      top: 10px;
+      left: 7px;
+      font-size: 15px;
+    }
+  }
+
+  &__summary {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    &__row {
+      @extend .govuk-body;
+      display: table-row;
+      border-bottom: 1px solid $govuk-border-colour;
+
+      &--no-border {
+        border-bottom: 0;
+      }
+
+      &__key {
+        display: table-cell;
+        width: 30%;
+        font-weight: bold;
+        padding: 10px 20px 10px 0;
+        margin: 0;
+
+        &--normal {
+          font-weight: normal;
+        }
+      }
+
+      &__value {
+        display: table-cell;
+        padding: 10px 20px 10px 0;
+        margin: 0;
+
+        ul {
+          @media print {
+            font-size: 14px;
+          }
+        }
+      }
+
+      @media print {
+        font-size: 14px;
+      }
+    }
+  }
+}
