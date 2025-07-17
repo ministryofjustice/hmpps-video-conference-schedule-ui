@@ -72,7 +72,7 @@ export default class MovementSlipsHandler implements PageHandler {
             meetingType: this.getMeetingType(group),
           }
         : undefined,
-      officialOther: this.isAppointmentType(AppointmentType.OFFICAL_OTHER, group)
+      officialOther: this.isAppointmentType(AppointmentType.OFFICIAL_OTHER, group)
         ? {
             startTime: this.getStartTime(group, 'Official Other'),
           }
@@ -80,7 +80,6 @@ export default class MovementSlipsHandler implements PageHandler {
       pickUpTime: removeThirtyMinutes(group[0].startTime),
       location: this.getLocation(group),
       notes: group[0].notesForPrisoner,
-      code: group[0].appointmentTypeCode,
     }))
   }
 
@@ -152,7 +151,7 @@ enum AppointmentType {
   ANOTHER_PRISON = 'VLAP',
   COURT = 'VLB',
   LEGAL = 'VLLA',
-  OFFICAL_OTHER = 'VLOO',
+  OFFICIAL_OTHER = 'VLOO',
   PAROLE = 'VLPA',
   PROBATION = 'VLPM',
 }

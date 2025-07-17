@@ -2,7 +2,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 
   .hmpps-last-updated {
     @extend .govuk-button-group;
@@ -21,7 +20,7 @@
     @extend .govuk-button-group;
     margin: 0 0 0 auto;
 
-    button, a {
+    button {
       @extend .govuk-link;
       margin: 0;
       background-size: 20px 18px;
@@ -51,7 +50,6 @@
 
       &.hmpps-print-and-export--print {
         background: url("/assets/images/icon-print.png") no-repeat 10px 50%;
-        padding-right: 0;
       }
     }
   }
