@@ -1,5 +1,3 @@
-{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
-
 {% macro movementSlip(movementSlip, printedAt) %}
     {% macro labelAndValue(label, value, rowClasses, keyClasses, valueClasses) %}
         <div class="movement-slip__summary__row {{ rowClasses }}">
@@ -57,11 +55,9 @@
             {{ labelAndValue('Pick-up time', movementSlip.pickUpTime) }}
             {{ labelAndValue('Location', movementSlip.location) }}
         </dl>
-        {{ govukWarningText({
-            text: "Be ready on time. No vaping allowed. Refusal to attend will be recorded.",
-            iconFallbackText: "Warning",
-            classes: "movement-slip-warning"
-        }) }}
+        <div class='movement-slip-information'>
+          Be ready on time. No vaping allowed. Refusal to attend will be recorded.
+        </div>
         <h1 class="govuk-heading-s">Notes</h1>
         <div data-qa='notes' class="govuk-body-s">{{ movementSlip.notes }}</div>
         <p class="govuk-body-s movement-slip-footer">Date printed {{ printedAt | formatDate("d MMMM yyyy") }}</p>

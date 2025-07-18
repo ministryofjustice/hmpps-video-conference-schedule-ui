@@ -48,24 +48,19 @@
     }
   }
 
-  .movement-slip-warning {
-    background-color: #F5F5F5;
+  .movement-slip-information {
+    @extend .govuk-body;
+
     font-weight: 300;
     font-style: normal;
     font-size: 14px;
     line-height: 24px;
     letter-spacing: 0px;
+    padding-left: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
-    span {
-      @extend .govuk-warning-text__icon;
-      background-color: #F5F5F5;
-      color: #000000;
-      width: 15px;
-      height: 15px;
-      top: 10px;
-      left: 7px;
-      font-size: 15px;
-    }
+    background: #F5F5F5 url("/assets/images/icon-information.svg") no-repeat 2px 50%;
   }
 
   &__summary {
