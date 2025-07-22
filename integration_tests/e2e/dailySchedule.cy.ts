@@ -49,4 +49,25 @@ context('Daily schedule', () => {
 
     cy.signIn()
   })
+
+  it('User can view daily schedule', () => {
+    cy.signIn()
+    const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    cy.task('stubVerifyToken', true)
+    cy.task('stubGetAppointments', {
+      appointments: [
+        {
+          appointmentId: 1,
+          appointmentTypeCode: 'APPT',
+          appointmentTypeDescription: 'Appointment',
+        },
+      ],
+    })
+
+    dailySchedulePage.showFiltersButton().click()
+    dailySchedulePage.setCheckboxByLabel('Video Link - Court Hearing', true)
+    dailySchedulePage.setCheckboxByLabel('Morning (AM)', true)
+    dailySchedulePage.applyFiltersButton().click()
+    cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 3 results.')
+  })
 })
