@@ -5,7 +5,7 @@ import logger from '../../logger'
 export default function setUpFrontendComponents({ frontendComponentApiClient }: DataAccess): Router {
   const router = Router({ mergeParams: true })
 
-  router.get('*', async (req, res, next) => {
+  router.get('*feComponents', async (req, res, next) => {
     try {
       const { user } = res.locals
       const { header, footer } = await frontendComponentApiClient.getComponents(['header', 'footer'], user)

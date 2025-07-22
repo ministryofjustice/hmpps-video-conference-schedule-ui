@@ -1,5 +1,4 @@
-import { Router } from 'express'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import { RequestHandler, Router } from 'express'
 import type { Services } from '../../../services'
 import DailyScheduleHandler from './handlers/dailyScheduleHandler'
 import ClearFilterHandler from './handlers/clearFilterHandler'
@@ -19,17 +18,23 @@ export default function Index({
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
-  const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+  const get = (path: string, handler: PageHandler) =>
+    router.get(path, logPageViewMiddleware(auditService, handler), handler.GET)
+  const post = (path: string, handler: RequestHandler, type?: new () => object) =>
+    router.post(path, validationMiddleware(type), handler)
 
-  route('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
-  route('/clear-filter', new ClearFilterHandler())
-  route('/download-csv', new DownloadCsvHandler(scheduleService))
-  route('/select-date', new SelectDateHandler())
+  const getAndPost = (path: string, handler: PageHandler) => {
+    get(path, handler)
+    post(path, handler.POST, handler.BODY)
+  }
+
+  getAndPost('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
+  get('/clear-filter', new ClearFilterHandler())
+  get('/download-csv', new DownloadCsvHandler(scheduleService))
+  getAndPost('/select-date', new SelectDateHandler())
 
   if (config.featureBulkPrintMovementSlips) {
-    route('/movement-slips', new MovementSlipsHandler(prisonService, scheduleService))
+    get('/movement-slips', new MovementSlipsHandler(prisonService, scheduleService))
   }
 
   return router
