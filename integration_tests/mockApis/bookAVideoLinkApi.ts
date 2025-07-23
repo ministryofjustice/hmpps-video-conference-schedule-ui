@@ -23,6 +23,7 @@ export default {
         appointmentType: 'VLB_COURT_MAIN',
         courtDescription: 'Aberystwyth Civil',
         hearingTypeDescription: 'Appeal',
+        hmctsNumber: '123456/A',
       },
       {
         videoBookingId: 1,
