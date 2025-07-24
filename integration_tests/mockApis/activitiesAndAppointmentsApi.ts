@@ -7,7 +7,7 @@ export default {
     stubPost('/activities-and-appointments-api/appointments/MDI/search', [
       {
         id: 37823,
-        appointmentId: 3194,
+        appointmentId: 1,
         attendees: [{ prisonerNumber: 'G9566GQ' }],
         category: { code: 'VLB', description: 'Video Link - Court Hearing' },
         offenderNo: 'G9566GQ',
@@ -17,6 +17,7 @@ export default {
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         locationId: 67126,
+        internalLocation: { id: 67126, description: 'A Wing Video Link' },
         locationDescription: 'A Wing Video Link',
         status: 'ACTIVE',
         viewAppointmentLink: 'https://test-gov.uk/37823',
@@ -27,7 +28,7 @@ export default {
       },
       {
         id: 37782,
-        appointmentId: 3195,
+        appointmentId: 1,
         attendees: [{ prisonerNumber: 'G9566GQ' }],
         category: { code: 'VLB', description: 'Video Link - Court Hearing' },
         offenderNo: 'G9566GQ',
@@ -37,6 +38,7 @@ export default {
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         locationId: 67126,
+        internalLocation: { id: 67126, description: 'A Wing Video Link' },
         locationDescription: 'A Wing Video Link',
         status: 'ACTIVE',
         viewAppointmentLink: 'https://test-gov.uk/37782',
@@ -47,7 +49,7 @@ export default {
       },
       {
         id: 37824,
-        appointmentId: 3196,
+        appointmentId: 1,
         attendees: [{ prisonerNumber: 'G9566GQ' }],
         category: { code: 'VLB', description: 'Video Link - Court Hearing' },
         offenderNo: 'G9566GQ',
@@ -57,6 +59,7 @@ export default {
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
         locationId: 67126,
+        internalLocation: { id: 67126, description: 'A Wing Video Link' },
         locationDescription: 'A Wing Video Link',
         status: 'ACTIVE',
         viewAppointmentLink: 'https://test-gov.uk/37824',
