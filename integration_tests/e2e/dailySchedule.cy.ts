@@ -66,4 +66,13 @@ context('Daily schedule', () => {
     dailySchedulePage.applyFiltersButton().click()
     cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 0 results.')
   })
+
+  it('User can see tags', () => {
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    cy.get('.govuk-tag--status').should('have.length', 2)
+    cy.get('.govuk-tag--status').eq(0).should('contain.text', 'Link missing')
+    cy.get('.govuk-tag--status').eq(1).should('contain.text', 'Pin protected')
+  })
 })
