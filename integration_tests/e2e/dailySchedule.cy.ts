@@ -49,4 +49,30 @@ context('Daily schedule', () => {
 
     cy.signIn()
   })
+
+  it('User can view daily schedule', () => {
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    dailySchedulePage.showFiltersButton().click()
+    dailySchedulePage.setCheckboxByLabel('Video Link - Court Hearing', true)
+    dailySchedulePage.setCheckboxByLabel('Morning (AM)', true)
+    dailySchedulePage.applyFiltersButton().click()
+    cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 3 results.')
+
+    dailySchedulePage.setCheckboxByLabel('Video Link - Court Hearing', false)
+    dailySchedulePage.setCheckboxByLabel('Video Link - Probation', true)
+    dailySchedulePage.applyFiltersButton().click()
+    cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 0 results.')
+  })
+
+  it('User can see tags', () => {
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    cy.get('.govuk-tag--status').should('have.length', 2)
+    cy.get('.govuk-tag--status').eq(0).should('contain.text', 'Link missing')
+    cy.get('.govuk-tag--status').eq(1).should('contain.text', 'Pin protected')
+  })
 })
