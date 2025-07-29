@@ -20,4 +20,6 @@ export default class DailySchedulePage extends Page {
         }
       })
   }
+
+  printAllMovementSlips = (): PageElement => this.getLink('Print all movement slips')
 }

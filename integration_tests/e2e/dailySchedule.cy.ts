@@ -65,6 +65,7 @@ context('Daily schedule', () => {
     dailySchedulePage.setCheckboxByLabel('Video Link - Probation', true)
     dailySchedulePage.applyFiltersButton().click()
     cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 0 results.')
+    dailySchedulePage.printAllMovementSlips()
   })
 
   it('User can see tags', () => {
