@@ -3,6 +3,11 @@
 }
 
 .movement-slip--print {
+  font-size: 1.1875rem;
+  text-decoration-thickness: unset;
+  text-underline-offset: unset;
+  margin-left: 15px;
+
   a {
     @extend .govuk-link;
     background-size: 20px 18px;
@@ -25,6 +30,10 @@
       box-decoration-break: clone;
       border-color: transparent;
     }
+  }
+
+  a {
+    @extend .govuk-link--no-visited-state;
   }
 }
 

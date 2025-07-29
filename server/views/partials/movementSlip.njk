@@ -7,7 +7,7 @@
     {% endmacro %}
 
     <div class="movement-slip">
-        <h1 class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-s'>Movement authorisation slip</span></h1>
+        <h1 data-qa='movement-slip-header' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-s'>Video appointment movement authorisation slip</span></h1>
         <h1 data-qa='prisoner-name-and-number' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}</h1>
         <dl class='movement-slip__summary'>
             {{ labelAndValue('Date', movementSlip.date | formatDate("d MMMM yyyy")) }}

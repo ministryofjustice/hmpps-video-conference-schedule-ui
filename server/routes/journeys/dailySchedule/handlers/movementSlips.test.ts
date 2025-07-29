@@ -115,7 +115,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Joe Bloggs, ABC123')
         expect(getByDataQa($, 'pre-court-hearing').text()).toContain('07:45')
         expect(getByDataQa($, 'court-hearing---appeal').text()).toContain('08:00')
@@ -169,7 +171,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Fred Flintrock, FRE123')
         expect(getByDataQa($, 'probation-meeting---other').text()).toContain('10:00')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('09:30')
@@ -218,7 +222,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Wilma Flintrock, WIL123')
         expect(getByDataQa($, 'another-prison').text()).toContain('14:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:00')
@@ -267,7 +273,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Barney Rabble, BAR123')
         expect(getByDataQa($, 'legal-appointment').text()).toContain('16:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('16:00')
@@ -316,7 +324,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Betty Rabble, BET123')
         expect(getByDataQa($, 'official-other').text()).toContain('15:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:45')
@@ -365,7 +375,9 @@ describe('GET with feature toggle on', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getByClass($, 'movement-slip-header').text()).toContain('Moorland (HMP) Movement authorisation slip')
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123')
         expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
