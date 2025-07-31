@@ -192,7 +192,7 @@ describe('GET with feature toggle on', () => {
         [
           {
             appointmentTypeCode: 'VLAP',
-            appointmentTypeDescription: 'Another Prison',
+            appointmentTypeDescription: 'Custom description (Another Prison)',
             appointmentId: 1,
             appointmentLocationDescription: 'In Cell',
             lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -243,7 +243,7 @@ describe('GET with feature toggle on', () => {
         [
           {
             appointmentTypeCode: 'VLLA',
-            appointmentTypeDescription: 'Legal Appointment',
+            appointmentTypeDescription: 'Custom description (Legal Appointment)',
             appointmentId: 6,
             appointmentLocationDescription: 'In Cell',
             lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -294,7 +294,7 @@ describe('GET with feature toggle on', () => {
         [
           {
             appointmentTypeCode: 'VLOO',
-            appointmentTypeDescription: 'Official Other',
+            appointmentTypeDescription: 'Custom description (Official Other)',
             appointmentId: 6,
             appointmentLocationDescription: 'In Cell',
             lastUpdatedOrCreated: startOfToday().toISOString(),
@@ -345,7 +345,7 @@ describe('GET with feature toggle on', () => {
         [
           {
             appointmentTypeCode: 'VLPA',
-            appointmentTypeDescription: 'Parole Hearing',
+            appointmentTypeDescription: 'Custom description (Parole Hearing)',
             appointmentId: 6,
             appointmentLocationDescription: 'In Cell',
             lastUpdatedOrCreated: startOfToday().toISOString(),

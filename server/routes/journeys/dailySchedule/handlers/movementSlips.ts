@@ -45,36 +45,36 @@ export default class MovementSlipsHandler implements PageHandler {
       date,
       anotherPrison: this.isAppointmentType(AppointmentType.ANOTHER_PRISON, group)
         ? {
-            startTime: this.getStartTime(group, 'Another Prison'),
+            startTime: this.getStartTime(group, AppointmentType.ANOTHER_PRISON),
           }
         : undefined,
       court: this.isAppointmentType(AppointmentType.COURT, group)
         ? {
-            preStartTime: this.getStartTime(group, 'Pre-hearing'),
-            startTime: this.getStartTime(group, 'Court Hearing'),
-            postStartTime: this.getStartTime(group, 'Post-hearing'),
+            preStartTime: this.getStartTime(group, AppointmentType.COURT, 'Pre-hearing'),
+            startTime: this.getStartTime(group, AppointmentType.COURT, 'Court Hearing'),
+            postStartTime: this.getStartTime(group, AppointmentType.COURT, 'Post-hearing'),
             hearingType: this.getHearingType(group),
           }
         : undefined,
       legal: this.isAppointmentType(AppointmentType.LEGAL, group)
         ? {
-            startTime: this.getStartTime(group, 'Legal Appointment'),
+            startTime: this.getStartTime(group, AppointmentType.LEGAL),
           }
         : undefined,
       parole: this.isAppointmentType(AppointmentType.PAROLE, group)
         ? {
-            startTime: this.getStartTime(group, 'Parole Hearing'),
+            startTime: this.getStartTime(group, AppointmentType.PAROLE),
           }
         : undefined,
       probation: this.isAppointmentType(AppointmentType.PROBATION, group)
         ? {
-            startTime: this.getStartTime(group, 'Probation Meeting'),
+            startTime: this.getStartTime(group, AppointmentType.PROBATION),
             meetingType: this.getMeetingType(group),
           }
         : undefined,
       officialOther: this.isAppointmentType(AppointmentType.OFFICIAL_OTHER, group)
         ? {
-            startTime: this.getStartTime(group, 'Official Other'),
+            startTime: this.getStartTime(group, AppointmentType.OFFICIAL_OTHER),
           }
         : undefined,
       pickUpTime: removeThirtyMinutes(group[0].startTime),
@@ -88,56 +88,65 @@ export default class MovementSlipsHandler implements PageHandler {
   }
 
   private getHearingType = (group: ScheduleItem[]) =>
-    group.find(g => g.appointmentTypeDescription.startsWith('Court Hearing'))?.appointmentSubtypeDescription
+    group.find(
+      g =>
+        g.appointmentTypeCode === AppointmentType.COURT &&
+        // Need to match on text as can have different text (pre/post) but same appointment type code
+        g.appointmentTypeDescription.includes('Court Hearing'),
+    )?.appointmentSubtypeDescription
 
   private getMeetingType = (group: ScheduleItem[]) =>
-    group.find(g => g.appointmentTypeDescription.startsWith('Probation Meeting'))?.appointmentSubtypeDescription
+    group.find(g => g.appointmentTypeCode === AppointmentType.PROBATION)?.appointmentSubtypeDescription
 
-  private getStartTime = (group: ScheduleItem[], type: string) =>
-    group.find(g => g.appointmentTypeDescription.startsWith(type))?.startTime
+  private getStartTimeOld = (group: ScheduleItem[], type: string) =>
+    group.find(g => g.appointmentTypeDescription.includes(type))?.startTime
+
+  private getStartTime = (group: ScheduleItem[], type: AppointmentType, desc?: string) => {
+    if (desc) {
+      return group.find(g => g.appointmentTypeCode === type && g.appointmentTypeDescription.includes(desc))?.startTime
+    }
+    return group.find(g => g.appointmentTypeCode === type)?.startTime
+  }
 
   private getLocation = (group: ScheduleItem[]) => {
-    let location = group.find(g =>
-      g.appointmentTypeDescription.startsWith('Another Prison'),
+    let location = group.find(
+      g => g.appointmentTypeCode === AppointmentType.ANOTHER_PRISON,
     )?.appointmentLocationDescription
 
     if (isNotEmpty(location)) {
       return location
     }
 
-    location = group.find(g => g.appointmentTypeDescription.startsWith('Court Hearing'))?.appointmentLocationDescription
-
-    if (isNotEmpty(location)) {
-      return location
-    }
-
-    location = group.find(g =>
-      g.appointmentTypeDescription.startsWith('Legal Appointment'),
+    location = group.find(
+      g =>
+        g.appointmentTypeCode === AppointmentType.COURT &&
+        // Need to match on text as can have different text (pre/post) but same appointment type code
+        g.appointmentTypeDescription.includes('Court Hearing'),
     )?.appointmentLocationDescription
 
     if (isNotEmpty(location)) {
       return location
     }
 
-    location = group.find(g =>
-      g.appointmentTypeDescription.startsWith('Official Other'),
-    )?.appointmentLocationDescription
+    location = group.find(g => g.appointmentTypeCode === AppointmentType.LEGAL)?.appointmentLocationDescription
 
     if (isNotEmpty(location)) {
       return location
     }
 
-    location = group.find(g =>
-      g.appointmentTypeDescription.startsWith('Parole Hearing'),
-    )?.appointmentLocationDescription
+    location = group.find(g => g.appointmentTypeCode === AppointmentType.OFFICIAL_OTHER)?.appointmentLocationDescription
 
     if (isNotEmpty(location)) {
       return location
     }
 
-    location = group.find(g =>
-      g.appointmentTypeDescription.startsWith('Probation Meeting'),
-    )?.appointmentLocationDescription
+    location = group.find(g => g.appointmentTypeCode === AppointmentType.PAROLE)?.appointmentLocationDescription
+
+    if (isNotEmpty(location)) {
+      return location
+    }
+
+    location = group.find(g => g.appointmentTypeCode === AppointmentType.PROBATION)?.appointmentLocationDescription
 
     if (isNotEmpty(location)) {
       return location
