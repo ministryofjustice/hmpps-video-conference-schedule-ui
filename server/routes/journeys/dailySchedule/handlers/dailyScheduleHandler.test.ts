@@ -36,6 +36,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   config.featureToggles.pickUpTimes = false
+  config.featureBulkPrintMovementSlips = true
   appSetup({ scheduleFilters: filters })
 
   prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
@@ -56,6 +57,7 @@ describe('GET', () => {
 
         expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(existsByDataQa($, 'warning-text')).toBe(false)
+        expect(existsByDataQa($, 'print-all-movement-slips')).toBe(true)
 
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,

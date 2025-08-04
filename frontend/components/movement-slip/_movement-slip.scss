@@ -51,25 +51,18 @@
     text-align: right;
     color: $govuk-secondary-text-colour;
     margin-bottom: govuk-spacing(0);
-
-    @media print {
-      font-size: 14px;
-    }
   }
 
   .movement-slip-information {
-    @extend .govuk-body;
+    @extend .govuk-body-m;
 
-    font-weight: 300;
-    font-style: normal;
-    font-size: 14px;
-    line-height: 24px;
-    letter-spacing: 0px;
-    padding-left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     padding-top: 10px;
+    padding-left: 7px;
     padding-bottom: 10px;
-
-    background: #F5F5F5 url("/assets/images/icon-information.svg") no-repeat 2px 50%;
+    background-color: #F5F5F5;
   }
 
   &__summary {
@@ -79,7 +72,7 @@
     border-collapse: collapse;
 
     &__row {
-      @extend .govuk-body;
+      @extend .govuk-body-m;
       display: table-row;
       border-bottom: 1px solid $govuk-border-colour;
 
@@ -103,16 +96,6 @@
         display: table-cell;
         padding: 10px 20px 10px 0;
         margin: 0;
-
-        ul {
-          @media print {
-            font-size: 14px;
-          }
-        }
-      }
-
-      @media print {
-        font-size: 14px;
       }
     }
   }
