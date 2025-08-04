@@ -110,7 +110,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -166,7 +166,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -217,7 +217,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -268,7 +268,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -319,7 +319,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -370,7 +370,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2025-07-16')
+      .get('/movement-slips?date=2055-07-16')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -384,6 +384,10 @@ describe('GET with feature toggle on', () => {
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
         expect(getByDataQa($, 'notes').text()).toContain('')
       })
+  })
+
+  it(`should redirect to daily schedule when date is before today`, () => {
+    return request(app).get('/movement-slips?date=2025-08-03').expect(302).expect('location', `/`)
   })
 })
 

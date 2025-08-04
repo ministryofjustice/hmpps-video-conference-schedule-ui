@@ -239,9 +239,9 @@
                                 }}"
                         >Print schedule</button>
 
-                        {% if bulkPrintMovementSlipsEnabled %}
-                            <a class="movement-slip--print" href="/movement-slips?date={{ date | formatDate('yyyy-MM-dd') }}" rel="noreferrer noopener" target="_blank" aria-label="Print all movement slips">
-                                <span>Print all movement slips<span class="govuk-visually-hidden">(opens in new tab)</span>
+                        {% if bulkPrintMovementSlipsEnabled and not isPastDay%}
+                            <a class="movement-slip--print" href="/movement-slips?date={{ date | formatDate('yyyy-MM-dd') }}" rel="noreferrer noopener" target="_blank" data-qa='print-all-movement-slips' aria-label="Print all movement slips">
+                              Print all movement slips<span class="govuk-visually-hidden">(opens in new tab)</span>
                             </a>
                         {% endif %}
                     </div>

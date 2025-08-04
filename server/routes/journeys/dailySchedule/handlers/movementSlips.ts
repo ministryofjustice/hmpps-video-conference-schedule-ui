@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { isValid, startOfDay } from 'date-fns'
+import { isValid, startOfDay, startOfToday } from 'date-fns'
 import { isNotEmpty } from 'class-validator'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
@@ -20,6 +20,11 @@ export default class MovementSlipsHandler implements PageHandler {
     const filters = req.session.journey?.scheduleFilters
     const dateFromQueryParam = new Date(req.query.date?.toString())
     const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+
+    // Cannot print historic movement slips so redirects back to homepage if date is before today
+    if (date <= startOfToday()) {
+      return res.redirect('/')
+    }
 
     const [prison, schedule] = await Promise.all([
       this.prisonService.getPrison(user.activeCaseLoadId, user),

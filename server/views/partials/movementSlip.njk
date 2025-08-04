@@ -7,7 +7,7 @@
     {% endmacro %}
 
     <div class="movement-slip">
-        <h1 data-qa='movement-slip-header' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-s'>Video appointment movement authorisation slip</span></h1>
+        <h1 data-qa='movement-slip-header' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-m'>Video appointment movement authorisation slip</span></h1>
         <h1 data-qa='prisoner-name-and-number' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}</h1>
         <dl class='movement-slip__summary'>
             {{ labelAndValue('Date', movementSlip.date | formatDate("d MMMM yyyy")) }}
@@ -56,10 +56,11 @@
             {{ labelAndValue('Location', movementSlip.location) }}
         </dl>
         <div class='movement-slip-information'>
-          Be ready on time. No vaping allowed. Refusal to attend will be recorded.
+            <img alt='Information' src='/assets/images/icon-information.svg' />
+            Be ready on time. No vaping allowed. Refusal to attend will be recorded.
         </div>
         <h1 class="govuk-heading-s">Notes</h1>
-        <div data-qa='notes' class="govuk-body-s">{{ movementSlip.notes }}</div>
+        <div data-qa='notes' class="govuk-body-m">{{ movementSlip.notes }}</div>
         <p class="govuk-body-s movement-slip-footer">Date printed {{ printedAt | formatDate("d MMMM yyyy") }}</p>
     </div>
 
