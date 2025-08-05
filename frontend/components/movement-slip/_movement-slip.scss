@@ -6,7 +6,10 @@
   font-size: 1.1875rem;
   text-decoration-thickness: unset;
   text-underline-offset: unset;
-  margin-left: 15px;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-left-color: $govuk-border-colour;
+  padding-left: 8px;
 
   a {
     @extend .govuk-link;
