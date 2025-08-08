@@ -42,7 +42,7 @@ export default class DownloadCsvHandler implements PageHandler {
   private convertScheduleToCsvRows = (schedule: DailySchedule) => {
     return schedule.appointmentGroups.flatMap(group =>
       group.map(item => ({
-        'Prisoner name': convertToTitleCase(`${item.prisoner.firstName} ${item.prisoner.lastName}`),
+        'Prisoner name': convertToTitleCase(`${item.prisoner.lastName} ${item.prisoner.firstName}`),
         'Prison number': item.prisoner.prisonerNumber,
         'Cell number': item.prisoner.cellLocation,
         'Appointment start time': item.startTime,
@@ -62,7 +62,7 @@ export default class DownloadCsvHandler implements PageHandler {
   private convertScheduleToCsvRowsWithPickUpTimes = (schedule: DailySchedule) => {
     return schedule.appointmentGroups.flatMap(group =>
       group.map((item, index) => ({
-        'Prisoner name': convertToTitleCase(`${item.prisoner.firstName} ${item.prisoner.lastName}`),
+        'Prisoner name': convertToTitleCase(`${item.prisoner.lastName} ${item.prisoner.firstName}`),
         'Prison number': item.prisoner.prisonerNumber,
         'Cell number': item.prisoner.cellLocation,
         'Pick-up time': index === 0 ? removeThirtyMinutes(item.startTime) : '',
