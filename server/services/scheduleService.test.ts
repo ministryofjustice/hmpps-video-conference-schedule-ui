@@ -1172,6 +1172,30 @@ describe('Schedule service', () => {
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)
     })
 
+    it('should bypass NOMIS mapping API for appointments with DPS location ID', async () => {
+      appointments = [
+        {
+          id: 1,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '07:45',
+          endTime: '08:00',
+          dpsLocationId: '123456',
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: new Date().toISOString(),
+        },
+      ]
+
+      appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+      await scheduleService.getSchedule('MDI', new Date(), undefined, 'ACTIVE', user)
+      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
+    })
+
     describe('tags', () => {
       let clock: sinon.SinonFakeTimers
 

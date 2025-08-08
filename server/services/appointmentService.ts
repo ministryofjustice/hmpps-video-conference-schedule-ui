@@ -61,7 +61,7 @@ export default class AppointmentService {
             appointmentTypeDescription: apt.customName
               ? `${apt.customName} (${apt.category.description})`
               : apt.category.description,
-            locationId: apt.internalLocation?.id,
+            dpsLocationId: apt.internalLocation?.dpsLocationId,
             locationDescription: apt.internalLocation?.description || (apt.inCell ? 'In cell' : undefined),
             status: apt.isCancelled ? 'CANCELLED' : 'ACTIVE',
             viewAppointmentLink: `${config.activitiesAndAppointmentsUrl}/appointments/${apt.appointmentId}`,

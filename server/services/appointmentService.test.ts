@@ -153,7 +153,7 @@ describe('Appointment service', () => {
         appointmentId: 4,
         attendees: [{ prisonerNumber: 'ABC123' }, { prisonerNumber: 'ZXY321' }],
         category: { code: 'VLB', description: 'Video Link - Court Hearing' },
-        internalLocation: { description: 'Video Link Room' },
+        internalLocation: { description: 'Video Link Room', dpsLocationId: '00000000-0000-0000-0000-000000000000' },
         startDate: '2024-12-12',
         startTime: '08:00',
         endTime: '09:00',
@@ -318,6 +318,7 @@ describe('Appointment service', () => {
           status: 'ACTIVE',
           updatedTime: '2024-12-22T18:01:00Z',
           viewAppointmentLink: 'http://localhost:3000/appointments/4',
+          dpsLocationId: '00000000-0000-0000-0000-000000000000',
         },
         {
           createdTime: '2024-12-22T17:54:00Z',
@@ -332,6 +333,7 @@ describe('Appointment service', () => {
           status: 'ACTIVE',
           updatedTime: '2024-12-22T18:01:00Z',
           viewAppointmentLink: 'http://localhost:3000/appointments/4',
+          dpsLocationId: '00000000-0000-0000-0000-000000000000',
         },
         {
           createdTime: '2024-12-21T10:43:00Z',

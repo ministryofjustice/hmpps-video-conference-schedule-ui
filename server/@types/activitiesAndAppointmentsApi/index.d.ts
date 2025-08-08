@@ -28,6 +28,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/scheduled-instances/{instanceId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a scheduled instance by ID
+     * @description Returns a scheduled instance.
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     *     * NOMIS_ACTIVITIES
+     */
+    get: operations['getScheduledInstanceById']
+    /**
+     * Update a scheduled instance.
+     * @description
+     *           Currently only cancelled sessions reasons, comments and attendances where payments should be issued can be updated
+     *
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    put: operations['updateScheduledInstance']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/scheduled-instances/{instanceId}/uncancel': {
     parameters: {
       query?: never
@@ -38,6 +73,7 @@ export interface paths {
     get?: never
     /**
      * Un-cancels a scheduled instance.
+     * @deprecated
      * @description Un-cancels a previously cancelled scheduled instance.
      *
      *     Requires one of the following roles:
@@ -62,6 +98,7 @@ export interface paths {
     get?: never
     /**
      * Cancel a scheduled instance
+     * @deprecated
      * @description Cancels scheduled instance and associated attendance records
      *
      *     Requires one of the following roles:
@@ -69,6 +106,54 @@ export interface paths {
      *     * ACTIVITY_ADMIN
      */
     put: operations['cancelScheduledInstance']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/scheduled-instances/uncancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Uncancel multiple schedule instances
+     * @description Uncancel multiple schedule instances and reset associated un-suspended attendances
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    put: operations['uncancelScheduledInstances']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/scheduled-instances/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Cancel multiple schedule instances
+     * @description Cancels multiple schedule instances and associated attendance records
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    put: operations['cancelScheduledInstances']
     post?: never
     delete?: never
     options?: never
@@ -87,7 +172,7 @@ export interface paths {
     /** @description
      *
      *     Requires one of the following roles:
-     *     * ACTIVITY_QUEUE_ADMIN */
+     *     * ACTIVITY_ADMIN */
     put: operations['retryDlq']
     post?: never
     delete?: never
@@ -123,7 +208,7 @@ export interface paths {
     /** @description
      *
      *     Requires one of the following roles:
-     *     * ACTIVITY_QUEUE_ADMIN */
+     *     * ACTIVITY_ADMIN */
     put: operations['purgeQueue']
     post?: never
     delete?: never
@@ -208,35 +293,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/appointments/{appointmentId}/attendance': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    /**
-     * Mark the attendance for an appointment
-     * @description
-     *         Mark or update the attendance records for the attendees of an appointment. This sets the current attendance record
-     *         for each supplied prison number, replacing any existing record. This supports both the initial recording of attendance
-     *         and changing that attendance record. There are no restrictions on when attendance can be recorded. It can be done
-     *         for past and future appointments.
-     *
-     *
-     *     Requires one of the following roles:
-     *     * PRISON
-     *     * ACTIVITY_ADMIN
-     */
-    put: operations['markAttendance']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/appointments/updateAttendances': {
     parameters: {
       query?: never
@@ -266,6 +322,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/advance-attendances/{advanceAttendanceId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an advance attendance by id.
+     * @description Returns an advance attendance.
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    get: operations['getAttendanceById']
+    /**
+     * Updates an advance attendance.
+     * @description Updates the given advance attendance. Currently only updates the issue payment status.
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    put: operations['update']
+    post?: never
+    /**
+     * Deletes the advance attendance.
+     * @description Hard deletes the given advance attendance.
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    delete: operations['reset']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/waiting-list-applications/{prisonCode}/search': {
     parameters: {
       query?: never
@@ -288,6 +384,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/utility/update-case-note-uuid': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Update case note UUID for all the existing case notes.
+     * @description Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
+     */
+    post: operations['updateCaseNoteUUID']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/utility/publish-events': {
     parameters: {
       query?: never
@@ -302,6 +418,26 @@ export interface paths {
      * @description Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
      */
     post: operations['publishDomainEvent']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/utility/create-pay-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create pay rate history for all the existing activities
+     * @description Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
+     */
+    post: operations['createActivityPayHistory']
     delete?: never
     options?: never
     head?: never
@@ -420,6 +556,7 @@ export interface paths {
     put?: never
     /**
      * Get a list of scheduled events for a prison and list of internal location ids numbers for a date and optional time slot
+     * @deprecated
      * @description
      *           Returns scheduled events for the prison, internal location ids, single date and an optional time slot.
      *           This endpoint only returns activities and appointments and these come from the local database.
@@ -432,6 +569,35 @@ export interface paths {
      *     * ACTIVITY_ADMIN
      */
     post: operations['getScheduledEventsForMultipleLocations']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/scheduled-events/prison/{prisonCode}/location-events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Get a list of scheduled events for a prison given list of DPS location UUIDs, a date and optional time slot
+     * @description
+     *           Returns scheduled events for the prison, locations UUIDs, date and optional time slot.
+     *           This endpoint only returns activities and appointments and these come from the local database.
+     *           This endpoint supports the creation of movement lists.
+     *           Note that activities are only scheduled 60 days in advance. Appointments may be scheduled for any date in the future.
+     *
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    post: operations['getScheduledEventsForMultipleLocationsByDPSLocationsIds']
     delete?: never
     options?: never
     head?: never
@@ -510,6 +676,35 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/migrate/{prisonCode}/move-activity-start-dates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Move the start date for activities their schedules and allocations for a prison
+     * @description
+     *           Move a prisons activities to a later start date.
+     *           Only allocations due to start before the new start date will be moved.
+     *           Activities that have already started will be ignored.
+     *           Activities that are not before the new start date will be ignored.
+     *
+     *
+     *     Requires one of the following roles:
+     *     * NOMIS_ACTIVITIES
+     *     * ACTIVITY_ADMIN
+     */
+    post: operations['moveActivityStartDates']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/migrate/allocation': {
     parameters: {
       query?: never
@@ -569,6 +764,7 @@ export interface paths {
      * Migrate an appointment from NOMIS
      * @description
      *         Migrate an appointment creating an appointment series with one appointment that has the supplied prisoner allocated.
+     *         Will return null if appointment was dropped.
      *
      *
      *     Requires one of the following roles:
@@ -674,6 +870,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/job/fix-locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Trigger the job fix activity and appointment locations
+     * @description Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
+     */
+    post: operations['triggerActivitiesLocationsJob']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/job/create-scheduled-instances': {
     parameters: {
       query?: never
@@ -760,6 +976,93 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/integration-api/waiting-list-applications/{prisonCode}/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** @description Search waiting list applications
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API */
+    post: operations['searchWaitingLists_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/scheduled-events/prison/{prisonCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a list of scheduled events for a prison, prisoner, date range (max 3 months) and optional time slot.
+     * @description
+     *           Returns scheduled events for the prison, prisoner, date range (max 3 months) and optional time slot.
+     *           Court hearings, adjudication hearings, transfers and visits come from NOMIS (via prison API).
+     *           Activities and appointments come from either NOMIS or the local database depending on whether the prison is
+     *           marked as active for appointments and/or activities.
+     *           (Intended usage: Prisoner calendar / schedule)
+     *
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getScheduledEventsForSinglePrisoner_1']
+    put?: never
+    /**
+     * Get a list of scheduled events for a prison and list of prisoner numbers for a date and time slot
+     * @description
+     *           Returns scheduled events for the prison, prisoner numbers, single date and an optional time slot.
+     *           Court hearings, adjudication hearings, transfers and visits come from NOMIS (via prison API).
+     *           Activities and appointments come from either NOMIS or the local database depending on whether the prison is
+     *           marked as rolled-out for activities and/or appointments.
+     *           (Intended usage: Unlock list)
+     *
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    post: operations['getScheduledEventsForMultiplePrisoners_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/appointments/{prisonCode}/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Search for appointments within the specified prison
+     * @description
+     *         Uses the supplied prison code and search parameters to filter and return appointment search results.
+     *
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    post: operations['searchAppointments']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/event-review/prison/{prison}/acknowledge': {
     parameters: {
       query?: never
@@ -827,7 +1130,7 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      */
-    post: operations['searchAppointments']
+    post: operations['searchAppointments_1']
     delete?: never
     options?: never
     head?: never
@@ -982,6 +1285,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/advance-attendances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create an advance attendance
+     * @description Create an advance attendance. Currently only for a prisoner who is not required.
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/activities': {
     parameters: {
       query?: never
@@ -999,7 +1326,7 @@ export interface paths {
      *     * ACTIVITY_HUB
      *     * ACTIVITY_ADMIN
      */
-    post: operations['create']
+    post: operations['create_1']
     delete?: never
     options?: never
     head?: never
@@ -1106,7 +1433,7 @@ export interface paths {
      *     * ACTIVITY_HUB
      *     * ACTIVITY_ADMIN
      */
-    patch: operations['update']
+    patch: operations['update_1']
     trace?: never
   }
   '/activities/{prisonCode}/activityId/{activityId}': {
@@ -1130,7 +1457,50 @@ export interface paths {
      *     * ACTIVITY_HUB
      *     * ACTIVITY_ADMIN
      */
-    patch: operations['update_1']
+    patch: operations['update_2']
+    trace?: never
+  }
+  '/utility/invalid-activity-locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get any activities with invalid locations
+     * @description Return any activities with invalid locations.
+     */
+    get: operations['getInvalidActivityLocations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/synchronisation/reconciliation/suspended-allocations/{prisonId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Retrieves suspended allocation details for the sync reconciliation
+     * @description Retrieves booking numbers and counts for suspended allocations currently active in each prison
+     *
+     *     Requires one of the following roles:
+     *     * NOMIS_ACTIVITIES
+     */
+    get: operations['getSuspendedAllocationReconciliation']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/synchronisation/reconciliation/attendances/{prisonId}': {
@@ -1347,31 +1717,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/scheduled-instances/{instanceId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get a scheduled instance by ID
-     * @description Returns a scheduled instance.
-     *
-     *     Requires one of the following roles:
-     *     * PRISON
-     *     * ACTIVITY_ADMIN
-     *     * NOMIS_ACTIVITIES
-     */
-    get: operations['getScheduledInstanceById']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/scheduled-instances/{instanceId}/scheduled-attendees': {
     parameters: {
       query?: never
@@ -1476,7 +1821,7 @@ export interface paths {
     /** @description
      *
      *     Requires one of the following roles:
-     *     * ACTIVITY_QUEUE_ADMIN */
+     *     * ACTIVITY_ADMIN */
     get: operations['getDlqMessages']
     put?: never
     post?: never
@@ -1711,6 +2056,282 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/integration-api/schedules/{scheduleId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an activity schedule by its id
+     * @description Returns a single activity schedule by its unique identifier.
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getScheduleById_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/schedules/{scheduleId}/waiting-list-applications': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a schedules waiting list applications
+     * @description Returns zero or more activity schedule waiting list applications.
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getWaitingListApplicationsBy_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/prisons/{prisonCode}/{prisonerNumber}/scheduled-instances': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a list of scheduled instances for a prisoner, prison, date range (max 3 months) and time slot (AM, PM or ED - optional)
+     * @description Returns zero or more scheduled instances for a prisoner and date range (max 3 months).
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getScheduledInstancesForPrisoner']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/prison/{prisonCode}/prison-pay-bands': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a list of pay bands at a given prison
+     * @description Returns the pay bands at a given prison or a default list of values if none present.
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getPrisonPayBands_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/prison/{prisonCode}/activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get list of activities running at a specified prison. Optionally and by default, only currently LIVE activities are returned
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getActivities_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/prison/prison-regime/{prisonCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a prison regime by its code
+     * @description Returns a single prison regime and its details by its unique prison code.
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getPrisonRegimeByPrisonCode_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/attendances/{attendanceId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an attendance by ID
+     * @description Returns an attendance.
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getAttendanceById_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/attendances/prisoner/{prisonerNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Gets a list of prisoner attendance activities for a given date range
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getAttendanceForPrisoner']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/attendance-reasons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the list of attendance reasons
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getAttendanceReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/allocations/deallocation-reasons': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the list of deallocation reasons
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getDeallocationReasons']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/activities/{activityId}/schedules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the capacity and number of allocated slots in an activity
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getActivitySchedules']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/integration-api/activities/schedule/{scheduleId}/suitability-criteria': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Gets the suitability criteria for allocating prisoners to a particular activity
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * ACTIVITIES__HMPPS_INTEGRATION_API
+     */
+    get: operations['getActivityScheduleSuitabilityCriteria']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/event-review/prison/{prisonCode}': {
     parameters: {
       query?: never
@@ -1767,7 +2388,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * gets a list of suspended prisoner attendance activities for a given date
+     * Gets a list of suspended prisoner attendance activities for a given date
      * @description
      *
      *     Requires one of the following roles:
@@ -1798,7 +2419,7 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      */
-    get: operations['getAttendanceById']
+    get: operations['getAttendanceById_2']
     put?: never
     post?: never
     delete?: never
@@ -1822,7 +2443,7 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      */
-    get: operations['getAttendanceReasons']
+    get: operations['getAttendanceReasons_1']
     put?: never
     post?: never
     delete?: never
@@ -2099,7 +2720,7 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      */
-    get: operations['getDeallocationReasons']
+    get: operations['getDeallocationReasons_1']
     put?: never
     post?: never
     delete?: never
@@ -2148,7 +2769,31 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      */
-    get: operations['getActivitySchedules']
+    get: operations['getActivitySchedules_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/activities/{activityId}/pay-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the complete pay rate history for an activity by its ID
+     * @description Returns full list of pay rate history for a single activity by activity ID
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_HUB
+     */
+    get: operations['getActivityPayHistory']
     put?: never
     post?: never
     delete?: never
@@ -2265,14 +2910,14 @@ export interface components {
        * @enum {string}
        */
       reasonCode:
+        | 'COMPLETED'
+        | 'TRANSFERRED'
+        | 'WITHDRAWN_STAFF'
+        | 'WITHDRAWN_OWN'
+        | 'DISMISSED'
+        | 'HEALTH'
         | 'OTHER'
-        | 'PERSONAL'
-        | 'PROBLEM'
-        | 'REMOVED'
         | 'SECURITY'
-        | 'UNACCEPTABLE_ATTENDANCE'
-        | 'UNACCEPTABLE_BEHAVIOUR'
-        | 'WITHDRAWN'
       /**
        * Format: date
        * @description The future date on which this allocation will end. Must not exceed the end date of the allocation, schedule or activity.
@@ -2295,6 +2940,24 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
+    }
+    /** @description The update request with the scheduled instance changes */
+    ScheduledInstancedUpdateRequest: {
+      /**
+       * @description The reason for cancelling the schedule instance
+       * @example No tutor available
+       */
+      cancelledReason?: string
+      /**
+       * @description A field for any additional comments
+       * @example Resume tomorrow
+       */
+      comment?: string
+      /**
+       * @description Should payment be issued? Will be ignored if the activity is unpaid.
+       * @example true
+       */
+      issuePayment?: boolean
     }
     /** @description The uncancel request with the user details */
     UncancelScheduledInstanceRequest: {
@@ -2326,6 +2989,36 @@ export interface components {
        * @example Resume tomorrow
        */
       comment?: string
+    }
+    /** @description The uncancel scheduled instances request */
+    ScheduleInstancesUncancelRequest: {
+      /** @description The scheduled instance ids to uncancel */
+      scheduleInstanceIds: number[]
+    }
+    /** @description The cancel scheduled instances request */
+    ScheduleInstancesCancelRequest: {
+      /** @description The scheduled instance ids to cancel */
+      scheduleInstanceIds: number[]
+      /**
+       * @description The reason for cancelling the schedule instances
+       * @example No tutor available
+       */
+      reason: string
+      /**
+       * @description The username of the user cancelling the schedule instances
+       * @example RJ56DDE
+       */
+      username: string
+      /**
+       * @description A field for any additional comments
+       * @example Resume tomorrow
+       */
+      comment?: string
+      /**
+       * @description Should payment be issued? Will be ignored if the activity is unpaid.
+       * @example true
+       */
+      issuePayment: boolean
     }
     RetryDlqResult: {
       /** Format: int32 */
@@ -2447,6 +3140,12 @@ export interface components {
        */
       internalLocationId?: number
       /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this appointment
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
        * @description
        *         Flag to indicate if the location of the appointment is in cell rather than an internal prison location.
        *         Internal location id should be null if in cell = true
@@ -2460,13 +3159,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of this appointment
        * @example 13:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of this appointment
        * @example 13:30
        */
@@ -2707,13 +3404,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment or appointments in the series
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment or appointments in the series
        * @example 10:30
        */
@@ -2773,6 +3468,12 @@ export interface components {
        *         appointment series. The full series of appointments specified by the schedule will have been created in advance.
        *          */
       appointments: components['schemas']['Appointment'][]
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this appointment series
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
     }
     /** @description
      *       Describes the schedule of the appointment i.e. how the appointments in the series will repeat. The frequency of
@@ -2857,23 +3558,6 @@ export interface components {
        */
       applyTo: 'THIS_APPOINTMENT' | 'THIS_AND_ALL_FUTURE_APPOINTMENTS' | 'ALL_FUTURE_APPOINTMENTS'
     }
-    /** @description The lists of prison numbers to mark as attended and non-attended */
-    AppointmentAttendanceRequest: {
-      /**
-       * @description The prisoner or prisoners that attended the appointment
-       * @example [
-       *       "A1234BC"
-       *     ]
-       */
-      attendedPrisonNumbers: string[]
-      /**
-       * @description The prisoner or prisoners that did not attended the appointment
-       * @example [
-       *       "A1234BC"
-       *     ]
-       */
-      nonAttendedPrisonNumbers: string[]
-    }
     /** @description
      *       Describes how to update attendances for multiple appointments.
      *        */
@@ -2886,6 +3570,83 @@ export interface components {
       appointmentId: number
       /** @description The list of prisoner numbers to update */
       prisonerNumbers: string[]
+    }
+    /** @description Request object for creating an advance attendance record */
+    AdvanceAttendanceUpdateRequest: {
+      /**
+       * @description Should payment be issued?
+       * @example true
+       */
+      issuePayment: boolean
+    }
+    /** @description An advance attendance record for a prisoner */
+    AdvanceAttendance: {
+      /**
+       * Format: int64
+       * @description The internally-generated ID for this attendance
+       * @example 123456
+       */
+      id: number
+      /**
+       * Format: int64
+       * @description The ID for scheduled instance for this attendance
+       * @example 123456
+       */
+      scheduleInstanceId: number
+      /**
+       * @description The prison number this attendance record is for
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * @description Should payment be issued for SICK, REST or OTHER
+       * @example true
+       */
+      issuePayment?: boolean
+      /**
+       * Format: int32
+       * @description The amount in pence to pay the prisoner for the activity based on today's date
+       * @example 100
+       */
+      payAmount?: number
+      /**
+       * Format: date-time
+       * @description The date and time the attendance was updated
+       * @example 2023-09-10T09:30:00
+       */
+      recordedTime?: string
+      /**
+       * @description The person who updated the attendance
+       * @example A.JONES
+       */
+      recordedBy?: string
+      /** @description The attendance history records for this attendance */
+      attendanceHistory?: components['schemas']['AdvanceAttendanceHistory'][]
+    }
+    /** @description An advance attendance history record for a prisoner */
+    AdvanceAttendanceHistory: {
+      /**
+       * Format: int64
+       * @description The internally-generated ID for this attendance
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description Should payment be issued for SICK, REST or OTHER
+       * @example true
+       */
+      issuePayment: boolean
+      /**
+       * Format: date-time
+       * @description The date and time the attendance was updated
+       * @example 2023-09-10T09:30:00
+       */
+      recordedTime: string
+      /**
+       * @description The person who updated the attendance
+       * @example A.JONES
+       */
+      recordedBy: string
     }
     /** @description Search filters */
     WaitingListSearchRequest: {
@@ -2948,9 +3709,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
       unpaged?: boolean
     }
     PagedWaitingListApplication: {
@@ -2958,14 +3719,14 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['WaitingListApplication'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -3075,8 +3836,15 @@ export interface components {
       updatedBy?: string
       /** @description The earliest release date of the prisoner */
       earliestReleaseDate: components['schemas']['EarliestReleaseDate']
-      /** @description Does the prisoner have non-associations? Null implies that non-associations could not be retrieved */
+      /** @description Does the prisoner have non-associations? Null implies that non-associations were not retrieved */
       nonAssociations?: boolean
+    }
+    UpdateCaseNoteUUIDResponse: {
+      attendance: string
+      attendanceHistory: string
+      allocation: string
+      plannedDeallocation: string
+      plannedSuspension: string
     }
     /** @description Describes an event to be published to the domain events SNS topic */
     PublishEventUtilityModel: {
@@ -3107,6 +3875,13 @@ export interface components {
        *     ]
        */
       identifiers: number[]
+    }
+    PayHistoryMigrateResponse: {
+      /** Format: int64 */
+      payRateDataSize: number
+      /** Format: int64 */
+      payHistoryDataSize: number
+      message: string
     }
     /** @description The prisoner allocation request details */
     PrisonerAllocationRequest: {
@@ -3165,9 +3940,7 @@ export interface components {
       friday: boolean
       saturday: boolean
       sunday: boolean
-      /** Format: partial-time */
       customStartTime?: string
-      /** Format: partial-time */
       customEndTime?: string
       daysOfWeek: ('MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY')[]
     }
@@ -3341,13 +4114,11 @@ export interface components {
        */
       date: string
       /**
-       * Format: partial-time
        * @description The start time for this scheduled instance
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time for this scheduled instance
        * @example 10:00
        */
@@ -3379,6 +4150,11 @@ export interface components {
        */
       cancelledReason?: string
       /**
+       * @description Should payment be issued for the cancelled scheduled instance?
+       * @example true
+       */
+      cancelledIssuePayment?: boolean
+      /**
        * @description Comment on cancelling
        * @example Teacher unavailable
        */
@@ -3409,6 +4185,8 @@ export interface components {
       nextScheduledInstanceDate?: string
       /** @description The list of attendees */
       attendances: components['schemas']['Attendance'][]
+      /** @description The list of advance attendances. payAmount and attendanceHistory will be null. */
+      advanceAttendances: components['schemas']['AdvanceAttendance'][]
       /** @description The activity schedule */
       activitySchedule: components['schemas']['ActivityScheduleLite']
     }
@@ -3431,10 +4209,7 @@ export interface components {
        * @example Monday AM Houseblock 3
        */
       description: string
-      /**
-       * @description The NOMIS internal location for this schedule
-       * @example 98877667
-       */
+      /** @description The NOMIS internal location for this schedule */
       internalLocation?: components['schemas']['InternalLocation']
       /**
        * Format: int32
@@ -3491,20 +4266,18 @@ export interface components {
        */
       weekNumber: number
       /**
-       * Format: partial-time
        * @description The time that any instances of this schedule slot will start
        * @example 9:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The time that any instances of this schedule slot will finish
        * @example 11:30
        */
       endTime: string
       /**
        * @description The days of the week on which the schedule slot takes place
-       * @example [Mon,Tue,Wed]
+       * @example ['Mon','Tue','Wed']
        */
       daysOfWeek: string[]
       /**
@@ -3760,6 +4533,12 @@ export interface components {
        * @example Education - R1
        */
       description: string
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this schedule
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
     }
     /** @description Describes a prisons scheduled events */
     PrisonerScheduledEvents: {
@@ -3945,13 +4724,11 @@ export interface components {
        */
       date?: string
       /**
-       * Format: partial-time
        * @description The start time for this scheduled instance
        * @example 09:00
        */
-      startTime: string
+      startTime?: string
       /**
-       * Format: partial-time
        * @description The end time for this scheduled instance
        * @example 10:00
        */
@@ -3967,7 +4744,6 @@ export interface components {
        */
       appointmentSeriesCancellationStartDate?: string
       /**
-       * Format: partial-time
        * @description The start time of the first appointment cancelled in the series
        * @example 10:30
        */
@@ -4014,6 +4790,12 @@ export interface components {
        */
       id: number
       /**
+       * Format: uuid
+       * @description The DPS location UUID for this schedule
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId: string
+      /**
        * @description
        *         The prison code/agency id of the internal location. Mapped from AGENCY_LOCATIONS.AGY_LOC_ID in NOMIS.
        *
@@ -4037,17 +4819,11 @@ export interface components {
     PrisonRegimeSlot: {
       /** @enum {string} */
       dayOfWeek: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
-      /** Format: partial-time */
       amStart: string
-      /** Format: partial-time */
       amFinish: string
-      /** Format: partial-time */
       pmStart: string
-      /** Format: partial-time */
       pmFinish: string
-      /** Format: partial-time */
       edStart: string
-      /** Format: partial-time */
       edFinish: string
     }
     /** @description Describes a top-level activity */
@@ -4064,37 +4840,31 @@ export interface components {
        */
       prisonCode: string
       /**
-       * Format: partial-time
        * @description The start time for the am slot
        * @example 09:00
        */
       amStart: string
       /**
-       * Format: partial-time
        * @description The end time for the am slot
        * @example 12:00
        */
       amFinish: string
       /**
-       * Format: partial-time
        * @description The start time for the pm slot
        * @example 13:00
        */
       pmStart: string
       /**
-       * Format: partial-time
        * @description The end time for the pm slot
        * @example 16:30
        */
       pmFinish: string
       /**
-       * Format: partial-time
        * @description The start time for the ed slot
        * @example 18:00
        */
       edStart: string
       /**
-       * Format: partial-time
        * @description The end time for the ed slot
        * @example 20:00
        */
@@ -4289,10 +5059,16 @@ export interface components {
       plannedEndDate?: string
       /**
        * Format: int64
-       * @description The optional case note identifier which was added to the prisoner's profile along with the suspension
+       * @description The optional legacy case note identifier which was added to the prisoner's profile along with the suspension
        * @example 123456
        */
       caseNoteId?: number
+      /**
+       * Format: uuid
+       * @description The optional case note UUID which was added to the prisoner's profile along with the suspension
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsCaseNoteId?: string
       /**
        * @description The username of the person who planned the suspension
        * @example ADMIN
@@ -4497,21 +5273,11 @@ export interface components {
        */
       endDate?: string
       /**
-       * Format: int64
-       * @description Optional NOMIS internal location id
-       * @example 98877667
+       * Format: uuid
+       * @description The optional DPS location UUID
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
        */
-      internalLocationId?: number
-      /**
-       * @description Optional NOMIS internal location code
-       * @example A011
-       */
-      internalLocationCode?: string
-      /**
-       * @description Optional NOMIS internal location description
-       * @example PVI-1-2-A011
-       */
-      internalLocationDescription?: string
+      dpsLocationId?: string
       /**
        * Format: int32
        * @description The maximum number of prisoners who can attend. Not null.
@@ -4566,13 +5332,11 @@ export interface components {
     /** @description The scheduling rules in Nomis. At least one day and time must be specified. */
     NomisScheduleRule: {
       /**
-       * Format: partial-time
        * @description Start time on the day
        * @example 10:45
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description End time on the day
        * @example 11:45
        */
@@ -4649,26 +5413,22 @@ export interface components {
        */
       categoryCode: string
       /**
-       * Format: int64
-       * @description
-       *         The NOMIS internal location id within the specified prison.
-       *
-       * @example 123
+       * Format: uuid
+       * @description The optional DPS location UUID.
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
        */
-      internalLocationId: number
+      dpsLocationId: string
       /**
        * Format: date
        * @description The date of the appointment
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment
        * @example 10:30
        */
@@ -4800,6 +5560,12 @@ export interface components {
        */
       internalLocationId?: number
       /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this appointment
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
        * @description
        *         Flag to indicate if the location of the appointment instance is in cell rather than an internal prison location.
        *         Internal location id should be null if in cell = true
@@ -4813,13 +5579,11 @@ export interface components {
        */
       appointmentDate: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment instance
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment instance
        * @example 10:30
        */
@@ -4862,6 +5626,323 @@ export interface components {
        * @example AAA01U
        */
       updatedBy?: string
+    }
+    /** @description The search parameters to use to filter appointments */
+    AppointmentSearchRequest: {
+      /**
+       * @description
+       *         The appointment type (INDIVIDUAL or GROUP) to match with the appointment series. Will restrict the search results to
+       *         appointments that are part of a series with the matching type when this search parameter is supplied.
+       *
+       * @example INDIVIDUAL
+       * @enum {string}
+       */
+      appointmentType?: 'INDIVIDUAL' | 'GROUP'
+      /**
+       * Format: date
+       * @description
+       *         The start date to match with the appointments. Will restrict the search results to appointments
+       *         that have the matching start date when this search parameter is supplied but no end date is supplied.
+       *         When an end date is also supplied, the search uses a date range and will restrict the search results to
+       *         appointments that have a start date within the date range.
+       *
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description
+       *         When an end date is supplied alongside the start date, the search uses a date range and will restrict the search results to
+       *         appointments that have a start date within the date range.
+       *
+       */
+      endDate?: string
+      /**
+       * @description
+       *         The time slot to match with the appointments. Will restrict the search results to appointments that have a start
+       *         time between the times defined by the prison for that time slot when this search parameter is supplied.
+       *
+       * @example [
+       *       "AM",
+       *       "PM",
+       *       "ED"
+       *     ]
+       */
+      timeSlots?: ('AM' | 'PM' | 'ED')[]
+      /**
+       * @description
+       *         The NOMIS reference code to match with the appointments. Will restrict the search results to appointments
+       *         that have the matching category code when this search parameter is supplied.
+       *
+       * @example GYMW
+       */
+      categoryCode?: string
+      /**
+       * Format: int64
+       * @deprecated
+       * @description
+       *         The NOMIS internal location id to match with the appointments. Will restrict the search results to
+       *         appointments that have the matching internal location id when this search parameter is supplied.
+       *
+       * @example 123
+       */
+      internalLocationId?: number
+      /**
+       * Format: uuid
+       * @description
+       *         The DPS location UUID to match with the appointments. Will restrict the search results to
+       *         appointments that have the matching location UUID when this search parameter is supplied.
+       *
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
+       * @description
+       *         The in cell flag value to match with the appointments. Will restrict the search results to appointments
+       *         that have the matching in cell value when this search parameter is supplied.
+       *
+       * @example false
+       */
+      inCell?: boolean
+      /**
+       * @description
+       *         The allocated prisoner or prisoners to match with the appointments. Will restrict the search results to
+       *         appointments that have the at least one of the supplied prisoner numbers attending when this search parameter
+       *         is supplied.
+       *
+       * @example [
+       *       "A1234BC"
+       *     ]
+       */
+      prisonerNumbers?: string[]
+      /**
+       * @description
+       *         The username of the user authenticated via HMPPS auth to match with the appointments. Will restrict the
+       *         search results to appointments that were created by this username when this search parameter is supplied.
+       *
+       * @example AAA01U
+       */
+      createdBy?: string
+    }
+    /** @description
+     *       Summary search result details of a specific appointment attendee found via search. Contains properties needed to
+     *       make additional API calls and to populate a table of search results.
+     *        */
+    AppointmentAttendeeSearchResult: {
+      /**
+       * Format: int64
+       * @description
+       *         The internally generated identifier for this prisoner attending a specific appointment in an appointment series or set.
+       *         N.B. this is used as the appointment instance id due to there being a one to one relationship between an appointment
+       *         attendee and appointment instances.
+       *
+       * @example 123456
+       */
+      appointmentAttendeeId: number
+      /**
+       * @description The NOMIS OFFENDERS.OFFENDER_ID_DISPLAY value for mapping to a prisoner record in NOMIS
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description The NOMIS OFFENDER_BOOKINGS.OFFENDER_BOOK_ID value for mapping to a prisoner booking record in NOMIS
+       * @example 456
+       */
+      bookingId: number
+    }
+    /** @description
+     *       Summarises an appointment category for display purposes. Contains only properties needed to make additional API calls
+     *       and to display.
+     *        */
+    AppointmentCategorySummary: {
+      /**
+       * @description The NOMIS REFERENCE_CODES.CODE (DOMAIN = 'INT_SCH_RSN') value for mapping to NOMIS
+       * @example CHAP
+       */
+      code: string
+      /**
+       * @description The description of the appointment category
+       * @example Chaplaincy
+       */
+      description: string
+    }
+    /** @description
+     *       Summarises an appointment location for display purposes. Contains only properties needed to make additional API calls
+     *       and to display. NOMIS is the current system of record for appointment locations and they are managed there.
+     *        */
+    AppointmentLocationSummary: {
+      /**
+       * Format: int64
+       * @description The NOMIS AGENCY_INTERNAL_LOCATIONS.INTERNAL_LOCATION_ID value for mapping to NOMIS.
+       * @example 27
+       */
+      id: number
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
+       * @description
+       *         The NOMIS AGENCY_LOCATIONS.AGY_LOC_ID value for mapping to NOMIS.
+       *
+       * @example SKI
+       */
+      prisonCode: string
+      /**
+       * @description The description of the appointment location. Mapped from AGENCY_INTERNAL_LOCATIONS.USER_DESC
+       * @example Chapel
+       */
+      description: string
+    }
+    /** @description
+     *       Summary search result details of a specific appointment found via search. Contains properties needed to
+     *       make additional API calls and to populate a table of search results.
+     *        */
+    AppointmentSearchResult: {
+      /**
+       * Format: int64
+       * @description The internally generated identifier for the appointment series
+       * @example 12345
+       */
+      appointmentSeriesId: number
+      /**
+       * Format: int64
+       * @description The internally generated identifier for this appointment
+       * @example 123456
+       */
+      appointmentId: number
+      /**
+       * @description The type of the appointment series (INDIVIDUAL or GROUP)
+       * @example INDIVIDUAL
+       * @enum {string}
+       */
+      appointmentType: 'INDIVIDUAL' | 'GROUP'
+      /**
+       * @description
+       *         The NOMIS AGENCY_LOCATIONS.AGY_LOC_ID value for mapping to NOMIS.
+       *
+       * @example SKI
+       */
+      prisonCode: string
+      /** @description
+       *         The appointment's name combining the optional custom name with the category description. If custom name has been
+       *         specified, the name format will be "Custom name (Category description)"
+       *          */
+      appointmentName: string
+      /** @description
+       *         The prisoner or prisoners attending this appointment. Appointments of type INDIVIDUAL will have one
+       *         prisoner attending to each appointment. Appointments of type GROUP can have more than one prisoner
+       *         attending each appointment
+       *          */
+      attendees: components['schemas']['AppointmentAttendeeSearchResult'][]
+      /** @description
+       *         The summary of the category of this appointment
+       *          */
+      category: components['schemas']['AppointmentCategorySummary']
+      /**
+       * @description
+       *         Free text name further describing the appointment. Used as part of the appointment name with the
+       *         format "Custom name (Category description) if specified.
+       *
+       * @example Meeting with the governor
+       */
+      customName?: string
+      /** @description
+       *         The summary of the internal location this appointment will take place.
+       *         Will be null if in cell = true
+       *          */
+      internalLocation?: components['schemas']['AppointmentLocationSummary']
+      /**
+       * @description
+       *         Flag to indicate if the location of the appointment is in cell rather than an internal prison location.
+       *         Internal location will be null if in cell = true
+       *
+       * @example false
+       */
+      inCell: boolean
+      /**
+       * Format: date
+       * @description The date this appointment is taking place on
+       */
+      startDate: string
+      /**
+       * @description The starting time of this appointment
+       * @example 13:00
+       */
+      startTime: string
+      /**
+       * @description The end time of this appointment
+       * @example 13:30
+       */
+      endTime?: string
+      /**
+       * @description time slot
+       * @enum {string}
+       */
+      timeSlot: 'AM' | 'PM' | 'ED'
+      /**
+       * @description Indicates whether the appointment series was specified to repeat via its schedule
+       * @example false
+       */
+      isRepeat: boolean
+      /**
+       * Format: int32
+       * @description The sequence number of this appointment within the appointment series
+       * @example 3
+       */
+      sequenceNumber: number
+      /**
+       * Format: int32
+       * @description The sequence number of the final appointment within the appointment series
+       * @example 6
+       */
+      maxSequenceNumber: number
+      /**
+       * @description Indicates whether this appointment has been changed from its original state
+       * @example false
+       */
+      isEdited: boolean
+      /**
+       * @description Indicates whether this appointment has been cancelled
+       * @example false
+       */
+      isCancelled: boolean
+      /**
+       * @description Indicates whether this appointment has expired
+       * @example false
+       */
+      isExpired: boolean
+      /**
+       * Format: date-time
+       * @description The date and time this appointment was created. Will not change
+       */
+      createdTime: string
+      /**
+       * Format: date-time
+       * @description
+       *         The date and time this appointment was last changed.
+       *         Will be null if this appointment has not been altered since it was created
+       *
+       */
+      updatedTime?: string
+      /**
+       * Format: date-time
+       * @description
+       *         The date and time this appointment was cancelled.
+       *         Will be null if this appointment has not been cancelled
+       *
+       */
+      cancelledTime?: string
+      /**
+       * @description
+       *         The username of the user authenticated via HMPPS auth that cancelled this appointment.
+       *         Will be null if this appointment has not been cancelled
+       *
+       * @example AAA01U
+       */
+      cancelledBy?: string
     }
     /** @description The prisoner allocation request details */
     EventAcknowledgeRequest: {
@@ -5045,301 +6126,6 @@ export interface components {
        */
       totalPages: number
     }
-    /** @description The search parameters to use to filter appointments */
-    AppointmentSearchRequest: {
-      /**
-       * @description
-       *         The appointment type (INDIVIDUAL or GROUP) to match with the appointment series. Will restrict the search results to
-       *         appointments that are part of a series with the matching type when this search parameter is supplied.
-       *
-       * @example INDIVIDUAL
-       * @enum {string}
-       */
-      appointmentType?: 'INDIVIDUAL' | 'GROUP'
-      /**
-       * Format: date
-       * @description
-       *         The start date to match with the appointments. Will restrict the search results to appointments
-       *         that have the matching start date when this search parameter is supplied but no end date is supplied.
-       *         When an end date is also supplied, the search uses a date range and will restrict the search results to
-       *         appointments that have a start date within the date range.
-       *
-       */
-      startDate: string
-      /**
-       * @description
-       *         The time slot to match with the appointments. Will restrict the search results to appointments that have a start
-       *         time between the times defined by the prison for that time slot when this search parameter is supplied.
-       *
-       * @example [
-       *       "AM",
-       *       "PM",
-       *       "ED"
-       *     ]
-       */
-      timeSlots?: ('AM' | 'PM' | 'ED')[]
-      /**
-       * @description
-       *         The NOMIS reference code to match with the appointments. Will restrict the search results to appointments
-       *         that have the matching category code when this search parameter is supplied.
-       *
-       * @example GYMW
-       */
-      categoryCode?: string
-      /**
-       * Format: int64
-       * @description
-       *         The NOMIS internal location id to match with the appointments. Will restrict the search results to
-       *         appointments that have the matching internal location id when this search parameter is supplied.
-       *
-       * @example 123
-       */
-      internalLocationId?: number
-      /**
-       * @description
-       *         The in cell flag value to match with the appointments. Will restrict the search results to appointments
-       *         that have the matching in cell value when this search parameter is supplied.
-       *
-       * @example false
-       */
-      inCell?: boolean
-      /**
-       * @description
-       *         The allocated prisoner or prisoners to match with the appointments. Will restrict the search results to
-       *         appointments that have the at least one of the supplied prisoner numbers attending when this search parameter
-       *         is supplied.
-       *
-       * @example [
-       *       "A1234BC"
-       *     ]
-       */
-      prisonerNumbers?: string[]
-      /**
-       * @description
-       *         The username of the user authenticated via HMPPS auth to match with the appointments. Will restrict the
-       *         search results to appointments that were created by this username when this search parameter is supplied.
-       *
-       * @example AAA01U
-       */
-      createdBy?: string
-    }
-    /** @description
-     *       Summary search result details of a specific appointment attendee found via search. Contains properties needed to
-     *       make additional API calls and to populate a table of search results.
-     *        */
-    AppointmentAttendeeSearchResult: {
-      /**
-       * Format: int64
-       * @description
-       *         The internally generated identifier for this prisoner attending a specific appointment in an appointment series or set.
-       *         N.B. this is used as the appointment instance id due to there being a one to one relationship between an appointment
-       *         attendee and appointment instances.
-       *
-       * @example 123456
-       */
-      appointmentAttendeeId: number
-      /**
-       * @description The NOMIS OFFENDERS.OFFENDER_ID_DISPLAY value for mapping to a prisoner record in NOMIS
-       * @example A1234BC
-       */
-      prisonerNumber: string
-      /**
-       * Format: int64
-       * @description The NOMIS OFFENDER_BOOKINGS.OFFENDER_BOOK_ID value for mapping to a prisoner booking record in NOMIS
-       * @example 456
-       */
-      bookingId: number
-    }
-    /** @description
-     *       Summarises an appointment category for display purposes. Contains only properties needed to make additional API calls
-     *       and to display.
-     *        */
-    AppointmentCategorySummary: {
-      /**
-       * @description The NOMIS REFERENCE_CODES.CODE (DOMAIN = 'INT_SCH_RSN') value for mapping to NOMIS
-       * @example CHAP
-       */
-      code: string
-      /**
-       * @description The description of the appointment category
-       * @example Chaplaincy
-       */
-      description: string
-    }
-    /** @description
-     *       Summarises an appointment location for display purposes. Contains only properties needed to make additional API calls
-     *       and to display. NOMIS is the current system of record for appointment locations and they are managed there.
-     *        */
-    AppointmentLocationSummary: {
-      /**
-       * Format: int64
-       * @description The NOMIS AGENCY_INTERNAL_LOCATIONS.INTERNAL_LOCATION_ID value for mapping to NOMIS.
-       * @example 27
-       */
-      id: number
-      /**
-       * @description
-       *         The NOMIS AGENCY_LOCATIONS.AGY_LOC_ID value for mapping to NOMIS.
-       *
-       * @example SKI
-       */
-      prisonCode: string
-      /**
-       * @description The description of the appointment location. Mapped from AGENCY_INTERNAL_LOCATIONS.USER_DESC
-       * @example Chapel
-       */
-      description: string
-    }
-    /** @description
-     *       Summary search result details of a specific appointment found via search. Contains properties needed to
-     *       make additional API calls and to populate a table of search results.
-     *        */
-    AppointmentSearchResult: {
-      /**
-       * Format: int64
-       * @description The internally generated identifier for the appointment series
-       * @example 12345
-       */
-      appointmentSeriesId: number
-      /**
-       * Format: int64
-       * @description The internally generated identifier for this appointment
-       * @example 123456
-       */
-      appointmentId: number
-      /**
-       * @description The type of the appointment series (INDIVIDUAL or GROUP)
-       * @example INDIVIDUAL
-       * @enum {string}
-       */
-      appointmentType: 'INDIVIDUAL' | 'GROUP'
-      /**
-       * @description
-       *         The NOMIS AGENCY_LOCATIONS.AGY_LOC_ID value for mapping to NOMIS.
-       *
-       * @example SKI
-       */
-      prisonCode: string
-      /** @description
-       *         The appointment's name combining the optional custom name with the category description. If custom name has been
-       *         specified, the name format will be "Custom name (Category description)"
-       *          */
-      appointmentName: string
-      /** @description
-       *         The prisoner or prisoners attending this appointment. Appointments of type INDIVIDUAL will have one
-       *         prisoner attending to each appointment. Appointments of type GROUP can have more than one prisoner
-       *         attending each appointment
-       *          */
-      attendees: components['schemas']['AppointmentAttendeeSearchResult'][]
-      /** @description
-       *         The summary of the category of this appointment
-       *          */
-      category: components['schemas']['AppointmentCategorySummary']
-      /**
-       * @description
-       *         Free text name further describing the appointment. Used as part of the appointment name with the
-       *         format "Custom name (Category description) if specified.
-       *
-       * @example Meeting with the governor
-       */
-      customName?: string
-      /** @description
-       *         The summary of the internal location this appointment will take place.
-       *         Will be null if in cell = true
-       *          */
-      internalLocation?: components['schemas']['AppointmentLocationSummary']
-      /**
-       * @description
-       *         Flag to indicate if the location of the appointment is in cell rather than an internal prison location.
-       *         Internal location will be null if in cell = true
-       *
-       * @example false
-       */
-      inCell: boolean
-      /**
-       * Format: date
-       * @description The date this appointment is taking place on
-       */
-      startDate: string
-      /**
-       * Format: partial-time
-       * @description The starting time of this appointment
-       * @example 13:00
-       */
-      startTime: string
-      /**
-       * Format: partial-time
-       * @description The end time of this appointment
-       * @example 13:30
-       */
-      endTime?: string
-      /**
-       * @description time slot
-       * @enum {string}
-       */
-      timeSlot: 'AM' | 'PM' | 'ED'
-      /**
-       * @description Indicates whether the appointment series was specified to repeat via its schedule
-       * @example false
-       */
-      isRepeat: boolean
-      /**
-       * Format: int32
-       * @description The sequence number of this appointment within the appointment series
-       * @example 3
-       */
-      sequenceNumber: number
-      /**
-       * Format: int32
-       * @description The sequence number of the final appointment within the appointment series
-       * @example 6
-       */
-      maxSequenceNumber: number
-      /**
-       * @description Indicates whether this appointment has been changed from its original state
-       * @example false
-       */
-      isEdited: boolean
-      /**
-       * @description Indicates whether this appointment has been cancelled
-       * @example false
-       */
-      isCancelled: boolean
-      /**
-       * @description Indicates whether this appointment has expired
-       * @example false
-       */
-      isExpired: boolean
-      /**
-       * Format: date-time
-       * @description The date and time this appointment was created. Will not change
-       */
-      createdTime: string
-      /**
-       * Format: date-time
-       * @description
-       *         The date and time this appointment was last changed.
-       *         Will be null if this appointment has not been altered since it was created
-       *
-       */
-      updatedTime?: string
-      /**
-       * Format: date-time
-       * @description
-       *         The date and time this appointment was cancelled.
-       *         Will be null if this appointment has not been cancelled
-       *
-       */
-      cancelledTime?: string
-      /**
-       * @description
-       *         The username of the user authenticated via HMPPS auth that cancelled this appointment.
-       *         Will be null if this appointment has not been cancelled
-       *
-       * @example AAA01U
-       */
-      cancelledBy?: string
-    }
     /** @description
      *       Described on the UI as an "Attendee". A prisoner attending a specific appointment in an appointment series or set.
      *       Contains the limited summary information needed to display the prisoner information and whether they attended or not.
@@ -5467,13 +6253,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of this appointment
        * @example 13:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of this appointment
        * @example 13:30
        */
@@ -5676,13 +6460,11 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment
        * @example 10:30
        */
@@ -5737,6 +6519,12 @@ export interface components {
        * @example 123
        */
       internalLocationId?: number
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this appointment set
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
       /**
        * @description
        *         Flag to indicate if the location of the appointments is in cell rather than an internal prison location.
@@ -5798,6 +6586,12 @@ export interface components {
        * @example 123
        */
       internalLocationId?: number
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
       /**
        * @description
        *         Flag to indicate if the location of the appointment set is in cell rather than an internal prison location.
@@ -5882,6 +6676,12 @@ export interface components {
        */
       internalLocationId?: number
       /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this appointment series
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
        * @description
        *         Flag to indicate if the location of the appointment series is in cell rather than an internal prison location.
        *         Internal location id will be ignored if inCell is true
@@ -5895,13 +6695,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment or appointments in the series
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment or appointments in the series
        * @example 10:30
        */
@@ -6022,6 +6820,25 @@ export interface components {
        */
       status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' | 'AUTO_SUSPENDED' | 'ENDED' | 'SUSPENDED_WITH_PAY'
     }
+    /** @description The create request with the new advance attendance */
+    AdvanceAttendanceCreateRequest: {
+      /**
+       * Format: int64
+       * @description The scheduled instance id
+       * @example 123
+       */
+      scheduleInstanceId: number
+      /**
+       * @description The prisoner number (NOMIS ID)
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * @description Should payment be issued?
+       * @example true
+       */
+      issuePayment: boolean
+    }
     /** @description The create request with the new activity details */
     ActivityCreateRequest: {
       /**
@@ -6107,6 +6924,8 @@ export interface components {
       eligibilityRuleIds: number[]
       /** @description The list of pay rates that can apply to this activity */
       pay: components['schemas']['ActivityPayCreateRequest'][]
+      /** @description The list of pay rates that can apply to this activity. Must be null or empty if the activity is unpaid */
+      payChange?: components['schemas']['ActivityPayHistoryCreateRequest'][]
       /**
        * @description The most recent risk assessment level for this activity
        * @example high
@@ -6127,11 +6946,11 @@ export interface components {
       /** @description The list of minimum education levels that apply to this activity */
       minimumEducationLevel: components['schemas']['ActivityMinimumEducationLevelCreateRequest'][]
       /**
-       * Format: int64
-       * @description The optional NOMIS internal location id for this schedule
-       * @example 98877667
+       * Format: uuid
+       * @description The optional DPS location UUID for this schedule
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
        */
-      locationId?: number
+      dpsLocationId?: string
       /**
        * Format: int32
        * @description The maximum number of prisoners allowed for a scheduled instance of this schedule
@@ -6218,6 +7037,47 @@ export interface components {
        */
       startDate?: string
     }
+    /** @description Describes the pay rates history to be created for an activity */
+    ActivityPayHistoryCreateRequest: {
+      /**
+       * @description The NOMIS code for the incentive/earned privilege level
+       * @example BAS
+       */
+      incentiveNomisCode: string
+      /**
+       * @description The incentive/earned privilege level
+       * @example Basic
+       */
+      incentiveLevel: string
+      /**
+       * Format: int64
+       * @description The id of the prison pay band used
+       * @example 1
+       */
+      payBandId: number
+      /**
+       * Format: int32
+       * @description The earning rate for one half day session for someone of this incentive level and pay band (in pence)
+       * @example 150
+       */
+      rate?: number
+      /**
+       * Format: date
+       * @description The effective start date for this pay rate
+       * @example 2022-12-23
+       */
+      startDate?: string
+      /**
+       * @description The pay rate change details
+       * @example New pay rate added: £1.00
+       */
+      changedDetails: string
+      /**
+       * @description The person who changed this pay rate
+       * @example joebloggs
+       */
+      changedBy: string
+    }
     /** @description Describes a top-level activity */
     Activity: {
       /**
@@ -6292,6 +7152,8 @@ export interface components {
       schedules: components['schemas']['ActivitySchedule'][]
       /** @description The list of pay rates by incentive level and pay band that can apply to this activity */
       pay: components['schemas']['ActivityPay'][]
+      /** @description The list of recent pay rate changes that can apply to this activity */
+      payChange: components['schemas']['ActivityPayHistory'][]
       /**
        * Format: date
        * @description The date on which this activity will start. From this date, any schedules will be created as real, planned instances
@@ -6394,6 +7256,58 @@ export interface components {
        * @example 2024-06-18
        */
       startDate?: string
+    }
+    /** @description Describes the pay rates history which apply to an activity */
+    ActivityPayHistory: {
+      /**
+       * Format: int64
+       * @description The internally-generated ID for this activity pay history
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description The NOMIS code for the incentive/earned privilege level
+       * @example BAS
+       */
+      incentiveNomisCode?: string
+      /**
+       * @description The incentive/earned privilege level
+       * @example Basic
+       */
+      incentiveLevel?: string
+      /**
+       * @description The pay band id for this activity pay history
+       * @example 123456
+       */
+      prisonPayBand: components['schemas']['PrisonPayBand']
+      /**
+       * Format: int32
+       * @description The earning rate for one half day session for someone of this incentive level and pay band (in pence)
+       * @example 150
+       */
+      rate?: number
+      /**
+       * Format: date
+       * @description The effective start date for this pay rate
+       * @example 2024-06-18
+       */
+      startDate?: string
+      /**
+       * @description The actual change to this pay rate
+       * @example New pay rate added: £1.00
+       */
+      changedDetails?: string
+      /**
+       * Format: date-time
+       * @description The date and time when this pay rate was changed
+       * @example 2022-09-01'T'09:01:02.964
+       */
+      changedTime?: string
+      /**
+       * @description The person who changed this pay rate
+       * @example joebloggs
+       */
+      changedBy?: string
     }
     /** @description
      *       Describes the weekly schedule for an activity. There can be several of these defined for one activity.
@@ -6505,13 +7419,11 @@ export interface components {
        */
       date: string
       /**
-       * Format: partial-time
        * @description The start time for this scheduled instance
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time for this scheduled instance
        * @example 10:00
        */
@@ -6539,6 +7451,8 @@ export interface components {
       cancelledBy?: string
       /** @description The attendance records for this scheduled instance */
       attendances: components['schemas']['Attendance'][]
+      /** @description The list of advance attendances. payAmount and attendanceHistory will be null. */
+      advanceAttendances: components['schemas']['AdvanceAttendance'][]
     }
     /** @description Describes the period of time an activity schedule has been suspended */
     Suspension: {
@@ -6597,17 +7511,6 @@ export interface components {
        * @example Low
        */
       alias: string
-      /**
-       * @description The description of pay band in this prison
-       * @example Pay band 1
-       */
-      description: string
-      /**
-       * Format: int32
-       * @description The pay band number this is associated with in NOMIS (1-10)
-       * @example 1
-       */
-      nomisPayBand?: number
     }
     /** @description The update request with the new appointment details and how to apply the update */
     AppointmentUpdateRequest: {
@@ -6633,13 +7536,23 @@ export interface components {
       /**
        * Format: int64
        * @description
-       *         The updated NOMIS internal location id within the specified prison. This must be supplied if inCell is false.
+       *         The updated NOMIS internal location id within the specified prison. This or DPS location id must be supplied if inCell is false.
        *         The internal location id must exist, must be within the prison specified by the prisonCode property on the
        *         appointment and be active.
        *
        * @example 123
        */
       internalLocationId?: number
+      /**
+       * Format: uuid
+       * @description
+       *           The updated DPS location id within the specified prison. This or NOMIS internal location id must be supplied if inCell is false.
+       *           The DPS location UUID must exist, must be within the prison specified by the prisonCode property on the
+       *           appointment and be active.
+       *
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
       /**
        * @description
        *         Flag to indicate if the location of the appointment or appointments is in cell rather than an internal prison location.
@@ -6658,13 +7571,11 @@ export interface components {
        */
       startDate?: string
       /**
-       * Format: partial-time
        * @description The updated starting time
        * @example 09:00
        */
       startTime?: string
       /**
-       * Format: partial-time
        * @description The updated end time
        * @example 10:30
        */
@@ -6802,11 +7713,11 @@ export interface components {
        */
       riskLevel?: string
       /**
-       * Format: int64
-       * @description The optional NOMIS internal location id for this schedule
-       * @example 98877667
+       * Format: uuid
+       * @description The optional DPS location UUID for this schedule
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
        */
-      locationId?: number
+      dpsLocationId?: string
       /**
        * @description Flag to indicate if the location of the activity is in cell
        * @example false
@@ -6831,6 +7742,8 @@ export interface components {
       minimumEducationLevel?: components['schemas']['ActivityMinimumEducationLevelCreateRequest'][]
       /** @description The list of pay rates that can apply to this activity. Must be null or empty if the activity is unpaid */
       pay?: components['schemas']['ActivityPayCreateRequest'][]
+      /** @description The list of pay rates that can apply to this activity. Must be null or empty if the activity is unpaid */
+      payChange?: components['schemas']['ActivityPayHistoryCreateRequest'][]
       /**
        * Format: int32
        * @description The number of weeks in the schedule
@@ -6851,21 +7764,15 @@ export interface components {
        */
       paid?: boolean
     }
-    /** @description A list of paid attendance counts for each booking in the prison on the date */
-    AttendanceReconciliationResponse: {
+    /** @description A list of allocation counts for each booking in the prison */
+    AllocationReconciliationResponse: {
       /**
        * @description The prison code
        * @example BXI
        */
       prisonCode: string
       /**
-       * Format: date
-       * @description The date to check
-       * @example 2023-10-25
-       */
-      date: string
-      /**
-       * @description A list of bookings and the number of paid attendances for each
+       * @description A list of bookings and the number of active allocations for each
        * @example { [ "bookingId": 12345, "count": 2 ] }
        */
       bookings: components['schemas']['BookingCount'][]
@@ -6885,15 +7792,21 @@ export interface components {
        */
       count: number
     }
-    /** @description A list of allocation counts for each booking in the prison */
-    AllocationReconciliationResponse: {
+    /** @description A list of paid attendance counts for each booking in the prison on the date */
+    AttendanceReconciliationResponse: {
       /**
        * @description The prison code
        * @example BXI
        */
       prisonCode: string
       /**
-       * @description A list of bookings and the number of active allocations for each
+       * Format: date
+       * @description The date to check
+       * @example 2023-10-25
+       */
+      date: string
+      /**
+       * @description A list of bookings and the number of paid attendances for each
        * @example { [ "bookingId": 12345, "count": 2 ] }
        */
       bookings: components['schemas']['BookingCount'][]
@@ -6927,13 +7840,11 @@ export interface components {
        */
       sessionDate: string
       /**
-       * Format: partial-time
        * @description The scheduled instance start time
        * @example 10:00
        */
       sessionStartTime: string
       /**
-       * Format: partial-time
        * @description The scheduled instance end time
        * @example 11:00
        */
@@ -6981,7 +7892,7 @@ export interface components {
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
-      content: Record<string, never>
+      content: unknown
     }
     /** @description Describes a pay rate applied to an activity */
     ActivityPayLite: {
@@ -7186,7 +8097,7 @@ export interface components {
     EducationSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example True
+       * @example true
        */
       suitable: boolean
       /** @description The prisoner's education levels */
@@ -7196,7 +8107,7 @@ export interface components {
     IncentiveLevelSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example True
+       * @example true
        */
       suitable: boolean
       /**
@@ -7209,7 +8120,7 @@ export interface components {
     ReleaseDateSuitability: {
       /**
        * @description The prisoner's suitability
-       * @example True
+       * @example true
        */
       suitable: boolean
       /** @description The prisoner's earliest release date */
@@ -7242,7 +8153,7 @@ export interface components {
     WRASuitability: {
       /**
        * @description The prisoner's suitability
-       * @example True
+       * @example true
        */
       suitable: boolean
       /**
@@ -7364,14 +8275,14 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['ActivityCandidate'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -7490,13 +8401,11 @@ export interface components {
        */
       sessionDate: string
       /**
-       * Format: partial-time
        * @description The start time of the scheduled instance
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the scheduled instance
        * @example 12:00
        */
@@ -7549,22 +8458,10 @@ export interface components {
        */
       activitiesRolledOut: boolean
       /**
-       * Format: date
-       * @description The date activities rolled out. Can be null if the prison is not yet scheduled for rollout.
-       * @example 2022-09-30
-       */
-      activitiesRolloutDate?: string
-      /**
        * @description Flag to indicate if appointments are enabled
        * @example true
        */
       appointmentsRolledOut: boolean
-      /**
-       * Format: date
-       * @description The date appointments rolled out. Can be null if the prison is not yet scheduled for rollout.
-       * @example 2022-09-30
-       */
-      appointmentsRolloutDate?: string
       /**
        * Format: int32
        * @description max days to expire events based on prisoner movement, default is 21
@@ -7578,7 +8475,7 @@ export interface components {
     }
     DlqMessage: {
       body: {
-        [key: string]: Record<string, never>
+        [key: string]: unknown
       }
       messageId: string
     }
@@ -7744,6 +8641,12 @@ export interface components {
        */
       id: number
       /**
+       * Format: uuid
+       * @description The DPS location UUID for the location
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId: string
+      /**
        * @description
        *         The prison code/agency id of the internal location. Mapped from AGENCY_LOCATIONS.AGY_LOC_ID in NOMIS.
        *
@@ -7760,6 +8663,174 @@ export interface components {
        * @example Education 1
        */
       description: string
+    }
+    /** @description Describes a scheduled activity for a prisoner */
+    ScheduledActivity: {
+      /**
+       * Format: int64
+       * @description The internal ID of the scheduled instance
+       * @example 1
+       */
+      scheduledInstanceId: number
+      /**
+       * Format: int64
+       * @description The internal ID of the allocation
+       * @example 1
+       */
+      allocationId: number
+      /**
+       * @description The prison code for this scheduled activity
+       * @example MDI
+       */
+      prisonCode: string
+      /**
+       * Format: date
+       * @description The specific date for this session
+       * @example 2022-09-30
+       */
+      sessionDate: string
+      /**
+       * @description The start time for this scheduled instance
+       * @example 09:00
+       */
+      startTime?: string
+      /**
+       * @description The end time for this scheduled instance
+       * @example 10:00
+       */
+      endTime?: string
+      /**
+       * @description The prisoners prisoner number
+       * @example GF10101
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description The booking id of the prisoner
+       * @example 10001
+       */
+      bookingId: number
+      /**
+       * @description Set to true if this event will take place in the prisoner's cell
+       * @example false
+       */
+      inCell: boolean
+      /**
+       * @description Flag to indicate if the location of the activity is on wing
+       * @example false
+       */
+      onWing: boolean
+      /**
+       * @description Flag to indicate if the location of the activity is off wing and not in a listed location
+       * @example false
+       */
+      offWing: boolean
+      /**
+       * Format: int32
+       * @description The NOMIS internal location id where this event takes place
+       * @example 10001
+       */
+      internalLocationId?: number
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID
+       * @example b7602cc8-e769-4cbb-8194-62d8e655992a
+       */
+      dpsLocationId?: string
+      /**
+       * @description The NOMIS location code for this event
+       * @example 5-A-SIDE COM
+       */
+      internalLocationCode?: string
+      /**
+       * @description The NOMIS location description for this event
+       * @example MDI-GYM-5-A-SIDE COM
+       */
+      internalLocationDescription?: string
+      scheduleDescription?: string
+      /**
+       * Format: int32
+       * @description The id of the activity
+       * @example 1
+       */
+      activityId: number
+      /** @description The category for this activity, one of the high-level categories */
+      activityCategory: string
+      /**
+       * @description The title of the activity for this attendance record
+       * @example Math Level 1
+       */
+      activitySummary?: string
+      /**
+       * @description Set to true if this event has been cancelled
+       * @example false
+       */
+      cancelled: boolean
+      /**
+       * @description Set to true if this prisoner is suspended from the scheduled event
+       * @example false
+       */
+      suspended: boolean
+      /**
+       * @description Set to true if this prisoner is auto-suspended from the scheduled event
+       * @example false
+       */
+      autoSuspended: boolean
+      /**
+       * @description Time slot of scheduled instance
+       * @example AM
+       * @enum {string}
+       */
+      timeSlot: 'AM' | 'PM' | 'ED'
+      /**
+       * @description Should activity payment be issued for SICK, REST or OTHER
+       * @example true
+       */
+      issuePayment?: boolean
+      /**
+       * @description The activity attendance status - WAITING or COMPLETED
+       * @example WAITING
+       * @enum {string}
+       */
+      attendanceStatus?: 'WAITING' | 'COMPLETED'
+      /**
+       * @description The code for the activity (non) attendance reason
+       * @example SICK
+       * @enum {string}
+       */
+      attendanceReasonCode?:
+        | 'SICK'
+        | 'REFUSED'
+        | 'NOT_REQUIRED'
+        | 'REST'
+        | 'CLASH'
+        | 'OTHER'
+        | 'AUTO_SUSPENDED'
+        | 'SUSPENDED'
+        | 'CANCELLED'
+        | 'ATTENDED'
+      /**
+       * @description Set to true if this activity is a paid activity
+       * @example false
+       */
+      paidActivity: boolean
+      possibleAdvanceAttendance: boolean
+    }
+    ActivitySuitabilityCriteria: {
+      /**
+       * @description The most recent risk assessment level for this activity
+       * @example high
+       */
+      riskLevel: string
+      /**
+       * @description Whether the activity is a paid activity
+       * @example true
+       */
+      isPaid: boolean
+      /** @description Describes the pay rates and bands which apply to an activity */
+      payRates: components['schemas']['ActivityPay'][]
+      /** @description Describes the minimum education levels which apply to an activity */
+      minimumEducationLevel: components['schemas']['ActivityMinimumEducationLevel'][]
     }
     /** @description Describes one event that has occurred to indicate a change of circumstance */
     EventReview: {
@@ -7879,13 +8950,11 @@ export interface components {
        */
       timeSlot: string
       /**
-       * Format: partial-time
        * @description The start time
        * @example 9:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time
        * @example 11:30
        */
@@ -7953,15 +9022,9 @@ export interface components {
     }
     /** @description suspended prisoner activity attendance */
     SuspendedPrisonerActivityAttendance: {
-      /**
-       * Format: partial-time
-       * @description the activity start time
-       */
+      /** @description the activity start time */
       startTime: string
-      /**
-       * Format: partial-time
-       * @description the activity end time
-       */
+      /** @description the activity end time */
       endTime: string
       /** @description internal location description */
       internalLocation?: string
@@ -8017,9 +9080,7 @@ export interface components {
       appointmentName: string
       /** Format: date */
       startDate: string
-      /** Format: partial-time */
       startTime: string
-      /** Format: partial-time */
       endTime: string
     }
     /** @description
@@ -8056,13 +9117,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of this appointment
        * @example 13:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of this appointment
        * @example 13:30
        */
@@ -8253,13 +9312,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of the appointment or appointments in the series
        * @example 09:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of the appointment or appointments in the series
        * @example 10:30
        */
@@ -8339,13 +9396,11 @@ export interface components {
        */
       startDate: string
       /**
-       * Format: partial-time
        * @description The starting time of this appointment
        * @example 13:00
        */
       startTime: string
       /**
-       * Format: partial-time
        * @description The end time of this appointment
        * @example 13:30
        */
@@ -8434,6 +9489,119 @@ export interface operations {
         }
       }
       /** @description The activity schedule for this ID was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getScheduledInstanceById: {
+    parameters: {
+      query?: never
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        instanceId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Scheduled instance found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivityScheduleInstance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The scheduled instance was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateScheduledInstance: {
+    parameters: {
+      query?: never
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        instanceId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ScheduledInstancedUpdateRequest']
+      }
+    }
+    responses: {
+      /** @description Scheduled instance successfully updated */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Scheduled instance not found */
       404: {
         headers: {
           [name: string]: unknown
@@ -8557,6 +9725,108 @@ export interface operations {
       }
       /** @description The scheduled instance was not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  uncancelScheduledInstances: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ScheduleInstancesUncancelRequest']
+      }
+    }
+    responses: {
+      /** @description Scheduled instances successfully uncancelled */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  cancelScheduledInstances: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ScheduleInstancesCancelRequest']
+      }
+    }
+    responses: {
+      /** @description Scheduled instances successfully cancelled */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }
@@ -8782,61 +10052,6 @@ export interface operations {
       }
     }
   }
-  markAttendance: {
-    parameters: {
-      query?: never
-      header?: {
-        'Caseload-Id'?: string
-      }
-      path: {
-        appointmentId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AppointmentAttendanceRequest']
-      }
-    }
-    responses: {
-      /** @description Attendance for the appointment was recorded. */
-      202: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AppointmentSeries']
-        }
-      }
-      /** @description Bad request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description The appointment for this id was not found. */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
   markMultipleAttendances: {
     parameters: {
       query?: {
@@ -8875,6 +10090,157 @@ export interface operations {
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAttendanceById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        advanceAttendanceId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Advance Attendance found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AdvanceAttendance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The advance attendance was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        advanceAttendanceId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdvanceAttendanceUpdateRequest']
+      }
+    }
+    responses: {
+      /** @description The advance attendance was updated. */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AdvanceAttendance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The advance attendance was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reset: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        advanceAttendanceId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The advance attendance was deleted. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AdvanceAttendance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The advance attendance was not found. */
+      404: {
         headers: {
           [name: string]: unknown
         }
@@ -8953,6 +10319,27 @@ export interface operations {
       }
     }
   }
+  updateCaseNoteUUID: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UpdateCaseNoteUUIDResponse']
+          'text/plain': components['schemas']['UpdateCaseNoteUUIDResponse']
+        }
+      }
+    }
+  }
   publishDomainEvent: {
     parameters: {
       query?: never
@@ -8973,6 +10360,27 @@ export interface operations {
         }
         content: {
           'text/plain': string
+        }
+      }
+    }
+  }
+  createActivityPayHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PayHistoryMigrateResponse']
+          'text/plain': components['schemas']['PayHistoryMigrateResponse']
         }
       }
     }
@@ -9345,6 +10753,74 @@ export interface operations {
       }
     }
   }
+  getScheduledEventsForMultipleLocationsByDPSLocationsIds: {
+    parameters: {
+      query: {
+        /** @description The exact date to return events for (required) in format YYYY-MM-DD */
+        date: string
+        /** @description Time slot of the events (optional). If supplied, one of AM, PM or ED. */
+        timeSlot?: 'AM' | 'PM' | 'ED'
+      }
+      header?: never
+      path: {
+        /** @description The 3-character prison code. */
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': string[]
+      }
+    }
+    responses: {
+      /** @description Successful call - zero or more scheduled events found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InternalLocationEvents'][]
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   setPrisonRegimeSlots: {
     parameters: {
       query?: never
@@ -9455,6 +10931,67 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  moveActivityStartDates: {
+    parameters: {
+      query: {
+        /** @description The new activity start date for the activities. Must be in the future. */
+        activityStartDate: string
+      }
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The start dates have been updated where possible */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The prison code is unknown. */
+      404: {
         headers: {
           [name: string]: unknown
         }
@@ -9667,6 +11204,8 @@ export interface operations {
         withDeallocateEnding?: boolean
         /** @description If true will run the deallocate allocations that are expiring process. Defaults to false. */
         withDeallocateExpiring?: boolean
+        /** @description If true will attempt to unsuspend auto suspended prisoners who should have been received back into the prison already. */
+        withFixAutoSuspended?: boolean
       }
       header?: never
       path?: never
@@ -9699,6 +11238,26 @@ export interface operations {
         /** @description The activity schedule Id */
         activityScheduleId: number
       }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Accepted */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/plain': string
+        }
+      }
+    }
+  }
+  triggerActivitiesLocationsJob: {
+    parameters: {
+      query?: never
       header?: never
       path?: never
       cookie?: never
@@ -9795,6 +11354,257 @@ export interface operations {
         }
         content: {
           'text/plain': string
+        }
+      }
+    }
+  }
+  searchWaitingLists_1: {
+    parameters: {
+      query?: {
+        /** @description The page number of search results (default: 0) */
+        page?: number
+        /** @description The number of search results per page (default: 50) */
+        pageSize?: number
+      }
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WaitingListSearchRequest']
+      }
+    }
+    responses: {
+      /** @description Waiting list application search results */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedWaitingListApplication']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Waiting list application not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getScheduledEventsForSinglePrisoner_1: {
+    parameters: {
+      query: {
+        /** @description Prisoner number (required). Format A9999AA. */
+        prisonerNumber: string
+        /** @description Start date of query (required). Format YYYY-MM-DD. */
+        startDate: string
+        /** @description End date of query (required). Format YYYY-MM-DD. The end date must be within 3 months of the start date) */
+        endDate: string
+        /** @description Time slot for the events (optional). If supplied, one of AM, PM or ED. */
+        timeSlot?: 'AM' | 'PM' | 'ED'
+      }
+      header?: never
+      path: {
+        /** @description The 3-digit prison code. */
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful call - zero or more scheduled events found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerScheduledEvents']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getScheduledEventsForMultiplePrisoners_1: {
+    parameters: {
+      query: {
+        /** @description The exact date to return events for (required) in format YYYY-MM-DD */
+        date: string
+        /** @description Time slot of the events (optional). If supplied, one of AM, PM or ED. */
+        timeSlot?: 'AM' | 'PM' | 'ED'
+      }
+      header?: never
+      path: {
+        /** @description The 3-character prison code. */
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': string[]
+      }
+    }
+    responses: {
+      /** @description Successful call - zero or more scheduled events found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerScheduledEvents']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  searchAppointments: {
+    parameters: {
+      query?: never
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppointmentSearchRequest']
+      }
+    }
+    responses: {
+      /** @description Prison code and search parameters were accepted and results returned. */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentSearchResult'][]
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -9908,7 +11718,7 @@ export interface operations {
       }
     }
   }
-  searchAppointments: {
+  searchAppointments_1: {
     parameters: {
       query?: never
       header?: {
@@ -10254,6 +12064,48 @@ export interface operations {
   create: {
     parameters: {
       query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdvanceAttendanceCreateRequest']
+      }
+    }
+    responses: {
+      /** @description The advance attendance record was created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AdvanceAttendance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_1: {
+    parameters: {
+      query?: never
       header?: {
         'Caseload-Id'?: string
       }
@@ -10521,7 +12373,7 @@ export interface operations {
       }
     }
   }
-  update: {
+  update_1: {
     parameters: {
       query?: never
       header?: never
@@ -10584,7 +12436,7 @@ export interface operations {
       }
     }
   }
-  update_1: {
+  update_2: {
     parameters: {
       query?: never
       header?: {
@@ -10640,6 +12492,76 @@ export interface operations {
       }
       /** @description Activity ID not found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getInvalidActivityLocations: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/plain': string
+        }
+      }
+    }
+  }
+  getSuspendedAllocationReconciliation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Prison id */
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Reconciliation information retrieved */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AllocationReconciliationResponse']
+        }
+      }
+      /** @description There was an error with the request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden */
+      403: {
         headers: {
           [name: string]: unknown
         }
@@ -10941,7 +12863,10 @@ export interface operations {
   }
   getWaitingListApplicationsBy: {
     parameters: {
-      query?: never
+      query?: {
+        /** @description If true will try fetch and add non-association details. Defaults to true. */
+        includeNonAssociationsCheck?: boolean
+      }
       header?: {
         'Caseload-Id'?: string
       }
@@ -11168,57 +13093,6 @@ export interface operations {
       }
     }
   }
-  getScheduledInstanceById: {
-    parameters: {
-      query?: never
-      header?: {
-        'Caseload-Id'?: string
-      }
-      path: {
-        instanceId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Scheduled instance found */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ActivityScheduleInstance']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description The scheduled instance was not found. */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
   getScheduledAttendeesByScheduledInstance: {
     parameters: {
       query?: never
@@ -11341,7 +13215,10 @@ export interface operations {
   }
   getRolledOutPrisons: {
     parameters: {
-      query?: never
+      query?: {
+        /** @description Restrict the list of rolled out prisons to prisons live to users */
+        prisonsLive?: boolean
+      }
       header?: never
       path?: never
       cookie?: never
@@ -11535,6 +13412,8 @@ export interface operations {
     parameters: {
       query?: {
         excludeArchived?: boolean
+        /** @description The activity name contains this case insensitive search term */
+        nameSearch?: string
       }
       header?: never
       path: {
@@ -11883,6 +13762,584 @@ export interface operations {
       }
     }
   }
+  getScheduleById_1: {
+    parameters: {
+      query?: {
+        /** @description If provided will filter earliest sessions >= the given date. Format YYYY-MM-DD, otherwise defaults to 4 weeks prior to the current date. */
+        earliestSessionDate?: string
+      }
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        scheduleId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Activity found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivitySchedule']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The activity for this ID was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getWaitingListApplicationsBy_1: {
+    parameters: {
+      query?: never
+      header?: {
+        'Caseload-Id'?: string
+      }
+      path: {
+        scheduleId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The waiting list applications for an activity schedule */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WaitingListApplication'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Schedule ID not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getScheduledInstancesForPrisoner: {
+    parameters: {
+      query: {
+        /** @description Start date of query (required). Format YYYY-MM-DD. */
+        startDate: string
+        /** @description End date of query (required). The end date must be within 3 months of the start date. Format YYYY-MM-DD. */
+        endDate: string
+        /** @description The time slot (optional). If supplied, one of AM, PM or ED. */
+        slot?: 'AM' | 'PM' | 'ED'
+      }
+      header?: never
+      path: {
+        /** @description The 3-character prison code. */
+        prisonCode: string
+        /** @description Prisoner Number */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful call - zero or more scheduled instance records found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ScheduledActivity'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonPayBands_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Prison pay bands found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonPayBand'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getActivities_1: {
+    parameters: {
+      query?: {
+        excludeArchived?: boolean
+        /** @description The activity name contains this case insensitive search term */
+        nameSearch?: string
+      }
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Activities */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivitySummary'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonRegimeByPrisonCode_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Prison regime found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonRegime'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAttendanceById_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        attendanceId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Attendance found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Attendance']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The attendance was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAttendanceForPrisoner: {
+    parameters: {
+      query: {
+        /** @description Start date of query (required). Format YYYY-MM-DD. */
+        startDate: string
+        /** @description End date of query (required). Format YYYY-MM-DD. */
+        endDate: string
+        /** @description The 3-character prison code. */
+        prisonCode?: string
+      }
+      header?: never
+      path: {
+        /** @description Prisoner Number */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful call */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Attendance'][]
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The attendance was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAttendanceReasons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Attendance reasons found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AttendanceReason'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getDeallocationReasons: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deallocation reasons found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeallocationReason'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getActivitySchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activityId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Activity schedules */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivityScheduleLite'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Activity ID not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getActivityScheduleSuitabilityCriteria: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Schedule ID */
+        scheduleId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful call */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivitySuitabilityCriteria'][]
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The suitability criteria was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getEventsForReview: {
     parameters: {
       query: {
@@ -12036,7 +14493,7 @@ export interface operations {
       }
     }
   }
-  getAttendanceById: {
+  getAttendanceById_2: {
     parameters: {
       query?: never
       header?: never
@@ -12085,7 +14542,7 @@ export interface operations {
       }
     }
   }
-  getAttendanceReasons: {
+  getAttendanceReasons_1: {
     parameters: {
       query?: never
       header?: never
@@ -12585,7 +15042,7 @@ export interface operations {
       }
     }
   }
-  getDeallocationReasons: {
+  getDeallocationReasons_1: {
     parameters: {
       query?: never
       header?: never
@@ -12661,7 +15118,7 @@ export interface operations {
       }
     }
   }
-  getActivitySchedules: {
+  getActivitySchedules_1: {
     parameters: {
       query?: never
       header?: never
@@ -12678,7 +15135,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ActivityScheduleLite']
+          'application/json': components['schemas']['ActivityScheduleLite'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -12700,6 +15157,55 @@ export interface operations {
         }
       }
       /** @description Activity ID not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getActivityPayHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activityId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Activity found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Activity']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The activity for this ID was not found */
       404: {
         headers: {
           [name: string]: unknown

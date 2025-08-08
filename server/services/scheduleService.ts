@@ -21,6 +21,7 @@ import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
 import ReferenceDataService, { CellsByWing } from './referenceDataService'
+import { LocationMapping } from '../@types/nomisMappingApi/types'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -100,10 +101,12 @@ export default class ScheduleService {
     ])
 
     const nomisLocationIds = scheduledAppointments.map(a => a.locationId).filter(Boolean)
-    const nomisLocationIdMappings = await this.nomisMappingApiClient.getLocationMappingsByNomisIds(
-      nomisLocationIds,
-      user,
-    )
+
+    // Only call the NOMIS mapping API if we have some NOMIS locations IDs to map.
+    const nomisLocationIdMappings =
+      nomisLocationIds.length === 0
+        ? ([] as LocationMapping[])
+        : await this.nomisMappingApiClient.getLocationMappingsByNomisIds(nomisLocationIds, user)
 
     const scheduleItems = await Promise.all(
       scheduledAppointments
