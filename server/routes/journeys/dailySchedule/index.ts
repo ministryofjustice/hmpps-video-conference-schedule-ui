@@ -34,7 +34,7 @@ export default function Index({
   getAndPost('/select-date', new SelectDateHandler())
 
   if (config.featureBulkPrintMovementSlips) {
-    get('/movement-slips', new MovementSlipsHandler(prisonService, scheduleService))
+    get('/movement-slips', new MovementSlipsHandler(scheduleService))
   }
 
   return router

@@ -6,7 +6,6 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
-import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import { getByClass, getByDataQa } from '../../../testutils/cheerio'
 import config from '../../../../config'
 
@@ -27,10 +26,6 @@ const appSetup = (journeySession = {}) => {
     journeySessionSupplier: () => journeySession,
   })
 }
-
-beforeEach(() => {
-  prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
-})
 
 afterEach(() => {
   jest.resetAllMocks()

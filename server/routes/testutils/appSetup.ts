@@ -13,6 +13,7 @@ import setUpWebSession from '../../middleware/setUpWebSession'
 import { Journey } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
 import setUpFlash from '../../middleware/setUpFlash'
+import { Prison } from '../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../services/auditService')
 
@@ -38,6 +39,22 @@ export const user: Express.User = {
   activeCaseLoadId: 'MDI',
 }
 
+export const moorlandPrisonPickUpTime30: Prison = {
+  prisonId: 1,
+  code: 'MDI',
+  name: 'Moorland (HMP)',
+  enabled: true,
+  pickUpTime: 30,
+}
+
+export const moorlandPrisonNoPickUpTime: Prison = {
+  prisonId: 1,
+  code: 'MDI',
+  name: 'Moorland (HMP)',
+  enabled: true,
+  pickUpTime: null,
+}
+
 export const flashProvider = jest.fn()
 
 function appSetup(
@@ -46,6 +63,7 @@ function appSetup(
   userSupplier: () => Express.User,
   journeySessionSupplier: () => Journey,
   middlewares: RequestHandler[] = [],
+  prisonSupplier = () => moorlandPrisonPickUpTime30,
 ): Express {
   const app = express()
 
@@ -60,6 +78,8 @@ function appSetup(
     req.session.journeyData = {}
     req.session.journeyData[journeyId()] = { instanceUnixEpoch: Date.now(), ...journeySessionSupplier() }
     req.flash = flashProvider
+    req.middleware ??= {}
+    req.middleware.prison = prisonSupplier()
     res.locals = {
       user: { ...req.user },
     }
@@ -88,12 +108,14 @@ export function appWithAllRoutes({
   userSupplier = () => user,
   journeySessionSupplier = () => ({}),
   middlewares = [],
+  prisonSupplier = () => moorlandPrisonPickUpTime30,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => Express.User
   journeySessionSupplier?: () => Journey
   middlewares?: RequestHandler[]
+  prisonSupplier?: () => Prison
 }): Express {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
@@ -109,5 +131,6 @@ export function appWithAllRoutes({
     userSupplier,
     journeySessionSupplier,
     middlewares,
+    prisonSupplier,
   )
 }

@@ -49,6 +49,7 @@ export const services = () => {
     auditService,
     prisonService,
     scheduleService,
+    appointmentService,
   }
 }
 

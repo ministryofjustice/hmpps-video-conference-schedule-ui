@@ -1,10 +1,10 @@
 import * as converter from 'json-2-csv'
 import { Request, Response } from 'express'
-import { startOfDay, isValid } from 'date-fns'
+import { isValid, startOfDay } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
-import { convertToTitleCase, formatDate, removeThirtyMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
+import { convertToTitleCase, formatDate, removeMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
 import config from '../../../../config'
 
 export default class DownloadCsvHandler implements PageHandler {
@@ -13,6 +13,7 @@ export default class DownloadCsvHandler implements PageHandler {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   GET = async (req: Request, res: Response) => {
+    const prison = req.middleware!.prison!
     const { user } = res.locals
     const filters = req.session.journey?.scheduleFilters
 
@@ -30,9 +31,10 @@ export default class DownloadCsvHandler implements PageHandler {
       user,
     )
 
-    const csv = config.featureToggles.pickUpTimes
-      ? converter.json2csv(this.convertScheduleToCsvRowsWithPickUpTimes(schedule))
-      : converter.json2csv(this.convertScheduleToCsvRows(schedule))
+    const csv =
+      config.featureToggles.pickUpTimes && prison.pickUpTime
+        ? converter.json2csv(this.convertScheduleToCsvRowsWithPickUpTimes(schedule, prison.pickUpTime))
+        : converter.json2csv(this.convertScheduleToCsvRows(schedule))
 
     res.header('Content-Type', 'text/csv')
     res.attachment(`daily-schedule${status === 'CANCELLED' ? '-cancelled' : ''}-${formatDate(date, 'yyyy-MM-dd')}.csv`)
@@ -59,13 +61,13 @@ export default class DownloadCsvHandler implements PageHandler {
     )
   }
 
-  private convertScheduleToCsvRowsWithPickUpTimes = (schedule: DailySchedule) => {
+  private convertScheduleToCsvRowsWithPickUpTimes = (schedule: DailySchedule, pickUpTime: number) => {
     return schedule.appointmentGroups.flatMap(group =>
       group.map((item, index) => ({
         'Prisoner name': convertToTitleCase(`${item.prisoner.lastName} ${item.prisoner.firstName}`),
         'Prison number': item.prisoner.prisonerNumber,
         'Cell number': item.prisoner.cellLocation,
-        'Pick-up time': index === 0 ? removeThirtyMinutes(item.startTime) : '',
+        'Pick-up time': index === 0 ? removeMinutes(item.startTime, pickUpTime) : '',
         'Appointment start time': item.startTime,
         'Appointment end time': item.endTime || '',
         'Appointment type': item.appointmentTypeDescription,

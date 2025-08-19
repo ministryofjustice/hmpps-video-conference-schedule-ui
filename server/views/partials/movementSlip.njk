@@ -52,7 +52,9 @@
                 {{ labelAndValue('Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
-            {{ labelAndValue('Pick-up time', movementSlip.pickUpTime) }}
+            {% if movementSlip.pickUpTime %}
+              {{ labelAndValue('Pick-up time', movementSlip.pickUpTime) }}
+            {% endif %}
             {{ labelAndValue('Location', movementSlip.location) }}
         </dl>
         <div class='movement-slip-information'>

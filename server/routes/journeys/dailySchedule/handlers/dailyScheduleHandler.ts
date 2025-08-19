@@ -43,6 +43,7 @@ export default class DailyScheduleHandler implements PageHandler {
   ) {}
 
   GET = async (req: Request, res: Response) => {
+    const prison = req.middleware!.prison!
     const { user } = res.locals
     const filters = req.session.journey?.scheduleFilters
 
@@ -52,33 +53,25 @@ export default class DailyScheduleHandler implements PageHandler {
     const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
     const status = ['ACTIVE', 'CANCELLED'].includes(statusFromQueryParam) ? statusFromQueryParam : 'ACTIVE'
 
-    const [
-      prison,
-      appointmentsRolledOut,
-      appointmentTypes,
-      appointmentLocations,
-      courtsAndProbationTeams,
-      wings,
-      schedule,
-    ] = await Promise.all([
-      this.prisonService.getPrison(user.activeCaseLoadId, user),
-      this.prisonService.isAppointmentsRolledOutAt(user.activeCaseLoadId, user),
-      this.referenceDataService.getAppointmentCategories(user),
-      this.referenceDataService.getAppointmentLocations(user.activeCaseLoadId, user),
-      this.referenceDataService.getCourtsAndProbationTeams(user),
-      this.referenceDataService.getCellsByWing(user.activeCaseLoadId, user),
-      this.scheduleService.getSchedule(
-        user.activeCaseLoadId,
-        startOfDay(isValid(date) ? date : new Date()),
-        filters,
-        status,
-        user,
-      ),
-    ])
+    const [appointmentsRolledOut, appointmentTypes, appointmentLocations, courtsAndProbationTeams, wings, schedule] =
+      await Promise.all([
+        this.prisonService.isAppointmentsRolledOutAt(user.activeCaseLoadId, user),
+        this.referenceDataService.getAppointmentCategories(user),
+        this.referenceDataService.getAppointmentLocations(user.activeCaseLoadId, user),
+        this.referenceDataService.getCourtsAndProbationTeams(user),
+        this.referenceDataService.getCellsByWing(user.activeCaseLoadId, user),
+        this.scheduleService.getSchedule(
+          user.activeCaseLoadId,
+          startOfDay(isValid(date) ? date : new Date()),
+          filters,
+          status,
+          user,
+        ),
+      ])
 
     return status === 'ACTIVE'
       ? res.render('pages/dailySchedule/dailySchedule', {
-          prisonName: prison.prisonName,
+          prison,
           schedule,
           date,
           isPastDay: startOfDay(date) < startOfDay(new Date()),
@@ -90,7 +83,7 @@ export default class DailyScheduleHandler implements PageHandler {
           appointmentsRolledOut,
         })
       : res.render('pages/dailySchedule/cancelledAppointments', {
-          prisonName: prison.prisonName,
+          prison,
           appointmentsRolledOut,
           schedule,
           date,

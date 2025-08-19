@@ -4,14 +4,14 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import {
-  initialiseName,
-  formatDate,
   convertToTitleCase,
+  formatDate,
+  initialiseName,
+  isBeforeNow,
+  isValidUrl,
+  removeMinutes,
   toFullCourtLink,
   toFullCourtLinkPrint,
-  removeThirtyMinutes,
-  isValidUrl,
-  isBeforeNow,
 } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
@@ -70,7 +70,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('filterFalsy', list => list.filter(Boolean))
   njkEnv.addFilter('toFullCourtLink', toFullCourtLink)
   njkEnv.addFilter('toFullCourtLinkPrint', toFullCourtLinkPrint)
-  njkEnv.addFilter('removeThirtyMinutes', removeThirtyMinutes)
+  njkEnv.addFilter('removeMinutes', removeMinutes)
   njkEnv.addFilter('isValidUrl', isValidUrl)
   njkEnv.addFilter('isBeforeNow', isBeforeNow)
 

@@ -19,7 +19,7 @@
     {% set backLinkHref = '/clear-filter?all=true' %}
 {% endif %}
 
-{% set pageTitle = "Video link daily schedule: " + prisonName %}
+{% set pageTitle = "Video link daily schedule: " + prison.name %}
 {% set noAppointmentsForDay = not session.journey.scheduleFilters and schedule.appointmentsListed == 0 %}
 
 {% block meta %}
@@ -107,11 +107,11 @@
         </div>
     </div>
 
-    {% if pickUpTimesEnabled and schedule.appointmentsListed > 0 %}
+    {% if pickUpTimesEnabled and prison.pickUpTime and schedule.appointmentsListed > 0 %}
         {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
         <div class="govuk-grid-row govuk-!-margin-top-4 govuk-!-display-none-print">
             <div class="hmpps-show-hide-links">
-                <button class="govuk-!-font-size-16 hmpps-show-hide-link-button">Show all pick-up times</button>
+                <button class="govuk-!-font-size-16 hmpps-show-hide-link-button" data-qa="show-all-pick-up-times">Show all pick-up times</button>
             </div>
         </div>
     {% endif %}
@@ -126,7 +126,7 @@
                 {% for scheduleItem in appointmentGroup %}
                     {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
                     {% set classes = (classes + ' govuk-table__cell--alternate-shade') | trim if appointmentGroup.length > 1 %}
-                    {% set pickUpTime = (scheduleItem.startTime | removeThirtyMinutes) if pickUpTimesEnabled and loop.index == 1 %}
+                    {% set pickUpTime =  scheduleItem.startTime | removeMinutes(prison.pickUpTime) if pickUpTimesEnabled and prison.pickUpTime and loop.index == 1 %}
 
                     {% set rows = (rows.push([
                         {
@@ -182,7 +182,7 @@
                         },
                         {
                             text: pickUpTime
-                        } if pickUpTimesEnabled,
+                        } if pickUpTimesEnabled and prison.pickUpTime,
                         {
                             text: scheduleItem.startTime + ((' to ' + scheduleItem.endTime) if scheduleItem.endTime)
                         },
@@ -295,7 +295,7 @@
                         },
                         {
                           text: "Pick-up time"
-                        } if pickUpTimesEnabled,
+                        } if pickUpTimesEnabled and prison.pickUpTime,
                         {
                             text: "Time"
                         },
