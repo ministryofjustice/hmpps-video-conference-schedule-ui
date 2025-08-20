@@ -3,19 +3,17 @@ import { isValid, startOfDay, startOfToday } from 'date-fns'
 import { isNotEmpty } from 'class-validator'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
-import PrisonService from '../../../../services/prisonService'
 import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
-import { convertToTitleCase, removeThirtyMinutes } from '../../../../utils/utils'
+import { convertToTitleCase, removeMinutes } from '../../../../utils/utils'
+import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 
 export default class MovementSlipsHandler implements PageHandler {
   public PAGE_NAME = Page.MOVEMENT_SLIPS
 
-  constructor(
-    private readonly prisonService: PrisonService,
-    private readonly scheduleService: ScheduleService,
-  ) {}
+  constructor(private readonly scheduleService: ScheduleService) {}
 
   GET = async (req: Request, res: Response) => {
+    const prison = req.middleware!.prison!
     const { user } = res.locals
     const filters = req.session.journey?.scheduleFilters
     const dateFromQueryParam = new Date(req.query.date?.toString())
@@ -26,25 +24,22 @@ export default class MovementSlipsHandler implements PageHandler {
       return res.redirect('/')
     }
 
-    const [prison, schedule] = await Promise.all([
-      this.prisonService.getPrison(user.activeCaseLoadId, user),
-      this.scheduleService.getSchedule(
-        user.activeCaseLoadId,
-        startOfDay(isValid(date) ? date : new Date()),
-        filters,
-        'ACTIVE',
-        user,
-      ),
-    ])
+    const schedule = await this.scheduleService.getSchedule(
+      user.activeCaseLoadId,
+      startOfDay(isValid(date) ? date : new Date()),
+      filters,
+      'ACTIVE',
+      user,
+    )
 
     return res.render('pages/dailySchedule/movementSlips', {
-      movementSlips: this.convertToMovementSlips(schedule, prison.prisonName, date),
+      movementSlips: this.convertToMovementSlips(schedule, prison, date),
     })
   }
 
-  private convertToMovementSlips = (schedule: DailySchedule, prisonName: string, date: Date) => {
+  private convertToMovementSlips = (schedule: DailySchedule, prison: Prison, date: Date) => {
     return schedule.appointmentGroups.map(group => ({
-      prisonName,
+      prisonName: prison.name,
       prisonerName: convertToTitleCase(`${group[0].prisoner.firstName} ${group[0].prisoner.lastName}`),
       prisonerNumber: group[0].prisoner.prisonerNumber,
       date,
@@ -82,7 +77,7 @@ export default class MovementSlipsHandler implements PageHandler {
             startTime: this.getStartTime(group, AppointmentType.OFFICIAL_OTHER),
           }
         : undefined,
-      pickUpTime: removeThirtyMinutes(group[0].startTime),
+      pickUpTime: prison.pickUpTime ? removeMinutes(group[0].startTime, prison.pickUpTime) : undefined,
       location: this.getLocation(group),
       notes: group[0].notesForPrisoner,
     }))

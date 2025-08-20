@@ -74,7 +74,7 @@ export const toFullCourtLink = (hmctsNumber: string) => {
   return `${prefix}hmcts${hmctsNumber}${suffix}`
 }
 
-export const removeThirtyMinutes = (timeValue: string) => {
+export const removeMinutes = (timeValue: string, minutes: number) => {
   if (!timeValue || timeValue.length < 1) {
     return undefined
   }
@@ -82,7 +82,7 @@ export const removeThirtyMinutes = (timeValue: string) => {
   if (!isValid(date)) {
     return undefined
   }
-  const newTime = subMinutes(date, 30)
+  const newTime = subMinutes(date, minutes)
   return format(newTime, 'HH:mm')
 }
 

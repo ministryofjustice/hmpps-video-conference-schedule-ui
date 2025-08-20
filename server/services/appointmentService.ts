@@ -26,6 +26,10 @@ export default class AppointmentService {
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
   ) {}
 
+  public async getPrison(prisonId: string, user: Express.User) {
+    return this.bookAVideoLinkApiClient.getPrison(prisonId, user)
+  }
+
   public async getVideoLinkAppointments(prisonId: string, date: Date, periods: Period[], user: Express.User) {
     const isAppointmentsRolledOut = await this.activitiesAndAppointmentsApiClient.isAppointmentsRolledOutAt(
       prisonId,

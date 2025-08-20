@@ -22,4 +22,8 @@ export default class DailySchedulePage extends Page {
   }
 
   printAllMovementSlips = (): PageElement => this.getLink('Print all movement slips')
+
+  showAllPickUpTimes = (): PageElement => this.getButton('Show all pick-up times')
+
+  assertNoPickUpTimes = () => this.getButton('Show all pick-up times').should('not.exist')
 }

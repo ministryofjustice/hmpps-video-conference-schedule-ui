@@ -7,9 +7,9 @@ import {
   parseDatePickerDate,
   toFullCourtLink,
   toFullCourtLinkPrint,
-  removeThirtyMinutes,
   isValidUrl,
   isBeforeNow,
+  removeMinutes,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -112,17 +112,17 @@ describe('toFullCourtLinkPrint', () => {
   })
 })
 
-describe('removeThirtyMinutes', () => {
+describe('removeMinutes', () => {
   it.each([
-    ['10:30', '10:00'],
-    ['09:30', '09:00'],
-    ['12:15', '11:45'],
-    ['00:15', '23:45'],
-    ['AABB', undefined],
-    ['', undefined],
-    [undefined, undefined],
-  ])("returns a time 30 minutes before [%s] as '%s'", (input, expected) => {
-    expect(removeThirtyMinutes(input)).toEqual(expected)
+    ['10:30', 10, '10:20'],
+    ['09:30', 20, '09:10'],
+    ['12:15', 30, '11:45'],
+    ['00:15', 40, '23:35'],
+    ['AABB', 50, undefined],
+    ['', 60, undefined],
+    [undefined, undefined, undefined],
+  ])("returns a time [%s] minutes before [%s] as '%s'", (time, minutes, expected) => {
+    expect(removeMinutes(time, minutes)).toEqual(expected)
   })
 })
 

@@ -22,4 +22,6 @@ export default class MovementSlipsPage extends Page {
   location = (): PageElement => cy.get('[data-qa=location]')
 
   notes = (): PageElement => cy.get('[data-qa=notes]')
+
+  assertNoPickUpTime = () => cy.get('[data-qa=pick-up-time]').should('not.exist')
 }

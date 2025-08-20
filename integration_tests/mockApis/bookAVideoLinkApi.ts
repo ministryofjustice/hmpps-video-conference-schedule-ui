@@ -115,4 +115,12 @@ export default {
     ]),
   stubGetCourts: () => stubGet('/book-a-video-link-api/courts', []),
   stubGetProbationTeams: () => stubGet('/book-a-video-link-api/probation-teams', []),
+  stubGetPrison: (pickUpTime: number = 30) =>
+    stubGet('/book-a-video-link-api/prisons/MDI', {
+      prisonId: 1,
+      code: 'MDI',
+      name: 'Moorland (HMP)',
+      enabled: true,
+      pickUpTime,
+    }),
 }

@@ -1,5 +1,6 @@
 import type { UserDetails } from '../../services/userService'
 import { ScheduleFilters } from '../../routes/journeys/dailySchedule/journey'
+import { components } from '../bookAVideoLinkApi'
 
 export default {}
 
@@ -45,6 +46,10 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+
+      middleware?: {
+        prison?: components['schemas']['Prison']
+      }
     }
 
     interface Locals {

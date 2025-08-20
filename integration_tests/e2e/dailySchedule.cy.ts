@@ -68,6 +68,23 @@ context('Daily schedule', () => {
     dailySchedulePage.printAllMovementSlips()
   })
 
+  it('User can view daily schedule with pick-up times', () => {
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    dailySchedulePage.showAllPickUpTimes().click()
+  })
+
+  it('User can view daily schedule without pick-up times', () => {
+    cy.task('stubGetPrison', null)
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    dailySchedulePage.assertNoPickUpTimes()
+  })
+
   it('User can see tags', () => {
     cy.task('stubVerifyToken', true)
     cy.signIn()

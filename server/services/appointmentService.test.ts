@@ -5,7 +5,7 @@ import { Appointment as PrisonApiAppointment } from '../@types/prisonApi/types'
 import { Appointment as ActivitiesAndAppointmentsApiAppointment } from '../@types/activitiesAndAppointmentsApi/types'
 import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointmentsApiClient'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
+import { BvlsAppointment, Prison } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('../data/prisonApiClient')
 jest.mock('../data/activitiesAndAppointmentsApiClient')
@@ -369,6 +369,24 @@ describe('Appointment service', () => {
         { date: new Date('2024-12-12'), timeSlots: ['AM', 'PM'] },
         user,
       )
+    })
+  })
+
+  describe('getPrison', () => {
+    it('should get prison', async () => {
+      const expectedPrison: Prison = {
+        prisonId: 1,
+        code: 'MDI',
+        name: 'Moorland (HMP)',
+        enabled: true,
+        pickUpTime: 30,
+      }
+
+      bookAVideoLinkApiClient.getPrison.mockResolvedValue(expectedPrison)
+
+      const actualPrison = await appointmentService.getPrison('MDI', user)
+
+      expect(actualPrison).toEqual(expectedPrison)
     })
   })
 })

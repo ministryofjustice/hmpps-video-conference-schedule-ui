@@ -6,7 +6,6 @@ context('Movement slips', () => {
     cy.task('reset')
     cy.task('stubSignIn', ['ROLE_PRISON'])
     cy.task('stubUser')
-    cy.task('stubGetPrison')
     cy.task('stubIsAppointmentsRolledOut')
     cy.task('stubGetAppointmentCategories')
     cy.task('stubGetAppointmentLocations')
@@ -19,7 +18,8 @@ context('Movement slips', () => {
     cy.task('stubGetLocationMapping')
   })
 
-  it('User can view movement slips', () => {
+  it('User can view movement slips with pick-up time 10 minutes before', () => {
+    cy.task('stubGetPrison', 10)
     cy.task('stubVerifyToken', true)
     cy.signIn()
     cy.visit({ url: '/movement-slips?date=2050-07-28' })
@@ -31,7 +31,43 @@ context('Movement slips', () => {
     movementSlipsPage.preCourtHearing().contains('09:45')
     movementSlipsPage.courtHearing('appeal').contains('10:00')
     movementSlipsPage.postCourtHearing().contains('11:00')
-    movementSlipsPage.pickUpTime().contains('09:15')
+    movementSlipsPage.pickUpTime().contains('09:35')
+    movementSlipsPage.location().contains('A Wing Video Link')
+    movementSlipsPage.notes().contains('notes for prisoner')
+  })
+
+  it('User can view movement slips with pick-up time 20 minutes before', () => {
+    cy.task('stubGetPrison', 20)
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+    cy.visit({ url: '/movement-slips?date=2050-07-28' })
+
+    const movementSlipsPage = Page.verifyOnPage(MovementSlipsPage)
+    movementSlipsPage.header().contains('Moorland (HMP)')
+    movementSlipsPage.prisoner().contains('John Smith, G9566GQ')
+    movementSlipsPage.date().contains('28 July 2050')
+    movementSlipsPage.preCourtHearing().contains('09:45')
+    movementSlipsPage.courtHearing('appeal').contains('10:00')
+    movementSlipsPage.postCourtHearing().contains('11:00')
+    movementSlipsPage.pickUpTime().contains('09:25')
+    movementSlipsPage.location().contains('A Wing Video Link')
+    movementSlipsPage.notes().contains('notes for prisoner')
+  })
+
+  it('User can view movement slips with no pick-up time', () => {
+    cy.task('stubGetPrison', null)
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+    cy.visit({ url: '/movement-slips?date=2050-07-28' })
+
+    const movementSlipsPage = Page.verifyOnPage(MovementSlipsPage)
+    movementSlipsPage.header().contains('Moorland (HMP)')
+    movementSlipsPage.prisoner().contains('John Smith, G9566GQ')
+    movementSlipsPage.date().contains('28 July 2050')
+    movementSlipsPage.preCourtHearing().contains('09:45')
+    movementSlipsPage.courtHearing('appeal').contains('10:00')
+    movementSlipsPage.postCourtHearing().contains('11:00')
+    movementSlipsPage.assertNoPickUpTime()
     movementSlipsPage.location().contains('A Wing Video Link')
     movementSlipsPage.notes().contains('notes for prisoner')
   })

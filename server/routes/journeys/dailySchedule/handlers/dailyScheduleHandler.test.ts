@@ -2,10 +2,14 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { startOfDay, startOfToday } from 'date-fns'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  moorlandPrisonNoPickUpTime,
+  moorlandPrisonPickUpTime30,
+  user,
+} from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
-import { Prison } from '../../../../@types/prisonRegisterApi/types'
 import ScheduleService from '../../../../services/scheduleService'
 import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/cheerio'
 import ReferenceDataService from '../../../../services/referenceDataService'
@@ -26,11 +30,12 @@ const scheduleService = new ScheduleService(null, null, null, null, null, null) 
 let app: Express
 const filters = { wing: ['A'] }
 
-const appSetup = (journeySession = {}) => {
+const appSetup = (journeySession = {}, prison = moorlandPrisonNoPickUpTime) => {
   app = appWithAllRoutes({
     services: { auditService, referenceDataService, prisonService, scheduleService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
+    prisonSupplier: () => prison,
   })
 }
 
@@ -38,8 +43,6 @@ beforeEach(() => {
   config.featureToggles.pickUpTimes = false
   config.featureBulkPrintMovementSlips = true
   appSetup({ scheduleFilters: filters })
-
-  prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
 })
 
 afterEach(() => {
@@ -65,7 +68,6 @@ describe('GET', () => {
           details: JSON.stringify({ query: {} }),
         })
 
-        expect(prisonService.getPrison).toHaveBeenLastCalledWith('MDI', user)
         expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getAppointmentCategories).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getAppointmentLocations).toHaveBeenLastCalledWith('MDI', user)
@@ -117,7 +119,7 @@ describe('GET', () => {
         expect(renderSpy).toHaveBeenCalledWith(
           'pages/dailySchedule/dailySchedule',
           {
-            prisonName: 'Moorland (HMP)',
+            prison: moorlandPrisonNoPickUpTime,
             date,
             isFutureDay: true,
             isPastDay: false,
@@ -147,7 +149,7 @@ describe('GET', () => {
         expect(renderSpy).toHaveBeenCalledWith(
           'pages/dailySchedule/dailySchedule',
           {
-            prisonName: 'Moorland (HMP)',
+            prison: moorlandPrisonNoPickUpTime,
             date,
             isFutureDay: false,
             isPastDay: true,
@@ -263,8 +265,7 @@ describe('GET', () => {
 describe('GET - with pick-up time enabled', () => {
   beforeEach(() => {
     config.featureToggles.pickUpTimes = true
-    appSetup({ scheduleFilters: filters })
-    prisonService.getPrison.mockResolvedValue({ prisonName: 'Moorland (HMP)' } as Prison)
+    appSetup({ scheduleFilters: filters }, moorlandPrisonPickUpTime30)
   })
 
   it('should render page with pick-up times toggled on', () => {

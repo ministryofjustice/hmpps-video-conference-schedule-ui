@@ -1,7 +1,7 @@
 import config from '../config'
 import RestClient from './restClient'
 import { formatDate } from '../utils/utils'
-import { BvlsAppointment, Court, ProbationTeam } from '../@types/bookAVideoLinkApi/types'
+import { BvlsAppointment, Court, ProbationTeam, Prison } from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
   constructor() {
@@ -21,5 +21,9 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public getProbationTeams(user: Express.User): Promise<ProbationTeam[]> {
     return this.get({ path: '/probation-teams' }, user)
+  }
+
+  public getPrison(prisonId: string, user: Express.User): Promise<Prison> {
+    return this.get({ path: `/prisons/${prisonId}` }, user)
   }
 }
