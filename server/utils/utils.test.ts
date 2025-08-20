@@ -121,8 +121,8 @@ describe('removeMinutes', () => {
     ['AABB', 50, undefined],
     ['', 60, undefined],
     [undefined, undefined, undefined],
-  ])("returns a time [%s] minutes before [%s] as '%s'", (minutes, time, expected) => {
-    expect(removeMinutes(minutes, time)).toEqual(expected)
+  ])("returns a time [%s] minutes before [%s] as '%s'", (time, minutes, expected) => {
+    expect(removeMinutes(time, minutes)).toEqual(expected)
   })
 })
 
