@@ -8,6 +8,7 @@ import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import { getByClass, getByDataQa } from '../../../testutils/cheerio'
 import config from '../../../../config'
+import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonService')
@@ -105,7 +106,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2055-07-16')
+      .get('/movement-slips?date=2055-07-20')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -113,6 +114,7 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('20 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Joe Bloggs, ABC123')
         expect(getByDataQa($, 'pre-court-hearing').text()).toContain('07:45')
         expect(getByDataQa($, 'court-hearing---appeal').text()).toContain('08:00')
@@ -161,7 +163,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2055-07-16')
+      .get('/movement-slips?date=2055-07-19')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -169,6 +171,7 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('19 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Fred Flintrock, FRE123')
         expect(getByDataQa($, 'probation-meeting---other').text()).toContain('10:00')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('09:30')
@@ -212,7 +215,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2055-07-16')
+      .get('/movement-slips?date=2055-07-18')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -220,6 +223,7 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('18 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Wilma Flintrock, WIL123')
         expect(getByDataQa($, 'another-prison').text()).toContain('14:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:00')
@@ -263,7 +267,7 @@ describe('GET with feature toggle on', () => {
     })
 
     return request(app)
-      .get('/movement-slips?date=2055-07-16')
+      .get('/movement-slips?date=2055-07-17')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -271,6 +275,7 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('17 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Barney Rabble, BAR123')
         expect(getByDataQa($, 'legal-appointment').text()).toContain('16:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('16:00')
@@ -322,6 +327,7 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Betty Rabble, BET123')
         expect(getByDataQa($, 'official-other').text()).toContain('15:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:45')
@@ -373,6 +379,59 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
+        expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123')
+        expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
+        expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
+        expect(getByDataQa($, 'location').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes').text()).toContain('')
+      })
+  })
+
+  it(`should render for movements slip page for today`, () => {
+    scheduleService.getSchedule.mockResolvedValue({
+      appointmentsListed: 1,
+      numberOfPrisoners: 1,
+      cancelledAppointments: 0,
+      missingVideoLinks: 0,
+      appointmentGroups: [
+        [
+          {
+            appointmentTypeCode: 'VLPA',
+            appointmentTypeDescription: 'Custom description (Parole Hearing)',
+            appointmentId: 6,
+            appointmentLocationDescription: 'In Cell',
+            lastUpdatedOrCreated: startOfToday().toISOString(),
+            prisoner: {
+              cellLocation: 'W-001',
+              firstName: 'Don',
+              hasAlerts: false,
+              inPrison: true,
+              lastName: 'Key',
+              prisonerNumber: 'DON123',
+            },
+            startTime: '09:15',
+            endTime: '10:00',
+            status: 'ACTIVE',
+            tags: [],
+            videoLinkRequired: false,
+            appointmentLocationId: '',
+            appointmentSubtypeDescription: '',
+          },
+        ],
+      ],
+    })
+
+    return request(app)
+      .get(`/movement-slips?date=${startOfToday().toISOString()}`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getByClass($, 'movement-slip-header').text()).toContain(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
+        expect(getByDataQa($, 'date').text()).toEqual(formatDate(startOfToday()))
         expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123')
         expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')

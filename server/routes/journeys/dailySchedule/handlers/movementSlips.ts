@@ -20,7 +20,7 @@ export default class MovementSlipsHandler implements PageHandler {
     const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
 
     // Cannot print historic movement slips so redirects back to homepage if date is before today
-    if (date <= startOfToday()) {
+    if (date < startOfToday()) {
       return res.redirect('/')
     }
 
