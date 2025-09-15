@@ -58,7 +58,6 @@ generic-service:
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
     feature-toggles:
       FEATURE_HMCTS_LINK_GUEST_PIN: "FEATURE_HMCTS_LINK_GUEST_PIN"
-      FEATURE_PICK_UP_TIMES: "FEATURE_PICK_UP_TIMES"
 
   allowlist:
     groups:

@@ -1,10 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { formatDate, startOfDay, startOfToday } from 'date-fns'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  moorlandPrisonNoPickUpTime,
+  moorlandPrisonPickUpTime30,
+  user,
+} from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
-import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/scheduleService')
@@ -15,11 +19,12 @@ const scheduleService = new ScheduleService(null, null, null, null, null, null) 
 let app: Express
 const filters = { wing: ['A'] }
 
-const appSetup = (journeySession = {}) => {
+const appSetup = (journeySession = {}, prisonSupplier = moorlandPrisonPickUpTime30) => {
   app = appWithAllRoutes({
     services: { auditService, scheduleService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
+    prisonSupplier: () => prisonSupplier,
   })
 }
 
@@ -110,8 +115,7 @@ afterEach(() => {
 
 describe('GET - with no pick-up times', () => {
   beforeEach(() => {
-    config.featureToggles.pickUpTimes = false
-    appSetup({ scheduleFilters: filters })
+    appSetup({ scheduleFilters: filters }, moorlandPrisonNoPickUpTime)
   })
 
   it('should download csv for today', () => {
@@ -205,7 +209,6 @@ describe('GET - with no pick-up times', () => {
 
 describe('GET - with pickup times', () => {
   beforeEach(() => {
-    config.featureToggles.pickUpTimes = true
     appSetup({ scheduleFilters: filters })
   })
 

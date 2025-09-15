@@ -40,7 +40,6 @@ const appSetup = (journeySession = {}, prison = moorlandPrisonNoPickUpTime) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.pickUpTimes = false
   config.featureBulkPrintMovementSlips = true
   appSetup({ scheduleFilters: filters })
 })
@@ -262,9 +261,8 @@ describe('GET', () => {
   })
 })
 
-describe('GET - with pick-up time enabled', () => {
+describe('GET - with pick-up times present', () => {
   beforeEach(() => {
-    config.featureToggles.pickUpTimes = true
     appSetup({ scheduleFilters: filters }, moorlandPrisonPickUpTime30)
   })
 

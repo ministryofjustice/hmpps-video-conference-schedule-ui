@@ -5,7 +5,6 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
 import { convertToTitleCase, formatDate, removeMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
-import config from '../../../../config'
 
 export default class DownloadCsvHandler implements PageHandler {
   public PAGE_NAME = Page.DOWNLOAD_DAILY_SCHEDULE
@@ -31,10 +30,9 @@ export default class DownloadCsvHandler implements PageHandler {
       user,
     )
 
-    const csv =
-      config.featureToggles.pickUpTimes && prison.pickUpTime
-        ? converter.json2csv(this.convertScheduleToCsvRowsWithPickUpTimes(schedule, prison.pickUpTime))
-        : converter.json2csv(this.convertScheduleToCsvRows(schedule))
+    const csv = prison.pickUpTime
+      ? converter.json2csv(this.convertScheduleToCsvRowsWithPickUpTimes(schedule, prison.pickUpTime))
+      : converter.json2csv(this.convertScheduleToCsvRows(schedule))
 
     res.header('Content-Type', 'text/csv')
     res.attachment(`daily-schedule${status === 'CANCELLED' ? '-cancelled' : ''}-${formatDate(date, 'yyyy-MM-dd')}.csv`)
