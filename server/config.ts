@@ -184,7 +184,4 @@ export default {
   feedbackUrl: get('FEEDBACK_URL', '#'),
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureBulkPrintMovementSlips: get('FEATURE_BULK_PRINT_MOVEMENT_SLIPS', 'false') === 'true',
-  featureToggles: {
-    hmctsLinkAndGuestPin: get('FEATURE_HMCTS_LINK_GUEST_PIN', 'false') === 'true',
-  },
 }
