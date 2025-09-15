@@ -78,6 +78,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('dpsUrl', config.dpsUrl)
   njkEnv.addGlobal('activitiesAndAppointmentsUrl', config.activitiesAndAppointmentsUrl)
   njkEnv.addGlobal('hmctsLinkAndGuestPinEnabled', config.featureToggles.hmctsLinkAndGuestPin)
-  njkEnv.addGlobal('pickUpTimesEnabled', config.featureToggles.pickUpTimes)
   njkEnv.addGlobal('bulkPrintMovementSlipsEnabled', config.featureBulkPrintMovementSlips)
 }
