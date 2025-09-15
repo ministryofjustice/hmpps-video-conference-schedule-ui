@@ -152,7 +152,7 @@
                             classes: classes
                         },
                         {
-                            html: (toCourtLink(scheduleItem, hmctsLinkAndGuestPinEnabled) if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
+                            html: (toCourtLink(scheduleItem) if scheduleItem.videoLinkRequired) or (('--' if appointmentGroup.length == 1) + '<span class="govuk-visually-hidden">Not required</span>'),
                             classes: classes,
                             attributes: {
                               'width': '10%',

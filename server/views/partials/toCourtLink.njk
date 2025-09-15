@@ -1,28 +1,28 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 
-{# Macro to format the CVP link based on known information and the feature switch value #}
+{# Macro to format the CVP link based on known information #}
 
-{% macro toCourtLink(item, feature) %}
-    {% if feature and item.hmctsNumber %}
+{% macro toCourtLink(item) %}
+    {% if item.hmctsNumber %}
       {# If the HMCTS number is present construct a full, clickable link to join the meeting #}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word"
          href="{{ (item.hmctsNumber | toFullCourtLink) }}"
          rel="noreferrer noopener" target="_blank">
         HMCTS{{ item.hmctsNumber }}
       </a>
-    {% elseif feature and item.videoLink and (item.videoLink | isValidUrl) %}
+    {% elseif item.videoLink and (item.videoLink | isValidUrl) %}
       {# If valid URL is present construct a clickable link to this URL with the link text "Court link" #}
       <a class="govuk-link govuk-link--no-visited-state govuk-!-text-break-word"
          href="{{ item.videoLink }}"
          rel="noreferrer noopener" target="_blank">
         Court link
       </a>
-    {% elseif feature and item.videoLink and not (item.videoLink | isValidUrl) and item.videoLink.length <= 35 %}
+    {% elseif item.videoLink and not (item.videoLink | isValidUrl) and item.videoLink.length <= 35 %}
         {# If videoLink is present but is not a valid URL but is under 35 chars show the value in plain text #}
         <div class="govuk-body-s">
             {{ item.videoLink }}
         </div>
-    {% elseif feature and item.videoLink and not (item.videoLink | isValidUrl) and item.videoLink.length > 35 %}
+    {% elseif item.videoLink and not (item.videoLink | isValidUrl) and item.videoLink.length > 35 %}
         {# If the link is present but not a valid URL and is over 35 chars show a details component #}
         {{ govukDetails({
            summaryText: "Check booking",
@@ -31,7 +31,7 @@
            classes: "govuk-body-s"
         }) }}
     {% elseif item.videoLink %}
-      {# Default if present and feature is off #}
+      {# Default if present #}
       {{ item.videoLink }}
     {% else %}
       None entered
