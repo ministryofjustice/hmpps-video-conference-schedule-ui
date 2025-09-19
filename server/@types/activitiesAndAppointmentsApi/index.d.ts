@@ -322,6 +322,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/appointment-categories/{categoryId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the appointment category by id
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    get: operations['getAppointmentCategoryById']
+    /**
+     * Update an appointment category
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    put: operations['updateAppointmentCategory']
+    post?: never
+    /**
+     * Delete an appointment category
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    delete: operations['deleteAppointmentCategory']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/advance-attendances/{advanceAttendanceId}': {
     parameters: {
       query?: never
@@ -424,26 +464,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/utility/create-pay-history': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Create pay rate history for all the existing activities
-     * @description Can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
-     */
-    post: operations['createActivityPayHistory']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/schedules/{scheduleId}/allocations': {
     parameters: {
       query?: never
@@ -508,21 +528,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /**
-     * Get a list of scheduled events for a prison, prisoner, date range (max 3 months) and optional time slot.
-     * @description
-     *           Returns scheduled events for the prison, prisoner, date range (max 3 months) and optional time slot.
-     *           Court hearings, adjudication hearings, transfers and visits come from NOMIS (via prison API).
-     *           Activities and appointments come from either NOMIS or the local database depending on whether the prison is
-     *           marked as active for appointments and/or activities.
-     *           (Intended usage: Prisoner calendar / schedule)
-     *
-     *
-     *     Requires one of the following roles:
-     *     * PRISON
-     *     * ACTIVITY_ADMIN
-     */
-    get: operations['getScheduledEventsForSinglePrisoner']
+    get?: never
     put?: never
     /**
      * Get a list of scheduled events for a prison and list of prisoner numbers for a date and time slot
@@ -1016,7 +1022,7 @@ export interface paths {
      *     Requires one of the following roles:
      *     * ACTIVITIES__HMPPS_INTEGRATION_API
      */
-    get: operations['getScheduledEventsForSinglePrisoner_1']
+    get: operations['getScheduledEventsForSinglePrisoner']
     put?: never
     /**
      * Get a list of scheduled events for a prison and list of prisoner numbers for a date and time slot
@@ -1207,6 +1213,38 @@ export interface paths {
      *     * ACTIVITY_ADMIN
      */
     post: operations['createAppointmentSeries']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/appointment-categories': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the list of appointment categories
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    get: operations['getAppointmentCategories']
+    put?: never
+    /**
+     * Create an appointment category
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * PRISON
+     *     * ACTIVITY_ADMIN
+     */
+    post: operations['createAppointmentCategory']
     delete?: never
     options?: never
     head?: never
@@ -2646,32 +2684,9 @@ export interface paths {
      *     * PRISON
      *     * ACTIVITY_ADMIN
      *     * NOMIS_ACTIVITIES
+     *     * ACTIVITIES_MANAGEMENT__RO
      */
     get: operations['getAppointmentInstanceById']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/appointment-categories': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get the list of appointment categories
-     * @description
-     *
-     *     Requires one of the following roles:
-     *     * PRISON
-     *     * ACTIVITY_ADMIN
-     */
-    get: operations['getAppointmentCategories']
     put?: never
     post?: never
     delete?: never
@@ -2886,7 +2901,9 @@ export interface paths {
     trace?: never
   }
 }
+
 export type webhooks = Record<string, never>
+
 export interface components {
   schemas: {
     /** @description Describes a case note to be added to a prisoner's profile */
@@ -3571,6 +3588,80 @@ export interface components {
       /** @description The list of prisoner numbers to update */
       prisonerNumbers: string[]
     }
+    /** @description The create request with the new appointment category */
+    AppointmentCategoryRequest: {
+      /**
+       * @description The appointment category code
+       * @example OIC
+       */
+      code: string
+      /**
+       * @description The description of the appointment category
+       * @example Adjudication Hearing
+       */
+      description: string
+      /**
+       * Format: int64
+       * @description Identifier for the appointment parent category
+       * @example 1
+       */
+      appointmentParentCategoryId: number
+      /**
+       * @description Status of the appointment category
+       * @example ACTIVE
+       * @enum {string}
+       */
+      status: 'ACTIVE' | 'INACTIVE'
+    }
+    /** @description Describes a top-level appointment category */
+    AppointmentCategory: {
+      /**
+       * Format: int64
+       * @description The internally-generated identifier for this appointment category
+       * @example 1
+       */
+      id: number
+      /**
+       * @description The appointment category code
+       * @example OIC
+       */
+      code: string
+      /**
+       * @description The description of the appointment category
+       * @example Adjudication Hearing
+       */
+      description: string
+      /**
+       * @description The identifier for the appointment parent category
+       * @example 1
+       */
+      appointmentParentCategory: components['schemas']['AppointmentParentCategory']
+      /**
+       * @description Status of the appointment category
+       * @example ACTIVE
+       * @enum {string}
+       */
+      status: 'ACTIVE' | 'INACTIVE'
+    }
+    /** @description Describes a top-level appointment parent category */
+    AppointmentParentCategory: {
+      /**
+       * Format: int64
+       * @description The internally-generated identifier for this appointment parent category
+       * @example 1
+       */
+      id: number
+      /**
+       * @description The appointment parent category name
+       * @example LEISURE_SOCIAL
+       */
+      name: string
+      /**
+       * @description The description of the appointment parent category
+       * @example Such as association, library time and social clubs, like music or art
+       */
+      description?: string
+    }
     /** @description Request object for creating an advance attendance record */
     AdvanceAttendanceUpdateRequest: {
       /**
@@ -3709,9 +3800,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      paged?: boolean
       unpaged?: boolean
     }
     PagedWaitingListApplication: {
@@ -3719,14 +3810,14 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['WaitingListApplication'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -3875,13 +3966,6 @@ export interface components {
        *     ]
        */
       identifiers: number[]
-    }
-    PayHistoryMigrateResponse: {
-      /** Format: int64 */
-      payRateDataSize: number
-      /** Format: int64 */
-      payHistoryDataSize: number
-      message: string
     }
     /** @description The prisoner allocation request details */
     PrisonerAllocationRequest: {
@@ -5552,6 +5636,7 @@ export interface components {
       customName?: string
       /**
        * Format: int64
+       * @deprecated
        * @description
        *         The NOMIS AGENCY_INTERNAL_LOCATIONS.INTERNAL_LOCATION_ID value for mapping to NOMIS.
        *         Will be null if in cell = true
@@ -5914,6 +5999,11 @@ export interface components {
        * @example false
        */
       isExpired: boolean
+      /**
+       * @description Indicates whether this appointment has been deleted
+       * @example false
+       */
+      isDeleted: boolean
       /**
        * Format: date-time
        * @description The date and time this appointment was created. Will not change
@@ -7890,9 +7980,31 @@ export interface components {
        */
       issuePayment?: boolean
     }
+    Attachment: {
+      /**
+       * Format: int32
+       * @description The number of the attachment which will match any corresponding reference in the content section
+       */
+      attachmentNumber: number
+      /** @description The name or description of the attachment which will be included in the report */
+      name: string
+      /** @description The content type of the attachment */
+      contentType: string
+      /** @description The url to be used to download the attachment file */
+      url: string
+      /**
+       * Format: int32
+       * @description The size of the attachment file in bytes
+       */
+      filesize: number
+      /** @description The filename of attachment file */
+      filename: string
+    }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: unknown
+      /** @description The details of any attachments for the subject access request response */
+      attachments?: components['schemas']['Attachment'][]
     }
     /** @description Describes a pay rate applied to an activity */
     ActivityPayLite: {
@@ -8275,14 +8387,14 @@ export interface components {
       totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      first?: boolean
+      last?: boolean
       /** Format: int32 */
       size?: number
       content?: components['schemas']['ActivityCandidate'][]
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
       /** Format: int32 */
       numberOfElements?: number
       pageable?: components['schemas']['PageableObject']
@@ -8432,6 +8544,11 @@ export interface components {
       offWing: boolean
       /** @description The NOMIS internal location for this schedule */
       internalLocation?: components['schemas']['InternalLocation']
+      /**
+       * Format: uuid
+       * @description The optional DPS location UUID for this schedule
+       */
+      dpsLocationId?: string
       /**
        * @description Flag to indicate if the scheduled instance has been cancelled
        * @example false
@@ -9435,7 +9552,9 @@ export interface components {
   headers: never
   pathItems: never
 }
+
 export type $defs = Record<string, never>
+
 export interface operations {
   deallocate: {
     parameters: {
@@ -10099,6 +10218,157 @@ export interface operations {
       }
     }
   }
+  getAppointmentCategoryById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        categoryId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Appointment category found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentCategory']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Appointment category not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateAppointmentCategory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        categoryId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppointmentCategoryRequest']
+      }
+    }
+    responses: {
+      /** @description Appointment category updated */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentCategory']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Appointment category not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteAppointmentCategory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        categoryId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Appointment category deleted */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentCategory']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Appointment category not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAttendanceById: {
     parameters: {
       query?: never
@@ -10335,7 +10605,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UpdateCaseNoteUUIDResponse']
-          'text/plain': components['schemas']['UpdateCaseNoteUUIDResponse']
         }
       }
     }
@@ -10360,27 +10629,6 @@ export interface operations {
         }
         content: {
           'text/plain': string
-        }
-      }
-    }
-  }
-  createActivityPayHistory: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PayHistoryMigrateResponse']
-          'text/plain': components['schemas']['PayHistoryMigrateResponse']
         }
       }
     }
@@ -10540,74 +10788,6 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getScheduledEventsForSinglePrisoner: {
-    parameters: {
-      query: {
-        /** @description Prisoner number (required). Format A9999AA. */
-        prisonerNumber: string
-        /** @description Start date of query (required). Format YYYY-MM-DD. */
-        startDate: string
-        /** @description End date of query (required). Format YYYY-MM-DD. The end date must be within 3 months of the start date) */
-        endDate: string
-        /** @description Time slot for the events (optional). If supplied, one of AM, PM or ED. */
-        timeSlot?: 'AM' | 'PM' | 'ED'
-      }
-      header?: never
-      path: {
-        /** @description The 3-digit prison code. */
-        prisonCode: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful call - zero or more scheduled events found */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerScheduledEvents']
-        }
-      }
-      /** @description Invalid request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found */
-      404: {
         headers: {
           [name: string]: unknown
         }
@@ -11427,7 +11607,7 @@ export interface operations {
       }
     }
   }
-  getScheduledEventsForSinglePrisoner_1: {
+  getScheduledEventsForSinglePrisoner: {
     parameters: {
       query: {
         /** @description Prisoner number (required). Format A9999AA. */
@@ -11878,6 +12058,86 @@ export interface operations {
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAppointmentCategories: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Appointment categories found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentCategorySummary'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createAppointmentCategory: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppointmentCategoryRequest']
+      }
+    }
+    responses: {
+      /** @description Appointment category created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppointmentCategory']
+        }
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }
@@ -14953,35 +15213,6 @@ export interface operations {
       }
       /** @description The appointment instance for this ID was not found. */
       404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getAppointmentCategories: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Appointment categories found */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AppointmentCategorySummary'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
         headers: {
           [name: string]: unknown
         }
