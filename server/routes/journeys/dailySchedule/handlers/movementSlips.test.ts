@@ -115,7 +115,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('20 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Joe Bloggs, ABC123, [A-1-001]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Joe Bloggs, ABC123. Location: A-1-001')
         expect(getByDataQa($, 'pre-court-hearing').text()).toContain('07:45')
         expect(getByDataQa($, 'court-hearing---appeal').text()).toContain('08:00')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('07:15')
@@ -172,7 +172,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('19 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Fred Flintrock, FRE123, [P-1-001]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Fred Flintrock, FRE123. Location: P-1-001')
         expect(getByDataQa($, 'probation-meeting---other').text()).toContain('10:00')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('09:30')
         expect(getByDataQa($, 'location').text()).toContain('PROBATION ROOM')
@@ -224,7 +224,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('18 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Wilma Flintrock, WIL123, [W-001]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Wilma Flintrock, WIL123. Location: W-001')
         expect(getByDataQa($, 'another-prison').text()).toContain('14:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:00')
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
@@ -276,7 +276,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('17 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Barney Rabble, BAR123, [W-002]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Barney Rabble, BAR123. Location: W-002')
         expect(getByDataQa($, 'legal-appointment').text()).toContain('16:30')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('16:00')
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
@@ -328,7 +328,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Betty Rabble, BET123, [X-001]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Betty Rabble, BET123. Location: X-001')
         expect(getByDataQa($, 'official-other').text()).toContain('15:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('14:45')
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
@@ -380,7 +380,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123, [D-055]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123. Location: D-055')
         expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
@@ -432,7 +432,7 @@ describe('GET with feature toggle on', () => {
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
         expect(getByDataQa($, 'date').text()).toEqual(formatDate(startOfToday()))
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123, [D-055]')
+        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123. Location: D-055')
         expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
         expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
         expect(getByDataQa($, 'location').text()).toContain('In Cell')
