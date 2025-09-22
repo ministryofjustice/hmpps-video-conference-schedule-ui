@@ -8,7 +8,7 @@
 
     <div class="movement-slip">
         <h1 data-qa='movement-slip-header' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-m'>Video appointment movement authorisation slip</span></h1>
-        <h1 data-qa='prisoner-name-and-number' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}</h1>
+        <h1 data-qa='prisoner-name-and-number' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}, [{{ movementSlip.prisonerCellLocation }}]</h1>
         <dl class='movement-slip__summary'>
             {{ labelAndValue('Date', movementSlip.date | formatDate("d MMMM yyyy")) }}
         </dl>
