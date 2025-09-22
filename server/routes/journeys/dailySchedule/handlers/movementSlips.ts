@@ -38,49 +38,52 @@ export default class MovementSlipsHandler implements PageHandler {
   }
 
   private convertToMovementSlips = (schedule: DailySchedule, prison: Prison, date: Date) => {
-    return schedule.appointmentGroups.map(group => ({
-      prisonName: prison.name,
-      prisonerName: convertToTitleCase(`${group[0].prisoner.firstName} ${group[0].prisoner.lastName}`),
-      prisonerNumber: group[0].prisoner.prisonerNumber,
-      date,
-      anotherPrison: this.isAppointmentType(AppointmentType.ANOTHER_PRISON, group)
-        ? {
-            startTime: this.getStartTime(group, AppointmentType.ANOTHER_PRISON),
-          }
-        : undefined,
-      court: this.isAppointmentType(AppointmentType.COURT, group)
-        ? {
-            preStartTime: this.getStartTime(group, AppointmentType.COURT, 'Pre-hearing'),
-            startTime: this.getStartTime(group, AppointmentType.COURT, 'Court Hearing'),
-            postStartTime: this.getStartTime(group, AppointmentType.COURT, 'Post-hearing'),
-            hearingType: this.getHearingType(group),
-          }
-        : undefined,
-      legal: this.isAppointmentType(AppointmentType.LEGAL, group)
-        ? {
-            startTime: this.getStartTime(group, AppointmentType.LEGAL),
-          }
-        : undefined,
-      parole: this.isAppointmentType(AppointmentType.PAROLE, group)
-        ? {
-            startTime: this.getStartTime(group, AppointmentType.PAROLE),
-          }
-        : undefined,
-      probation: this.isAppointmentType(AppointmentType.PROBATION, group)
-        ? {
-            startTime: this.getStartTime(group, AppointmentType.PROBATION),
-            meetingType: this.getMeetingType(group),
-          }
-        : undefined,
-      officialOther: this.isAppointmentType(AppointmentType.OFFICIAL_OTHER, group)
-        ? {
-            startTime: this.getStartTime(group, AppointmentType.OFFICIAL_OTHER),
-          }
-        : undefined,
-      pickUpTime: prison.pickUpTime ? removeMinutes(group[0].startTime, prison.pickUpTime) : undefined,
-      location: this.getLocation(group),
-      notes: group[0].notesForPrisoner,
-    }))
+    return schedule.appointmentGroups
+      .map(group => ({
+        prisonName: prison.name,
+        prisonerName: convertToTitleCase(`${group[0].prisoner.firstName} ${group[0].prisoner.lastName}`),
+        prisonerNumber: group[0].prisoner.prisonerNumber,
+        prisonerCellLocation: group[0].prisoner.cellLocation,
+        date,
+        anotherPrison: this.isAppointmentType(AppointmentType.ANOTHER_PRISON, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.ANOTHER_PRISON),
+            }
+          : undefined,
+        court: this.isAppointmentType(AppointmentType.COURT, group)
+          ? {
+              preStartTime: this.getStartTime(group, AppointmentType.COURT, 'Pre-hearing'),
+              startTime: this.getStartTime(group, AppointmentType.COURT, 'Court Hearing'),
+              postStartTime: this.getStartTime(group, AppointmentType.COURT, 'Post-hearing'),
+              hearingType: this.getHearingType(group),
+            }
+          : undefined,
+        legal: this.isAppointmentType(AppointmentType.LEGAL, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.LEGAL),
+            }
+          : undefined,
+        parole: this.isAppointmentType(AppointmentType.PAROLE, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.PAROLE),
+            }
+          : undefined,
+        probation: this.isAppointmentType(AppointmentType.PROBATION, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.PROBATION),
+              meetingType: this.getMeetingType(group),
+            }
+          : undefined,
+        officialOther: this.isAppointmentType(AppointmentType.OFFICIAL_OTHER, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.OFFICIAL_OTHER),
+            }
+          : undefined,
+        pickUpTime: prison.pickUpTime ? removeMinutes(group[0].startTime, prison.pickUpTime) : undefined,
+        location: this.getLocation(group),
+        notes: group[0].notesForPrisoner,
+      }))
+      .sort((a, b) => a.prisonerCellLocation.localeCompare(b.prisonerCellLocation))
   }
 
   private isAppointmentType = (appointmentType: AppointmentType, group: ScheduleItem[]) => {
