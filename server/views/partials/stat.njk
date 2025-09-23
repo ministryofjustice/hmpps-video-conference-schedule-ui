@@ -2,7 +2,11 @@
     <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-3 govuk-!-padding-left-0">
         <div class="govuk-body govuk-!-margin-bottom-0">{{ params.heading }}</div>
         <span class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-0 ">
-            <span>{{ params.number }}</span>
+            {% if params.dataQa %}
+                <span data-qa="{{ params.dataQa }}">{{ params.number }}</span>
+            {% else %}
+                <span>{{ params.number }}</span>
+            {% endif %}
             {% if params.visuallyHiddenText %}<span class="govuk-visually-hidden">{{ params.visuallyHiddenText }}</span>{% endif %}
         </span>
 

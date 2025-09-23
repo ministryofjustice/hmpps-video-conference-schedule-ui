@@ -1,68 +1,68 @@
-{% macro movementSlip(movementSlip, printedAt) %}
-    {% macro labelAndValue(label, value, rowClasses, keyClasses, valueClasses) %}
+{% macro movementSlip(slipNum, movementSlip, printedAt) %}
+    {% macro labelAndValue(slipNum, label, value, rowClasses, keyClasses, valueClasses) %}
         <div class="movement-slip__summary__row {{ rowClasses }}">
             <dt class="movement-slip__summary__row__key {{ keyClasses }}">{{ label }}</dt>
-            <dd class="movement-slip__summary__row__value {{ valueClasses }}" data-qa="{{ label.toLowerCase().replace(" ","-").replace(" ","-").replace(" ","-") }}">{{ value | safe }}</dd>
+            <dd class="movement-slip__summary__row__value {{ valueClasses }}" data-qa="{{ label.toLowerCase().replace(" ","-").replace(" ","-").replace(" ","-") }}-{{ slipNum }}">{{ value | safe }}</dd>
         </div>
     {% endmacro %}
 
     <div class="movement-slip">
-        <h1 data-qa='movement-slip-header' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-m'>Video appointment movement authorisation slip</span></h1>
-        <h1 data-qa='prisoner-name-and-number' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}. Location: {{ movementSlip.prisonerCellLocation }}</h1>
+        <h1 data-qa='movement-slip-header-{{ slipNum }}' class='movement-slip-header'>{{ movementSlip.prisonName }} <span class='govuk-body-m'>Video appointment movement authorisation slip</span></h1>
+        <h1 data-qa='prisoner-name-and-number-{{ slipNum }}' class='govuk-heading-s'>{{ movementSlip.prisonerName }}, {{ movementSlip.prisonerNumber }}. Location: {{ movementSlip.prisonerCellLocation }}</h1>
         <dl class='movement-slip__summary'>
-            {{ labelAndValue('Date', movementSlip.date | formatDate("d MMMM yyyy")) }}
+            {{ labelAndValue(slipNum, 'Date', movementSlip.date | formatDate("d MMMM yyyy")) }}
         </dl>
         <h1 class="govuk-heading-s">Appointments and times</h1>
         <dl class='movement-slip__summary'>
             {% if movementSlip.anotherPrison.startTime %}
-                {{ labelAndValue('Another prison', movementSlip.anotherPrison.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Another prison', movementSlip.anotherPrison.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.court %}
                 {% if movementSlip.court.preStartTime %}
-                   {{ labelAndValue('Pre-court hearing', movementSlip.court.preStartTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
+                   {{ labelAndValue(slipNum, 'Pre-court hearing', movementSlip.court.preStartTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.startTime and not movementSlip.court.postStartTime %}
-                  {{ labelAndValue('Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, '', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.startTime and movementSlip.court.postStartTime%}
-                  {{ labelAndValue('Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.postStartTime %}
-                  {{ labelAndValue('Post-court hearing', movementSlip.court.postStartTime, '', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Post-court hearing', movementSlip.court.postStartTime, '', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
             {% endif %}
 
             {% if movementSlip.legal %}
-                {{ labelAndValue('Legal appointment', movementSlip.legal.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Legal appointment', movementSlip.legal.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.officialOther %}
-                {{ labelAndValue('Official other', movementSlip.officialOther.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Official other', movementSlip.officialOther.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.parole %}
-                {{ labelAndValue('Parole hearing', movementSlip.parole.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Parole hearing', movementSlip.parole.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.probation %}
-                {{ labelAndValue('Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.pickUpTime %}
-              {{ labelAndValue('Pick-up time', movementSlip.pickUpTime) }}
+              {{ labelAndValue(slipNum, 'Pick-up time', movementSlip.pickUpTime) }}
             {% endif %}
-            {{ labelAndValue('Location', movementSlip.location) }}
+            {{ labelAndValue(slipNum, 'Location', movementSlip.location) }}
         </dl>
         <div class='movement-slip-information'>
             <img alt='Information' src='/assets/images/icon-information.svg' />
             Be ready on time. No vaping allowed. Refusal to attend will be recorded.
         </div>
         <h1 class="govuk-heading-s">Notes</h1>
-        <div data-qa='notes' class="govuk-body-m">{{ movementSlip.notes }}</div>
+        <div data-qa='notes-{{ slipNum }}' class="govuk-body-m">{{ movementSlip.notes }}</div>
         <p class="govuk-body-s movement-slip-footer">Date printed {{ printedAt | formatDate("d MMMM yyyy") }}</p>
     </div>
 

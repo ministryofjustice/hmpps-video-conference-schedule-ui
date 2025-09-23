@@ -114,13 +114,13 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('20 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Joe Bloggs, ABC123. Location: A-1-001')
-        expect(getByDataQa($, 'pre-court-hearing').text()).toContain('07:45')
-        expect(getByDataQa($, 'court-hearing---appeal').text()).toContain('08:00')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('07:15')
-        expect(getByDataQa($, 'location').text()).toContain('COURT ROOM')
-        expect(getByDataQa($, 'notes').text()).toContain('court prisoner notes')
+        expect(getByDataQa($, 'date-1').text()).toEqual('20 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Joe Bloggs, ABC123. Location: A-1-001')
+        expect(getByDataQa($, 'pre-court-hearing-1').text()).toContain('07:45')
+        expect(getByDataQa($, 'court-hearing---appeal-1').text()).toContain('08:00')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('07:15')
+        expect(getByDataQa($, 'location-1').text()).toContain('COURT ROOM')
+        expect(getByDataQa($, 'notes-1').text()).toContain('court prisoner notes')
       })
   })
 
@@ -171,12 +171,14 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('19 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Fred Flintrock, FRE123. Location: P-1-001')
-        expect(getByDataQa($, 'probation-meeting---other').text()).toContain('10:00')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('09:30')
-        expect(getByDataQa($, 'location').text()).toContain('PROBATION ROOM')
-        expect(getByDataQa($, 'notes').text()).toContain('probation prisoner notes')
+        expect(getByDataQa($, 'date-1').text()).toEqual('19 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain(
+          'Fred Flintrock, FRE123. Location: P-1-001',
+        )
+        expect(getByDataQa($, 'probation-meeting---other-1').text()).toContain('10:00')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('09:30')
+        expect(getByDataQa($, 'location-1').text()).toContain('PROBATION ROOM')
+        expect(getByDataQa($, 'notes-1').text()).toContain('probation prisoner notes')
       })
   })
 
@@ -223,12 +225,14 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('18 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Wilma Flintrock, WIL123. Location: W-001')
-        expect(getByDataQa($, 'another-prison').text()).toContain('14:30')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('14:00')
-        expect(getByDataQa($, 'location').text()).toContain('In Cell')
-        expect(getByDataQa($, 'notes').text()).toContain('')
+        expect(getByDataQa($, 'date-1').text()).toEqual('18 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain(
+          'Wilma Flintrock, WIL123. Location: W-001',
+        )
+        expect(getByDataQa($, 'another-prison-1').text()).toContain('14:30')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('14:00')
+        expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes-1').text()).toContain('')
       })
   })
 
@@ -275,12 +279,12 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('17 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Barney Rabble, BAR123. Location: W-002')
-        expect(getByDataQa($, 'legal-appointment').text()).toContain('16:30')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('16:00')
-        expect(getByDataQa($, 'location').text()).toContain('In Cell')
-        expect(getByDataQa($, 'notes').text()).toContain('')
+        expect(getByDataQa($, 'date-1').text()).toEqual('17 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Barney Rabble, BAR123. Location: W-002')
+        expect(getByDataQa($, 'legal-appointment-1').text()).toContain('16:30')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('16:00')
+        expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes-1').text()).toContain('')
       })
   })
 
@@ -327,12 +331,12 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Betty Rabble, BET123. Location: X-001')
-        expect(getByDataQa($, 'official-other').text()).toContain('15:15')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('14:45')
-        expect(getByDataQa($, 'location').text()).toContain('In Cell')
-        expect(getByDataQa($, 'notes').text()).toContain('')
+        expect(getByDataQa($, 'date-1').text()).toEqual('16 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Betty Rabble, BET123. Location: X-001')
+        expect(getByDataQa($, 'official-other-1').text()).toContain('15:15')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('14:45')
+        expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes-1').text()).toContain('')
       })
   })
 
@@ -379,12 +383,12 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual('16 July 2055')
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123. Location: D-055')
-        expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
-        expect(getByDataQa($, 'location').text()).toContain('In Cell')
-        expect(getByDataQa($, 'notes').text()).toContain('')
+        expect(getByDataQa($, 'date-1').text()).toEqual('16 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Don Key, DON123. Location: D-055')
+        expect(getByDataQa($, 'parole-hearing-1').text()).toContain('09:15')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('08:45')
+        expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes-1').text()).toContain('')
       })
   })
 
@@ -431,12 +435,12 @@ describe('GET with feature toggle on', () => {
         expect(getByClass($, 'movement-slip-header').text()).toContain(
           'Moorland (HMP) Video appointment movement authorisation slip',
         )
-        expect(getByDataQa($, 'date').text()).toEqual(formatDate(startOfToday()))
-        expect(getByDataQa($, 'prisoner-name-and-number').text()).toContain('Don Key, DON123. Location: D-055')
-        expect(getByDataQa($, 'parole-hearing').text()).toContain('09:15')
-        expect(getByDataQa($, 'pick-up-time').text()).toContain('08:45')
-        expect(getByDataQa($, 'location').text()).toContain('In Cell')
-        expect(getByDataQa($, 'notes').text()).toContain('')
+        expect(getByDataQa($, 'date-1').text()).toEqual(formatDate(startOfToday()))
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Don Key, DON123. Location: D-055')
+        expect(getByDataQa($, 'parole-hearing-1').text()).toContain('09:15')
+        expect(getByDataQa($, 'pick-up-time-1').text()).toContain('08:45')
+        expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
+        expect(getByDataQa($, 'notes-1').text()).toContain('')
       })
   })
 

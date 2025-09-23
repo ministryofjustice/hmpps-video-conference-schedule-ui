@@ -30,6 +30,7 @@
             {{ stat({
                 heading: "Cancelled appointments",
                 number: schedule.cancelledAppointments,
+                dataQa: 'stat-cancelled-appointments',
                 visuallyHiddenText: "cancelled appointments"
             }) }}
         </div>
@@ -39,6 +40,7 @@
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
             {% for appointmentGroup in schedule.appointmentGroups %}
+                {% set rowIndex = loop.index %}
                 {% for scheduleItem in appointmentGroup %}
                     {% set classes = '' if loop.last else 'govuk-table__cell--no-border' %}
                     {% set classes = (classes + ' govuk-table__cell--alternate-shade') | trim if appointmentGroup.length > 1 %}
@@ -47,7 +49,8 @@
                         {
                             html: showProfileLink(dpsUrl, scheduleItem.prisoner) if loop.index == 1,
                             attributes: {
-                                "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName
+                                "data-sort-value": scheduleItem.prisoner.lastName + scheduleItem.prisoner.firstName,
+                                "data-qa": "row-index-" + rowIndex
                             },
                             classes: classes
                         },

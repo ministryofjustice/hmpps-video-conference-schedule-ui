@@ -74,18 +74,21 @@
             {{ stat({
                 heading: "Appointments listed",
                 number: schedule.appointmentsListed,
+                dataQa: 'stat-appointments-listed',
                 visuallyHiddenText: "appointments listed"
             }) }}
 
             {{ stat({
                 heading: "Total number of prisoners",
                 number: schedule.numberOfPrisoners,
+                dataQa: 'stat-number-of-prisoners',
                 visuallyHiddenText: "prisoners"
             }) }}
 
             {{ stat({
                 heading: "Cancelled appointments",
                 number: schedule.cancelledAppointments,
+                dataQa: 'stat-cancelled-appointments',
                 visuallyHiddenText: "cancelled appointments",
                 link: {
                     href: '/?date=' + date | formatDate('yyyy-MM-dd') + '&status=CANCELLED',
@@ -97,6 +100,7 @@
             {{ stat({
                 heading: "Missing video links",
                 number: schedule.missingVideoLinks,
+                dataQa: 'stat-missing-video-links',
                 visuallyHiddenText: "missing video links"
             }) }}
         </div>
