@@ -26,7 +26,7 @@
         </div>
     </div>
     {% for ms in movementSlips %}
-      {{ movementSlip(ms, now()) }}
+      {{ movementSlip(loop.index, ms, now()) }}
     {% endfor %}
 {% endblock %}
 

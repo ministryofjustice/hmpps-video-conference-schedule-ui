@@ -26,4 +26,14 @@ export default class DailySchedulePage extends Page {
   showAllPickUpTimes = (): PageElement => this.getButton('Show all pick-up times')
 
   assertNoPickUpTimes = () => this.getButton('Show all pick-up times').should('not.exist')
+
+  appointmentStats = (): PageElement => this.pageStat('appointments-listed')
+
+  prisonerStats = (): PageElement => this.pageStat('number-of-prisoners')
+
+  cancelledAppointmentStats = (): PageElement => this.pageStat('cancelled-appointments')
+
+  missingVideoLinkStats = (): PageElement => this.pageStat('missing-video-links')
+
+  showCancellations = (): PageElement => this.getLink('View')
 }

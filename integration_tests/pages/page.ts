@@ -119,4 +119,6 @@ export default abstract class Page {
       })
     }
   }
+
+  protected pageStat = (dataQa: string): PageElement => cy.get(`[data-qa="stat-${dataQa}"]`)
 }

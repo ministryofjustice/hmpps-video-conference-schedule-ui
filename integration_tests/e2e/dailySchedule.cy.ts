@@ -1,6 +1,7 @@
 import DailySchedulePage from '../pages/dailySchedule'
 import AuthSignInPage from '../pages/signIn/authSignIn'
 import Page from '../pages/page'
+import CancelledVideoAppointmentsPage from '../pages/cancelledVideoAppointments'
 
 context('Daily schedule', () => {
   beforeEach(() => {
@@ -55,6 +56,10 @@ context('Daily schedule', () => {
     cy.signIn()
 
     const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    dailySchedulePage.appointmentStats().contains(5)
+    dailySchedulePage.prisonerStats().contains(3)
+    dailySchedulePage.cancelledAppointmentStats().contains(2)
+    dailySchedulePage.missingVideoLinkStats().contains(1)
     dailySchedulePage.showFiltersButton().click()
     dailySchedulePage.setCheckboxByLabel('Video Link - Court Hearing', true)
     dailySchedulePage.setCheckboxByLabel('Morning (AM)', true)
@@ -65,7 +70,18 @@ context('Daily schedule', () => {
     dailySchedulePage.setCheckboxByLabel('Video Link - Probation', true)
     dailySchedulePage.applyFiltersButton().click()
     cy.get('p.govuk-body').should('be.visible').and('contain.text', 'Filter returned 0 results.')
-    dailySchedulePage.printAllMovementSlips()
+    dailySchedulePage.printAllMovementSlips().click()
+  })
+
+  it('User can view daily schedule cancelled appointments', () => {
+    cy.task('stubVerifyToken', true)
+    cy.signIn()
+
+    const dailySchedulePage = Page.verifyOnPage(DailySchedulePage)
+    dailySchedulePage.showCancellations().click()
+
+    const cancellationsPage = Page.verifyOnPage(CancelledVideoAppointmentsPage)
+    cancellationsPage.cancelledAppointmentStats().contains(2)
   })
 
   it('User can view daily schedule with pick-up times', () => {

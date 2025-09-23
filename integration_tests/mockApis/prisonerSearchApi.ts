@@ -12,5 +12,21 @@ export default {
         cellLocation: 'MDI-1-1-001',
         alerts: [{ alertCode: 'XCU' }],
       },
+      {
+        prisonerNumber: 'W4356WE',
+        firstName: 'Damire',
+        lastName: 'Stoneheart',
+        prisonId: 'MDI',
+        cellLocation: 'MDI-3-4-001',
+        alerts: [],
+      },
+      {
+        prisonerNumber: 'B8965HE',
+        firstName: 'Billy',
+        lastName: 'Kid',
+        prisonId: 'MDI',
+        cellLocation: 'MDI-5-4-001',
+        alerts: [],
+      },
     ]),
 }

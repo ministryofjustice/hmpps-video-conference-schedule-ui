@@ -1,4 +1,7 @@
+import { format } from 'date-fns'
 import { stubGet } from './wiremock'
+
+const today = format(new Date(), 'yyyy-MM-dd')
 
 export default {
   stubBookAVideoLinkPing: () => stubGet('/book-a-video-link-api/health/ping'),
@@ -28,7 +31,7 @@ export default {
         prisonLocKey: 'MDI-RES-AWING-AWVL',
         prisonLocDesc: 'A Wing Video Link',
         dpsLocationId: '00000000-0000-0000-0000-000000000000',
-        appointmentDate: '2025-07-18',
+        appointmentDate: today,
         startTime: '09:45',
         endTime: '10:00',
         createdTime: '2025-07-04T12:03:46.068391',
@@ -64,7 +67,7 @@ export default {
         prisonLocKey: 'MDI-RES-AWING-AWVL',
         prisonLocDesc: 'A Wing Video Link',
         dpsLocationId: '00000000-0000-0000-0000-000000000000',
-        appointmentDate: '2025-07-18',
+        appointmentDate: today,
         startTime: '10:00',
         endTime: '11:00',
         createdTime: '2025-07-04T12:03:46.068391',
@@ -100,7 +103,7 @@ export default {
         prisonLocKey: 'MDI-RES-AWING-AWVL',
         prisonLocDesc: 'A Wing Video Link',
         dpsLocationId: '00000000-0000-0000-0000-000000000000',
-        appointmentDate: '2025-07-18',
+        appointmentDate: today,
         startTime: '11:00',
         endTime: '11:15',
         createdTime: '2025-07-04T12:03:46.068391',
