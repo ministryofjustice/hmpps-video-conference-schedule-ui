@@ -101,6 +101,34 @@ describe('GET with feature toggle on', () => {
             viewAppointmentLink: 'http://localhost:3000/appointment-details/2',
             notesForPrisoner: 'court prisoner notes',
           },
+          {
+            appointmentTypeCode: 'VLB',
+            appointmentTypeDescription: 'Post-hearing',
+            appointmentId: 3,
+            appointmentLocationId: 'test',
+            appointmentLocationDescription: 'COURT ROOM',
+            appointmentSubtypeDescription: 'Appeal',
+            externalAgencyCode: 'MANCM',
+            externalAgencyDescription: 'Manchester Magistrates',
+            lastUpdatedOrCreated: startOfToday().toISOString(),
+            prisoner: {
+              cellLocation: 'A-1-001',
+              firstName: 'Joe',
+              hasAlerts: false,
+              inPrison: true,
+              lastName: 'Bloggs',
+              prisonerNumber: 'ABC123',
+            },
+            startTime: '09:00',
+            endTime: '09:15',
+            status: 'ACTIVE',
+            tags: [],
+            videoBookingId: 1,
+            videoLink: 'http://video.url',
+            videoLinkRequired: true,
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/3',
+            notesForPrisoner: 'court prisoner notes',
+          },
         ],
       ],
     })
@@ -116,8 +144,9 @@ describe('GET with feature toggle on', () => {
         )
         expect(getByDataQa($, 'date-1').text()).toEqual('20 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Joe Bloggs, ABC123. Location: A-1-001')
-        expect(getByDataQa($, 'pre-court-hearing-1').text()).toContain('07:45')
-        expect(getByDataQa($, 'court-hearing---appeal-1').text()).toContain('08:00')
+        expect(getByDataQa($, 'pre-court-hearing-1').text()).toContain('07:45 to 08:00')
+        expect(getByDataQa($, 'court-hearing---appeal-1').text()).toContain('08:00 to 09:00')
+        expect(getByDataQa($, 'post-court-hearing-1').text()).toContain('09:00 to 09:15')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('07:15')
         expect(getByDataQa($, 'location-1').text()).toContain('COURT ROOM')
         expect(getByDataQa($, 'notes-1').text()).toContain('court prisoner notes')
@@ -175,7 +204,7 @@ describe('GET with feature toggle on', () => {
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain(
           'Fred Flintrock, FRE123. Location: P-1-001',
         )
-        expect(getByDataQa($, 'probation-meeting---other-1').text()).toContain('10:00')
+        expect(getByDataQa($, 'probation-meeting---other-1').text()).toContain('10:00 to 12:00')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('09:30')
         expect(getByDataQa($, 'location-1').text()).toContain('PROBATION ROOM')
         expect(getByDataQa($, 'notes-1').text()).toContain('probation prisoner notes')
@@ -229,7 +258,7 @@ describe('GET with feature toggle on', () => {
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain(
           'Wilma Flintrock, WIL123. Location: W-001',
         )
-        expect(getByDataQa($, 'another-prison-1').text()).toContain('14:30')
+        expect(getByDataQa($, 'another-prison-1').text()).toContain('14:30 to 15:00')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('14:00')
         expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
         expect(getByDataQa($, 'notes-1').text()).toContain('')
@@ -281,7 +310,7 @@ describe('GET with feature toggle on', () => {
         )
         expect(getByDataQa($, 'date-1').text()).toEqual('17 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Barney Rabble, BAR123. Location: W-002')
-        expect(getByDataQa($, 'legal-appointment-1').text()).toContain('16:30')
+        expect(getByDataQa($, 'legal-appointment-1').text()).toContain('16:30 to 17:30')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('16:00')
         expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
         expect(getByDataQa($, 'notes-1').text()).toContain('')
@@ -333,7 +362,7 @@ describe('GET with feature toggle on', () => {
         )
         expect(getByDataQa($, 'date-1').text()).toEqual('16 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Betty Rabble, BET123. Location: X-001')
-        expect(getByDataQa($, 'official-other-1').text()).toContain('15:15')
+        expect(getByDataQa($, 'official-other-1').text()).toContain('15:15 to 16:00')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('14:45')
         expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
         expect(getByDataQa($, 'notes-1').text()).toContain('')
@@ -385,7 +414,7 @@ describe('GET with feature toggle on', () => {
         )
         expect(getByDataQa($, 'date-1').text()).toEqual('16 July 2055')
         expect(getByDataQa($, 'prisoner-name-and-number-1').text()).toContain('Don Key, DON123. Location: D-055')
-        expect(getByDataQa($, 'parole-hearing-1').text()).toContain('09:15')
+        expect(getByDataQa($, 'parole-hearing-1').text()).toContain('09:15 to 10:00')
         expect(getByDataQa($, 'pick-up-time-1').text()).toContain('08:45')
         expect(getByDataQa($, 'location-1').text()).toContain('In Cell')
         expect(getByDataQa($, 'notes-1').text()).toContain('')
