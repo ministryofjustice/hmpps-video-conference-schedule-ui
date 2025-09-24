@@ -15,41 +15,41 @@
         <h1 class="govuk-heading-s">Appointments and times</h1>
         <dl class='movement-slip__summary'>
             {% if movementSlip.anotherPrison.startTime %}
-                {{ labelAndValue(slipNum, 'Another prison', movementSlip.anotherPrison.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Another prison', movementSlip.anotherPrison.startTime + ' to ' +  movementSlip.anotherPrison.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.court %}
                 {% if movementSlip.court.preStartTime %}
-                   {{ labelAndValue(slipNum, 'Pre-court hearing', movementSlip.court.preStartTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
+                   {{ labelAndValue(slipNum, 'Pre-court hearing', movementSlip.court.preStartTime + ' to ' +  movementSlip.court.preEndTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.startTime and not movementSlip.court.postStartTime %}
-                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime + ' to ' +  movementSlip.court.endTime, '', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.startTime and movementSlip.court.postStartTime%}
-                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Court hearing - ' + movementSlip.court.hearingType, movementSlip.court.startTime + ' to ' +  movementSlip.court.endTime, 'movement-slip__summary__row--no-border', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
 
                 {% if movementSlip.court.postStartTime %}
-                  {{ labelAndValue(slipNum, 'Post-court hearing', movementSlip.court.postStartTime, '', 'movement-slip__summary__row__key--normal') }}
+                  {{ labelAndValue(slipNum, 'Post-court hearing', movementSlip.court.postStartTime + ' to ' +  movementSlip.court.postEndTime, '', 'movement-slip__summary__row__key--normal') }}
                 {% endif %}
             {% endif %}
 
             {% if movementSlip.legal %}
-                {{ labelAndValue(slipNum, 'Legal appointment', movementSlip.legal.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Legal appointment', movementSlip.legal.startTime + ' to ' +  movementSlip.legal.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.officialOther %}
-                {{ labelAndValue(slipNum, 'Official other', movementSlip.officialOther.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Official other', movementSlip.officialOther.startTime + ' to ' +  movementSlip.officialOther.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.parole %}
-                {{ labelAndValue(slipNum, 'Parole hearing', movementSlip.parole.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Parole hearing', movementSlip.parole.startTime + ' to ' +  movementSlip.parole.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.probation %}
-                {{ labelAndValue(slipNum, 'Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime, '', 'movement-slip__summary__row__key--normal') }}
+                {{ labelAndValue(slipNum, 'Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime + ' to ' +  movementSlip.probation.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
             {% if movementSlip.pickUpTime %}

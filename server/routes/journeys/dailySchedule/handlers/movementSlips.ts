@@ -48,35 +48,43 @@ export default class MovementSlipsHandler implements PageHandler {
         anotherPrison: this.isAppointmentType(AppointmentType.ANOTHER_PRISON, group)
           ? {
               startTime: this.getStartTime(group, AppointmentType.ANOTHER_PRISON),
+              endTime: this.getEndTime(group, AppointmentType.ANOTHER_PRISON),
             }
           : undefined,
         court: this.isAppointmentType(AppointmentType.COURT, group)
           ? {
               preStartTime: this.getStartTime(group, AppointmentType.COURT, 'Pre-hearing'),
+              preEndTime: this.getEndTime(group, AppointmentType.COURT, 'Pre-hearing'),
               startTime: this.getStartTime(group, AppointmentType.COURT, 'Court Hearing'),
+              endTime: this.getEndTime(group, AppointmentType.COURT, 'Court Hearing'),
               postStartTime: this.getStartTime(group, AppointmentType.COURT, 'Post-hearing'),
+              postEndTime: this.getEndTime(group, AppointmentType.COURT, 'Post-hearing'),
               hearingType: this.getHearingType(group),
             }
           : undefined,
         legal: this.isAppointmentType(AppointmentType.LEGAL, group)
           ? {
               startTime: this.getStartTime(group, AppointmentType.LEGAL),
+              endTime: this.getEndTime(group, AppointmentType.LEGAL),
             }
           : undefined,
         parole: this.isAppointmentType(AppointmentType.PAROLE, group)
           ? {
               startTime: this.getStartTime(group, AppointmentType.PAROLE),
+              endTime: this.getEndTime(group, AppointmentType.PAROLE),
             }
           : undefined,
         probation: this.isAppointmentType(AppointmentType.PROBATION, group)
           ? {
               startTime: this.getStartTime(group, AppointmentType.PROBATION),
+              endTime: this.getEndTime(group, AppointmentType.PROBATION),
               meetingType: this.getMeetingType(group),
             }
           : undefined,
         officialOther: this.isAppointmentType(AppointmentType.OFFICIAL_OTHER, group)
           ? {
               startTime: this.getStartTime(group, AppointmentType.OFFICIAL_OTHER),
+              endTime: this.getEndTime(group, AppointmentType.OFFICIAL_OTHER),
             }
           : undefined,
         pickUpTime: prison.pickUpTime ? removeMinutes(group[0].startTime, prison.pickUpTime) : undefined,
@@ -109,6 +117,13 @@ export default class MovementSlipsHandler implements PageHandler {
       return group.find(g => g.appointmentTypeCode === type && g.appointmentTypeDescription.includes(desc))?.startTime
     }
     return group.find(g => g.appointmentTypeCode === type)?.startTime
+  }
+
+  private getEndTime = (group: ScheduleItem[], type: AppointmentType, desc?: string) => {
+    if (desc) {
+      return group.find(g => g.appointmentTypeCode === type && g.appointmentTypeDescription.includes(desc))?.endTime
+    }
+    return group.find(g => g.appointmentTypeCode === type)?.endTime
   }
 
   private getLocation = (group: ScheduleItem[]) => {
