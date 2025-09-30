@@ -19,7 +19,7 @@ module.exports = grunt => {
           ],
         },
         files: {
-          'assets/stylesheets/application.css': 'frontend/application.scss',
+          'dist/assets/stylesheets/application.css': 'frontend/application.scss',
         },
       },
     },
@@ -31,14 +31,15 @@ module.exports = grunt => {
       },
       main: {
         files: {
-          'assets/javascript/videoConferenceSchedule.min.js': 'frontend/index.js',
+          'dist/assets/javascript/videoConferenceSchedule.min.js': 'frontend/index.js',
         },
       },
     },
     uglify: {
       dist: {
         files: {
-          'assets/javascript/videoConferenceSchedule.min.js': 'assets/javascript/videoConferenceSchedule.min.js',
+          'dist/assets/javascript/videoConferenceSchedule.min.js':
+            'dist/assets/javascript/videoConferenceSchedule.min.js',
         },
       },
     },
@@ -49,19 +50,19 @@ module.exports = grunt => {
             expand: true,
             cwd: 'node_modules/govuk-frontend/dist/govuk/assets',
             src: ['./**/*'],
-            dest: 'assets/',
+            dest: 'dist/assets/',
           },
           {
             expand: true,
             cwd: 'frontend/images',
             src: ['./**/*'],
-            dest: 'assets/images/',
+            dest: 'dist/assets/images/',
           },
           {
             expand: true,
             cwd: 'node_modules/@ministryofjustice/frontend/moj/assets',
             src: ['./**/*'],
-            dest: 'assets/',
+            dest: 'dist/assets/',
           },
         ],
       },
