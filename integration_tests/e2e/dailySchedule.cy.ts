@@ -105,8 +105,9 @@ context('Daily schedule', () => {
     cy.task('stubVerifyToken', true)
     cy.signIn()
 
-    cy.get('.govuk-tag--status').should('have.length', 2)
+    cy.get('.govuk-tag--status').should('have.length', 3)
     cy.get('.govuk-tag--status').eq(0).should('contain.text', 'Link missing')
     cy.get('.govuk-tag--status').eq(1).should('contain.text', 'Pin protected')
+    cy.get('.govuk-tag--status').eq(2).should('contain.text', 'Check room')
   })
 })

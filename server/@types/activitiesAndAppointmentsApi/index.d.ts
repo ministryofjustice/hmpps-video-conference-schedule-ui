@@ -1002,48 +1002,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/integration-api/scheduled-events/prison/{prisonCode}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get a list of scheduled events for a prison, prisoner, date range (max 3 months) and optional time slot.
-     * @description
-     *           Returns scheduled events for the prison, prisoner, date range (max 3 months) and optional time slot.
-     *           Court hearings, adjudication hearings, transfers and visits come from NOMIS (via prison API).
-     *           Activities and appointments come from either NOMIS or the local database depending on whether the prison is
-     *           marked as active for appointments and/or activities.
-     *           (Intended usage: Prisoner calendar / schedule)
-     *
-     *
-     *     Requires one of the following roles:
-     *     * ACTIVITIES__HMPPS_INTEGRATION_API
-     */
-    get: operations['getScheduledEventsForSinglePrisoner']
-    put?: never
-    /**
-     * Get a list of scheduled events for a prison and list of prisoner numbers for a date and time slot
-     * @description
-     *           Returns scheduled events for the prison, prisoner numbers, single date and an optional time slot.
-     *           Court hearings, adjudication hearings, transfers and visits come from NOMIS (via prison API).
-     *           Activities and appointments come from either NOMIS or the local database depending on whether the prison is
-     *           marked as rolled-out for activities and/or appointments.
-     *           (Intended usage: Unlock list)
-     *
-     *
-     *     Requires one of the following roles:
-     *     * ACTIVITIES__HMPPS_INTEGRATION_API
-     */
-    post: operations['getScheduledEventsForMultiplePrisoners_1']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/integration-api/appointments/{prisonCode}/search': {
     parameters: {
       query?: never
@@ -2901,9 +2859,7 @@ export interface paths {
     trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /** @description Describes a case note to be added to a prisoner's profile */
@@ -3800,9 +3756,9 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
       unpaged?: boolean
     }
     PagedWaitingListApplication: {
@@ -9552,9 +9508,7 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
 export interface operations {
   deallocate: {
     parameters: {
@@ -11597,142 +11551,6 @@ export interface operations {
         }
       }
       /** @description Waiting list application not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getScheduledEventsForSinglePrisoner: {
-    parameters: {
-      query: {
-        /** @description Prisoner number (required). Format A9999AA. */
-        prisonerNumber: string
-        /** @description Start date of query (required). Format YYYY-MM-DD. */
-        startDate: string
-        /** @description End date of query (required). Format YYYY-MM-DD. The end date must be within 3 months of the start date) */
-        endDate: string
-        /** @description Time slot for the events (optional). If supplied, one of AM, PM or ED. */
-        timeSlot?: 'AM' | 'PM' | 'ED'
-      }
-      header?: never
-      path: {
-        /** @description The 3-digit prison code. */
-        prisonCode: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful call - zero or more scheduled events found */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerScheduledEvents']
-        }
-      }
-      /** @description Invalid request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getScheduledEventsForMultiplePrisoners_1: {
-    parameters: {
-      query: {
-        /** @description The exact date to return events for (required) in format YYYY-MM-DD */
-        date: string
-        /** @description Time slot of the events (optional). If supplied, one of AM, PM or ED. */
-        timeSlot?: 'AM' | 'PM' | 'ED'
-      }
-      header?: never
-      path: {
-        /** @description The 3-character prison code. */
-        prisonCode: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': string[]
-      }
-    }
-    responses: {
-      /** @description Successful call - zero or more scheduled events found */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerScheduledEvents']
-        }
-      }
-      /** @description Invalid request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Requested resource not found */
       404: {
         headers: {
           [name: string]: unknown
