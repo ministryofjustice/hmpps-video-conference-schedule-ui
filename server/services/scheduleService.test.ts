@@ -1512,11 +1512,37 @@ describe('Schedule service', () => {
             id: 1,
             date: formatDate(startOfToday(), 'yyyy-MM-dd'),
             offenderNo: 'ABC123',
+            startTime: '07:45',
+            endTime: '08:00',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Pre Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+          {
+            id: 2,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
             startTime: '08:00',
             endTime: '09:00',
             locationId: 1,
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
+            status: 'ACTIVE',
+            viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+            createdTime: startOfYesterday().toISOString(),
+          },
+          {
+            id: 3,
+            date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+            offenderNo: 'ABC123',
+            startTime: '09:00',
+            endTime: '09:15',
+            locationId: 1,
+            locationDescription: 'ROOM 1',
+            appointmentTypeDescription: 'Video Link - Post Court Hearing',
             status: 'ACTIVE',
             viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
             createdTime: startOfYesterday().toISOString(),
@@ -1577,7 +1603,14 @@ describe('Schedule service', () => {
         const date = new Date()
         const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
-        expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: ['PIN_PROTECTED'] })
+        expect(result.appointmentGroups.length).toBe(1)
+
+        const expectedAppointments = result.appointmentGroups.pop()
+
+        expect(expectedAppointments.length).toBe(3)
+        expect(expectedAppointments[0]).toMatchObject({ tags: [] })
+        expect(expectedAppointments[1]).toMatchObject({ tags: ['PIN_PROTECTED'] })
+        expect(expectedAppointments[2]).toMatchObject({ tags: [] })
       })
 
       it('should add the LINK_MISSING tag for appointments without video link or HMCTS number', async () => {
@@ -1710,6 +1743,218 @@ describe('Schedule service', () => {
         expect(result.appointmentGroups.pop().pop()).toMatchObject({ tags: [] })
         expect(result).toMatchObject({ missingVideoLinks: 0 })
       })
+    })
+
+    it('should add the CHECK_AVAILABILITY tag to all appointments', async () => {
+      appointments = [
+        {
+          id: 1,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '07:45',
+          endTime: '08:00',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Pre Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+        {
+          id: 2,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '08:00',
+          endTime: '09:00',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+        {
+          id: 3,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '09:00',
+          endTime: '09:15',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Post Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+      ]
+
+      bvlsAppointments = [
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '07:45',
+          endTime: '08:00',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_PRE',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+          checkAvailability: true,
+        },
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '08:00',
+          endTime: '09:00',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_MAIN',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+          checkAvailability: true,
+        },
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '09:00',
+          endTime: '09:15',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_POST',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+          checkAvailability: true,
+        },
+      ] as BvlsAppointment[]
+
+      appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+      const date = new Date()
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+      expect(result.appointmentGroups.length).toBe(1)
+
+      const expectedAppointments = result.appointmentGroups.pop()
+
+      expect(expectedAppointments.length).toBe(3)
+      expect(expectedAppointments[0]).toMatchObject({ tags: ['CHECK_AVAILABILITY'] })
+      expect(expectedAppointments[1]).toMatchObject({ tags: ['CHECK_AVAILABILITY'] })
+      expect(expectedAppointments[2]).toMatchObject({ tags: ['CHECK_AVAILABILITY'] })
+    })
+
+    it('should add the CHECK_AVAILABILITY tag to single appointments', async () => {
+      appointments = [
+        {
+          id: 1,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '07:45',
+          endTime: '08:00',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Pre Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+        {
+          id: 2,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '08:00',
+          endTime: '09:00',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+        {
+          id: 3,
+          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
+          offenderNo: 'ABC123',
+          startTime: '09:00',
+          endTime: '09:15',
+          locationId: 1,
+          locationDescription: 'ROOM 1',
+          appointmentTypeDescription: 'Video Link - Post Court Hearing',
+          status: 'ACTIVE',
+          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
+          createdTime: startOfYesterday().toISOString(),
+        },
+      ]
+
+      bvlsAppointments = [
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '07:45',
+          endTime: '08:00',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_PRE',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+          checkAvailability: true,
+        },
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '08:00',
+          endTime: '09:00',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_MAIN',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+        },
+        {
+          videoBookingId: 1,
+          statusCode: 'ACTIVE',
+          prisonerNumber: 'ABC123',
+          startTime: '09:00',
+          endTime: '09:15',
+          prisonLocKey: 'ROOM_1',
+          dpsLocationId: 'abc-123',
+          appointmentType: 'VLB_COURT_POST',
+          courtCode: 'ABERCV',
+          courtDescription: 'Aberystwyth Civil',
+          hearingTypeDescription: 'Appeal',
+          videoUrl: 'http://video.url',
+        },
+      ] as BvlsAppointment[]
+
+      appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+
+      const date = new Date()
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+      expect(result.appointmentGroups.length).toBe(1)
+
+      const expectedAppointments = result.appointmentGroups.pop()
+
+      expect(expectedAppointments.length).toBe(3)
+      expect(expectedAppointments[0]).toMatchObject({ tags: ['CHECK_AVAILABILITY'] })
+      expect(expectedAppointments[1]).toMatchObject({ tags: [] })
+      expect(expectedAppointments[2]).toMatchObject({ tags: [] })
     })
   })
 })

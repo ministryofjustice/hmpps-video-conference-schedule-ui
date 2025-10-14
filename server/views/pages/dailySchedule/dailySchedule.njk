@@ -164,7 +164,7 @@
                             }
                         },
                         {
-                            html: bookingStatuses(scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
+                            html: bookingStatuses(appointmentGroup, scheduleItem.tags) if (appointmentGroup.length == 1 or loop.index == 2),
                             classes: classes
                         },
                         {
@@ -321,7 +321,7 @@
     </div>
 {% endblock %}
 
-{% macro bookingStatuses(tags) %}
+{% macro bookingStatuses(appointmentGroup, tags) %}
     <div class="govuk-tag-group">
         {% for tag in tags %}
             {% if tag == 'NEW' %}
@@ -352,6 +352,45 @@
                 }) }}
             {% endif %}
         {% endfor %}
+
+        {# We only show a single check room tag in the appointment group regardless of the room(s) affected #}
+        {% if temporaryBlockingLocations %}
+            {% set checkRoom = false %}
+
+            {# There can be upto 3 appointments for court bookings, for probation there will only ever be one #}
+            {%  set appointmentOne = appointmentGroup[0] %}
+            {%  set appoinmentTwo = appointmentGroup[1] if appointmentGroup.length > 1 %}
+            {%  set appointmentThree = appointmentGroup[2] if appointmentGroup.length > 2 %}
+
+            {% for tag in appointmentOne.tags %}
+                {% if tag == 'CHECK_AVAILABILITY' %}
+                    {% set checkRoom = true %}
+                {% endif %}
+            {%  endfor %}
+
+            {% if appoinmentTwo %}
+                {% for tag in appoinmentTwo.tags %}
+                    {% if tag == 'CHECK_AVAILABILITY' %}
+                        {% set checkRoom = true %}
+                    {% endif %}
+                {%  endfor %}
+            {% endif %}
+
+            {% if appointmentThree %}
+                {% for tag in appointmentThree.tags %}
+                    {% if tag == 'CHECK_AVAILABILITY' %}
+                        {% set checkRoom = true %}
+                    {% endif %}
+                {%  endfor %}
+            {% endif %}
+
+            {% if checkRoom %}
+                {{ govukTag({
+                    text: "Check room",
+                    classes: "govuk-tag--status govuk-tag--status__check-availability"
+                }) }}
+            {% endif %}
+        {%  endif %}
     </div>
 {% endmacro %}
 

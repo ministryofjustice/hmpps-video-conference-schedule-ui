@@ -78,4 +78,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('dpsUrl', config.dpsUrl)
   njkEnv.addGlobal('activitiesAndAppointmentsUrl', config.activitiesAndAppointmentsUrl)
   njkEnv.addGlobal('bulkPrintMovementSlipsEnabled', config.featureBulkPrintMovementSlips)
+  njkEnv.addGlobal('temporaryBlockingLocations', config.featureToggles.temporaryBlockingLocations)
 }

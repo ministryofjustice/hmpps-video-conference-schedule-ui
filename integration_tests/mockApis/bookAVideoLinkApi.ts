@@ -114,6 +114,7 @@ export default {
         notesForPrisoners: 'notes for prisoner',
         hmctsNumber: null,
         guestPin: null,
+        checkAvailability: true,
       },
     ]),
   stubGetCourts: () => stubGet('/book-a-video-link-api/courts', []),

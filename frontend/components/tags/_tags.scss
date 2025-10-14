@@ -31,6 +31,10 @@
     &__pin-protected {
       @extend .govuk-tag--orange
     }
+
+    &__check-availability {
+      @extend .govuk-tag--blue
+    }
   }
 }
 

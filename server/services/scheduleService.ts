@@ -177,12 +177,14 @@ export default class ScheduleService {
         (isTomorrow(appointmentDate) && isAfter(updatedTimeParsed, set(startOfToday(), { hours: 15 })))
 
       const isPinProtected = videoLinkRequired && bvlsAppointment?.guestPin
+      const isCheckAvailability = bvlsAppointment?.checkAvailability
 
       return [
         isNew ? 'NEW' : undefined,
         isUpdated ? 'UPDATED' : undefined,
         videoLinkRequired && !bvlsAppointment?.videoUrl && !bvlsAppointment?.hmctsNumber ? 'LINK_MISSING' : undefined,
         isPinProtected ? 'PIN_PROTECTED' : undefined,
+        isCheckAvailability ? 'CHECK_AVAILABILITY' : undefined,
       ].filter(Boolean)
     }
 
