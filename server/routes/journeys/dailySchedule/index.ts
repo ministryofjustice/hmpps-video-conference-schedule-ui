@@ -8,7 +8,6 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import MovementSlipsHandler from './handlers/movementSlips'
-import config from '../../../config'
 
 export default function Index({
   auditService,
@@ -32,10 +31,7 @@ export default function Index({
   get('/clear-filter', new ClearFilterHandler())
   get('/download-csv', new DownloadCsvHandler(scheduleService))
   getAndPost('/select-date', new SelectDateHandler())
-
-  if (config.featureBulkPrintMovementSlips) {
-    get('/movement-slips', new MovementSlipsHandler(scheduleService))
-  }
+  get('/movement-slips', new MovementSlipsHandler(scheduleService))
 
   return router
 }
