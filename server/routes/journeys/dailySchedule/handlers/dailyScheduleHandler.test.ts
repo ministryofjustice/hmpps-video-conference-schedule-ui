@@ -14,7 +14,6 @@ import ScheduleService from '../../../../services/scheduleService'
 import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/cheerio'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
-import config from '../../../../config'
 import { Location } from '../../../../@types/locationsInsidePrisonApi/types'
 
 jest.mock('../../../../services/auditService')
@@ -40,7 +39,6 @@ const appSetup = (journeySession = {}, prison = moorlandPrisonNoPickUpTime) => {
 }
 
 beforeEach(() => {
-  config.featureBulkPrintMovementSlips = true
   appSetup({ scheduleFilters: filters })
 })
 

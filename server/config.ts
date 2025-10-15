@@ -183,7 +183,6 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
-  featureBulkPrintMovementSlips: get('FEATURE_BULK_PRINT_MOVEMENT_SLIPS', 'false') === 'true',
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
   },

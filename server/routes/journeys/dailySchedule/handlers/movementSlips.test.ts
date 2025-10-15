@@ -7,7 +7,6 @@ import AuditService from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import { getByClass, getByDataQa } from '../../../testutils/cheerio'
-import config from '../../../../config'
 import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
@@ -32,9 +31,8 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET with feature toggle on', () => {
+describe('GET', () => {
   beforeEach(() => {
-    config.featureBulkPrintMovementSlips = true
     appSetup()
   })
 
@@ -475,21 +473,5 @@ describe('GET with feature toggle on', () => {
 
   it(`should redirect to daily schedule when date is before today`, () => {
     return request(app).get('/movement-slips?date=2025-08-03').expect(302).expect('location', `/`)
-  })
-})
-
-describe('GET with feature toggle off', () => {
-  beforeEach(() => {
-    config.featureBulkPrintMovementSlips = false
-    appSetup()
-  })
-
-  it('should not render a movement slip', () => {
-    return request(app)
-      .get('/movement-slips?date=2025-07-16')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(load(res.text).html()).toContain('Page not found')
-      })
   })
 })
