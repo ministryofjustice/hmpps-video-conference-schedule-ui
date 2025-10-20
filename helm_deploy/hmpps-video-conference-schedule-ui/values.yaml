@@ -33,6 +33,7 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: "true"
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "hmpps-video-conference-schedule-ui"
+    FEATURE_TEMPORARY_BLOCKING_LOCATIONS: "false"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -55,8 +56,6 @@ generic-service:
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
-    feature-toggles:
-      FEATURE_TEMPORARY_BLOCKING_LOCATIONS: "FEATURE_TEMPORARY_BLOCKING_LOCATIONS?"
 
   allowlist:
     groups:
