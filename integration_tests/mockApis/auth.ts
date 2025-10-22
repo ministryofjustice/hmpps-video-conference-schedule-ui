@@ -159,10 +159,40 @@ const feComponents = () =>
     },
   })
 
+const stubGetCaseLoads = () => {
+  return stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/prison-api/api/users/me/caseLoads\\?allCaseloads=true',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      jsonBody: [
+        {
+          currentlyActive: true,
+          caseLoadId: 'MDI',
+          description: 'Moorland (HMP)',
+        },
+      ],
+    },
+  })
+}
+
 export default {
   getSignInUrl,
   stubAuthPing: () => Promise.all([ping(), pingFeComponents()]),
   stubAuthManageDetails: manageDetails,
-  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(roles), feComponents(), tokenVerification.stubVerifyToken()]),
+  stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([
+      favicon(),
+      redirect(),
+      signOut(),
+      token(roles),
+      feComponents(),
+      tokenVerification.stubVerifyToken(),
+      stubGetCaseLoads(),
+    ]),
 }

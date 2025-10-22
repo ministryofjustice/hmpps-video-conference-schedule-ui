@@ -385,6 +385,7 @@ describe('POST', () => {
           period: ['AM'],
           appointmentLocation: ['VCC-ROOM-1'],
           courtOrProbationTeam: ['ABERCV'],
+          caseLoadId: 'MDI',
         }),
       )
   })

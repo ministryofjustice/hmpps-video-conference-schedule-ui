@@ -6,6 +6,7 @@ import CancelledVideoAppointmentsPage from '../pages/cancelledVideoAppointments'
 context('Daily schedule', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponents')
     cy.task('stubSignIn', ['ROLE_PRISON'])
     cy.task('stubUser')
     cy.task('stubGetPrison')

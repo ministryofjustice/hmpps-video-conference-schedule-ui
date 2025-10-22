@@ -40,6 +40,7 @@ export declare global {
     interface User extends Partial<UserDetails> {
       token: string
       authSource: string
+      activeCaseLoad?: CaseLoad | undefined
     }
 
     interface Request {

@@ -3,6 +3,8 @@ import express from 'express'
 
 import createError from 'http-errors'
 
+import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
+
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -18,11 +20,13 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import setUpFlash from './middleware/setUpFlash'
-import setUpFrontendComponents from './middleware/fetchFrontendComponentMiddleware'
-import { DataAccess } from './data'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import config from './config'
+import logger from '../logger'
+import resetFilterIfRequired from './middleware/resetFilterIfRequired'
+import populatePrisonConfig from './middleware/populatePrisonConfig'
 
-export default function createApp(services: Services, dataAccess: DataAccess): express.Application {
+export default function createApp(services: Services): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -40,8 +44,23 @@ export default function createApp(services: Services, dataAccess: DataAccess): e
   app.use(authorisationMiddleware(['ROLE_PRISON']))
   app.use(setUpCsrf())
   app.use(setUpFlash())
-  app.use(setUpCurrentUser(services))
-  app.use(setUpFrontendComponents(dataAccess))
+  app.use(setUpCurrentUser())
+
+  app.get(
+    /(.*)/,
+    getFrontendComponents({
+      requestOptions: { includeSharedData: true },
+      componentApiConfig: config.apis.frontendComponents,
+      dpsUrl: config.dpsUrl,
+    }),
+  )
+
+  app.use(retrieveCaseLoadData({ logger, prisonApiConfig: config.apis.prisonApi }))
+
+  // These must be after the caseload retrieval is carried out above.
+  app.use(resetFilterIfRequired())
+  app.use(populatePrisonConfig(services.appointmentService))
+
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
