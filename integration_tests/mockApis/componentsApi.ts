@@ -2,7 +2,7 @@ import { stubGet } from './wiremock'
 
 export default {
   stubComponents: () =>
-    stubGet('/components/components?component=header&component=footer', {
+    stubGet('/frontend-components-api/components\\?component=header&component=footer', {
       meta: {
         caseLoads: [
           {
