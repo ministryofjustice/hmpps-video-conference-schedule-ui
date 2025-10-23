@@ -18,32 +18,25 @@ const appSetup = (journeySession = {}) => {
   })
 }
 
-beforeEach(() =>
-  appSetup({
-    scheduleFilters: {
-      wing: ['A', 'B'],
-      appointmentType: ['VLB'],
-      period: ['AM'],
-      appointmentLocation: ['VCC-ROOM-1'],
-      courtOrProbationTeam: ['ABERCV'],
-    },
-  }),
-)
-
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET', () => {
-  it('should clear all filters', () => {
-    return request(app)
-      .get('/clear-filter?all=true')
-      .expect(302)
-      .expect('location', `/`)
-      .then(() => expectJourneySession(app, 'scheduleFilters', undefined))
-  })
+describe('GET - remove from filter', () => {
+  beforeEach(() =>
+    appSetup({
+      scheduleFilters: {
+        wing: ['A', 'B'],
+        appointmentType: ['VLB'],
+        period: ['AM'],
+        appointmentLocation: ['VCC-ROOM-1'],
+        courtOrProbationTeam: ['ABERCV'],
+        caseLoadId: 'RSI',
+      },
+    }),
+  )
 
-  it('should a single filter', () => {
+  it('should remove a single filter', () => {
     return request(app)
       .get('/clear-filter?wing=A')
       .expect(302)
@@ -55,7 +48,35 @@ describe('GET', () => {
           period: ['AM'],
           appointmentLocation: ['VCC-ROOM-1'],
           courtOrProbationTeam: ['ABERCV'],
+          caseLoadId: 'RSI',
         }),
       )
+  })
+})
+
+describe('GET - should clear filter', () => {
+  beforeEach(() =>
+    appSetup({
+      scheduleFilters: {
+        period: ['AM'],
+        caseLoadId: 'RSI',
+      },
+    }),
+  )
+
+  it('should clear all filters', () => {
+    return request(app)
+      .get('/clear-filter?all=true')
+      .expect(302)
+      .expect('location', `/`)
+      .then(() => expectJourneySession(app, 'scheduleFilters', undefined))
+  })
+
+  it('should clear filter on removal of last filter', () => {
+    return request(app)
+      .get('/clear-filter?period=AM')
+      .expect(302)
+      .expect('location', `/`)
+      .then(() => expectJourneySession(app, 'scheduleFilters', undefined))
   })
 })
