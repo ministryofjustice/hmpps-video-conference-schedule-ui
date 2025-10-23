@@ -14,8 +14,10 @@ import { Journey } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
 import setUpFlash from '../../middleware/setUpFlash'
 import { Prison } from '../../@types/bookAVideoLinkApi/types'
+import AppointmentService from '../../services/appointmentService'
 
 jest.mock('../../services/auditService')
+jest.mock('../../services/appointmentService')
 
 export const journeyId = () => '9211b69b-826f-4f48-a43f-8af59dddf39f'
 
@@ -118,13 +120,16 @@ export function appWithAllRoutes({
   prisonSupplier?: () => Prison
 }): Express {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
 
   auditService.logPageView.mockResolvedValue(null)
+  appointmentService.getPrison.mockResolvedValue(prisonSupplier())
 
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(
     {
       auditService,
+      appointmentService,
       ...services,
     } as Services,
     production,

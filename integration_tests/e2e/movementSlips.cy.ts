@@ -8,6 +8,7 @@ const today = format(new Date(), 'yyyy-MM-dd')
 context('Movement slips', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponents')
     cy.task('stubSignIn', ['ROLE_PRISON'])
     cy.task('stubUser')
     cy.task('stubIsAppointmentsRolledOut')

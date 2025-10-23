@@ -1,15 +1,9 @@
-/* eslint-disable import/first */
 /*
  * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
  * In particular, applicationinsights automatically collects bunyan logs
  */
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
+import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureAppInsights'
 import applicationInfoSupplier from '../applicationInfo'
-
-const applicationInfo = applicationInfoSupplier()
-initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
-
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 import HmppsAuditClient from './hmppsAuditClient'
@@ -21,6 +15,10 @@ import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import NomisMappingApiClient from './nomisMappingApiClient'
 import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
+
+const applicationInfo = applicationInfoSupplier()
+initialiseAppInsights()
+buildAppInsightsClient(applicationInfo)
 
 export const dataAccess = () => ({
   applicationInfo,

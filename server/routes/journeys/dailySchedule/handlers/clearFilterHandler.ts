@@ -40,8 +40,8 @@ export default class ClearFilterHandler implements PageHandler {
           if (filters.courtOrProbationTeam?.length === 0) delete filters.courtOrProbationTeam
         }
 
-        // If all properties are removed, delete the entire object
-        if (Object.keys(filters).length === 0) {
+        // If all properties are removed (bar the case load), delete the entire object
+        if (Object.keys(filters).length === 1) {
           delete req.session.journey.scheduleFilters
         }
       }

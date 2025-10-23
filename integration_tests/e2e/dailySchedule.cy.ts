@@ -6,6 +6,7 @@ import CancelledVideoAppointmentsPage from '../pages/cancelledVideoAppointments'
 context('Daily schedule', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponents')
     cy.task('stubSignIn', ['ROLE_PRISON'])
     cy.task('stubUser')
     cy.task('stubGetPrison')
@@ -36,8 +37,8 @@ context('Daily schedule', () => {
     Page.verifyOnPage(DailySchedulePage)
     cy.task('stubVerifyToken', false)
 
-    // can't do a visit here as cypress requires only one domain
-    cy.request('/').its('body').should('contain', 'Sign in')
+    cy.visit('/')
+    Page.verifyOnPage(AuthSignInPage)
   })
 
   it('Token verification failure clears user session', () => {

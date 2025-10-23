@@ -98,6 +98,7 @@ export default class DailyScheduleHandler implements PageHandler {
       wing || appointmentType || period || appointmentLocation || courtOrProbationTeam
         ? { wing, appointmentType, period, appointmentLocation, courtOrProbationTeam }
         : undefined
+    req.session.journey.scheduleFilters.caseLoadId = res.locals.user.activeCaseLoadId ?? undefined
 
     res.redirect(req.get('Referrer') || '/')
   }
