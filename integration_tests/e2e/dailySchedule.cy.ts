@@ -37,8 +37,8 @@ context('Daily schedule', () => {
     Page.verifyOnPage(DailySchedulePage)
     cy.task('stubVerifyToken', false)
 
-    // can't do a visit here as cypress requires only one domain
-    cy.request('/').its('body').should('contain', 'Sign in')
+    cy.visit('/')
+    Page.verifyOnPage(AuthSignInPage)
   })
 
   it('Token verification failure clears user session', () => {

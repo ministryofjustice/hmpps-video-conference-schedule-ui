@@ -2,13 +2,16 @@ import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
+import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import auth from '../authentication/auth'
+import logger from '../../logger'
 
 const router = express.Router()
 
 export default function setUpAuth(): Router {
   auth.init()
+  const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
   router.use(passport.initialize())
   router.use(passport.session())
@@ -43,6 +46,14 @@ export default function setUpAuth(): Router {
 
   router.use('/account-details', (req, res) => {
     res.redirect(`${authUrl}/account-details?${authParameters}`)
+  })
+
+  router.use(async (req, res, next) => {
+    if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
+      return next()
+    }
+    req.session.returnTo = req.originalUrl
+    return res.redirect('/sign-in')
   })
 
   router.use((req, res, next) => {
