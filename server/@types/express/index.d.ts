@@ -1,6 +1,6 @@
-import type { UserDetails } from '../../services/userService'
 import { ScheduleFilters } from '../../routes/journeys/dailySchedule/journey'
 import { components } from '../bookAVideoLinkApi'
+import { HmppsUser } from '../../interfaces/hmppsUser'
 
 export default {}
 
@@ -37,7 +37,7 @@ declare module 'express-serve-static-core' {
 
 export declare global {
   namespace Express {
-    interface User extends Partial<UserDetails> {
+    interface User extends Partial<HmppsUser> {
       token: string
       authSource: string
       activeCaseLoad?: CaseLoad | undefined
