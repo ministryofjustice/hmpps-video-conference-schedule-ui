@@ -6,4 +6,5 @@ export type ScheduleFilters = {
   period?: Period[]
   appointmentLocation?: string[]
   courtOrProbationTeam?: string[]
+  caseLoadId?: string | undefined
 }
