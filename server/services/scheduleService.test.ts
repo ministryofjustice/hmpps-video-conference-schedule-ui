@@ -122,6 +122,7 @@ describe('Schedule service', () => {
         status: 'ACTIVE',
         viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
         createdTime: startOfToday().toISOString(),
+        notesForPrisoner: 'notes for prisoner',
       },
       {
         id: 5,
@@ -453,6 +454,7 @@ describe('Schedule service', () => {
               tags: [],
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+              notesForPrisoner: 'notes for prisoner',
             },
           ],
           [
@@ -607,6 +609,7 @@ describe('Schedule service', () => {
               tags: [],
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+              notesForPrisoner: 'notes for prisoner',
             },
           ],
           [
@@ -746,6 +749,7 @@ describe('Schedule service', () => {
               tags: [],
               videoLinkRequired: false,
               viewAppointmentLink: 'http://localhost:3000/appointment-details/4',
+              notesForPrisoner: 'notes for prisoner',
             },
           ],
           [
