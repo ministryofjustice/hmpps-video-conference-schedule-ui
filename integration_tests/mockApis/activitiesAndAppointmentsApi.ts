@@ -64,6 +64,7 @@ export default {
         updatedTime: '2025-07-16T11:44:34',
         cancelledTime: '2025-07-16T11:44:34',
         cancelledBy: 'USER2',
+        prisonerExtraInformation: 'VLLA notes for prisoner G9566GQ',
       },
       {
         id: 37826,
@@ -79,6 +80,7 @@ export default {
         updatedTime: '2025-07-16T11:44:34',
         cancelledTime: '2025-07-16T11:44:34',
         cancelledBy: 'USER2',
+        prisonerExtraInformation: 'VLAP notes for prisoner W4356WE',
       },
       {
         id: 37827,
@@ -94,6 +96,7 @@ export default {
         updatedTime: '2025-07-16T11:44:34',
         cancelledTime: '2025-07-16T11:44:34',
         cancelledBy: 'USER2',
+        prisonerExtraInformation: 'VLAP notes for prisoner W4356WE',
       },
       {
         id: 37828,
@@ -109,6 +112,7 @@ export default {
         updatedTime: '2025-07-16T11:44:34',
         cancelledTime: '2025-07-16T11:44:34',
         cancelledBy: 'USER2',
+        prisonerExtraInformation: 'VLLA notes for prisoner B8965HE',
       },
     ]),
   stubGetAppointmentCategories: () =>

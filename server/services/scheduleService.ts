@@ -216,7 +216,7 @@ export default class ScheduleService {
       cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
       lastUpdatedOrCreated: updatedTime || createdTime,
       hmctsNumber: videoLinkRequired ? bvlsAppointment.hmctsNumber : undefined,
-      notesForPrisoner: bvlsAppointment?.notesForPrisoners,
+      notesForPrisoner: bvlsAppointment?.notesForPrisoners || scheduledAppointment.notesForPrisoner || undefined,
     }
   }
 

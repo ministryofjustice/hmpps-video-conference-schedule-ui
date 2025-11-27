@@ -14,6 +14,7 @@ export type Appointment = PrisonApiAppointment & {
   updatedTime?: string
   cancelledTime?: string
   cancelledBy?: string
+  notesForPrisoner?: string
 }
 
 export type Status = 'ACTIVE' | 'CANCELLED'
@@ -73,6 +74,7 @@ export default class AppointmentService {
             updatedTime: apt.updatedTime,
             cancelledTime: apt.cancelledTime,
             cancelledBy: apt.cancelledBy,
+            notesForPrisoner: apt.prisonerExtraInformation,
           })),
         ),
       )

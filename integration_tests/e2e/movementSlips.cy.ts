@@ -58,6 +58,7 @@ context('Movement slips', () => {
     movementSlipsPage.pickUpTime(2).contains('16:50')
     movementSlipsPage.anotherPrison(2).contains('17:00 to 18:00')
     movementSlipsPage.location(2).contains('D Wing Video Link')
+    movementSlipsPage.notes(2).contains('VLAP notes for prisoner W4356WE')
 
     movementSlipsPage.header(3).contains('Moorland (HMP)')
     movementSlipsPage.prisoner(3).contains('Billy Kid, B8965HE. Location: MDI-5-4-001')
@@ -65,6 +66,7 @@ context('Movement slips', () => {
     movementSlipsPage.pickUpTime(3).contains('05:50')
     movementSlipsPage.legalAppointment(3).contains('06:00 to 07:00')
     movementSlipsPage.location(3).contains('E Wing Video Link')
+    movementSlipsPage.notes(3).contains('VLLA notes for prisoner B8965HE')
   })
 
   it('User can view movement slips with pick-up time 20 minutes before', () => {
