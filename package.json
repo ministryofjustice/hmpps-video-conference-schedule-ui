@@ -187,11 +187,9 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "validator": "overrides dependency pulled in by class-validator",
     "js-yaml": "overrides dependency pulled in by grunt"
   },
   "overrides": {
-    "validator": "^13.15.22",
     "js-yaml": "^4.1.0"
   }
 }
