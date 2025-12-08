@@ -30,8 +30,8 @@
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
-    "node": "^22",
-    "npm": "^10"
+    "node": "^24",
+    "npm": "^11"
   },
   "jest": {
     "transform": {
@@ -96,9 +96,9 @@
     "@aws-sdk/client-sqs": "^3.943.0",
     "@microsoft/applicationinsights-web": "^3.3.10",
     "@ministryofjustice/frontend": "^3.7.2",
-    "@ministryofjustice/hmpps-auth-clients": "^0.0.3",
+    "@ministryofjustice/hmpps-auth-clients": "^1.0.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^5.2.0",
-    "@ministryofjustice/hmpps-monitoring": "^0.0.2",
+    "@ministryofjustice/hmpps-monitoring": "^1.0.0",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
@@ -134,7 +134,7 @@
     "@ministryofjustice/hmpps-precommit-hooks": "^0.1.0",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
-    "@tsconfig/node22": "^22.0.5",
+    "@tsconfig/node24": "^24.0.1",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/cheerio": "^0.22.35",
