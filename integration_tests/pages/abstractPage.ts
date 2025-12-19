@@ -1,4 +1,5 @@
-import { type Locator, type Page } from '@playwright/test'
+import { type Locator, type Page, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 
 export default class AbstractPage {
   readonly page: Page
@@ -21,6 +22,14 @@ export default class AbstractPage {
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.manageUserDetails = page.getByTestId('manageDetails')
+  }
+
+  async verifyNoAccessViolationsOnPage(): Promise<void> {
+    const accessibilityScanResults = await new AxeBuilder({ page: this.page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toHaveLength(0)
   }
 
   async signOut() {

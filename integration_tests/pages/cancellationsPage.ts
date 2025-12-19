@@ -15,6 +15,7 @@ export default class CancellationsPage extends AbstractPage {
   static async verifyOnPage(page: Page): Promise<CancellationsPage> {
     const cancellationsPage = new CancellationsPage(page)
     await expect(cancellationsPage.header).toBeVisible()
+    await cancellationsPage.verifyNoAccessViolationsOnPage()
     return cancellationsPage
   }
 }

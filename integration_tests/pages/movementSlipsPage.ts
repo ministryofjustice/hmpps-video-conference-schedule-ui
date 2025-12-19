@@ -10,9 +10,10 @@ export default class MovementSlipsPage extends AbstractPage {
   }
 
   static async verifyOnPage(page: Page): Promise<MovementSlipsPage> {
-    const homePage = new MovementSlipsPage(page)
-    await expect(homePage.header).toBeVisible()
-    return homePage
+    const movementSlipsPage = new MovementSlipsPage(page)
+    await expect(movementSlipsPage.header).toBeVisible()
+    await movementSlipsPage.verifyNoAccessViolationsOnPage()
+    return movementSlipsPage
   }
 
   slipHeader = (slipNumber: number) => this.getByDataQa('movement-slip-header', slipNumber)
