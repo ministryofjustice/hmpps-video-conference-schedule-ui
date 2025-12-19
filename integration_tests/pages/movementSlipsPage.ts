@@ -1,35 +1,43 @@
-import Page, { PageElement } from './page'
+import { expect, type Locator, type Page } from '@playwright/test'
+import AbstractPage from './abstractPage'
 
-export default class MovementSlipsPage extends Page {
-  constructor() {
-    super('Print movement slips')
+export default class MovementSlipsPage extends AbstractPage {
+  readonly header: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: 'Print movement slips' })
   }
 
-  header = (slipNumber: number): PageElement => this.getByDataQa('movement-slip-header', slipNumber)
+  static async verifyOnPage(page: Page): Promise<MovementSlipsPage> {
+    const movementSlipsPage = new MovementSlipsPage(page)
+    await expect(movementSlipsPage.header).toBeVisible()
+    await movementSlipsPage.verifyNoAccessViolationsOnPage()
+    return movementSlipsPage
+  }
 
-  prisoner = (slipNumber: number): PageElement => this.getByDataQa('prisoner-name-and-number', slipNumber)
+  slipHeader = (slipNumber: number) => this.getByDataQa('movement-slip-header', slipNumber)
 
-  date = (slipNumber: number): PageElement => this.getByDataQa('date', slipNumber)
+  prisoner = (slipNumber: number) => this.getByDataQa('prisoner-name-and-number', slipNumber)
 
-  preCourtHearing = (slipNumber: number): PageElement => this.getByDataQa('pre-court-hearing', slipNumber)
+  date = (slipNumber: number) => this.getByDataQa('date', slipNumber)
 
-  courtHearing = (type: string, slipNumber: number): PageElement =>
-    cy.get(`[data-qa="court-hearing---${type}-${slipNumber}"]`)
+  preCourtHearing = (slipNumber: number) => this.getByDataQa('pre-court-hearing', slipNumber)
 
-  postCourtHearing = (slipNumber: number): PageElement => this.getByDataQa('post-court-hearing', slipNumber)
+  courtHearing = (type: string, slipNumber: number) =>
+    this.page.locator(`[data-qa='court-hearing---${type}-${slipNumber}']`)
 
-  anotherPrison = (slipNumber: number): PageElement => cy.get(`[data-qa="another-prison-${slipNumber}"]`)
+  postCourtHearing = (slipNumber: number) => this.getByDataQa('post-court-hearing', slipNumber)
 
-  legalAppointment = (slipNumber: number): PageElement => cy.get(`[data-qa="legal-appointment-${slipNumber}"]`)
+  anotherPrison = (slipNumber: number) => this.getByDataQa('another-prison', slipNumber)
 
-  pickUpTime = (slipNumber: number): PageElement => this.getByDataQa('pick-up-time', slipNumber)
+  legalAppointment = (slipNumber: number) => this.getByDataQa('legal-appointment', slipNumber)
 
-  location = (slipNumber: number): PageElement => this.getByDataQa('location', slipNumber)
+  pickUpTime = (slipNumber: number) => this.getByDataQa('pick-up-time', slipNumber)
 
-  notes = (slipNumber: number): PageElement => this.getByDataQa('notes', slipNumber)
+  location = (slipNumber: number) => this.getByDataQa('location', slipNumber)
 
-  assertNoPickUpTime = (slipNumber: number) => this.getByDataQa('pick-up-time', slipNumber).should('not.exist')
+  notes = (slipNumber: number) => this.getByDataQa('notes', slipNumber)
 
-  private getByDataQa = (dataQa: string, slipNumber: number): PageElement =>
-    cy.get(`[data-qa="${dataQa}-${slipNumber}"]`)
+  private getByDataQa = (dataQa: string, slipNumber: number) => this.page.locator(`[data-qa='${dataQa}-${slipNumber}']`)
 }

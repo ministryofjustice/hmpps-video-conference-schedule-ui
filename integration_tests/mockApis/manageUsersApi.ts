@@ -1,16 +1,36 @@
-import { stubGet } from './wiremock'
-
-const stubUser = (name: string = 'john smith') =>
-  stubGet('/manage-users-api/users/USER1', {
-    username: 'USER1',
-    active: true,
-    userId: '123456',
-    authSource: 'nomis',
-    activeCaseLoadId: 'MDI',
-    name,
-  })
+import type { SuperAgentRequest } from 'superagent'
+import { stubFor } from './wiremock'
 
 export default {
-  stubManageUsersPing: () => stubGet('/manage-users-api/health/ping'),
-  stubUser,
+  stubUser: (name: string = 'john smith'): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/example-api/health/ping',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          username: 'USER1',
+          active: true,
+          userId: '123456',
+          authSource: 'nomis',
+          activeCaseLoadId: 'MDI',
+          name,
+        },
+      },
+    }),
+  stubPing: (httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/manage-users-api/health/ping',
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
+      },
+    }),
 }
