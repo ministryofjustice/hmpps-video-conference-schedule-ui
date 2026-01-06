@@ -38,7 +38,7 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
   return parse(date, fromFormat, new Date())
 }
 
-export const parseDatePickerDate = (datePickerDate: string): Date => {
+export const parseDatePickerDate = (datePickerDate: string): Date | null => {
   if (!datePickerDate) return null
 
   const dateFormatPattern = /(\d{1,2})([-/,. ])(\d{1,2})[-/,. ](\d{2,4})/
@@ -46,6 +46,7 @@ export const parseDatePickerDate = (datePickerDate: string): Date => {
   if (!dateFormatPattern.test(datePickerDate)) return new Date(NaN)
 
   const dateMatches = datePickerDate.match(dateFormatPattern)
+  if (!dateMatches) return new Date(NaN)
 
   const separator = dateMatches[2]
   const year = dateMatches[4]
