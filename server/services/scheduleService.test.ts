@@ -270,6 +270,7 @@ describe('Schedule service', () => {
         probationMeetingTypeDescription: 'Recall report',
         updatedBy: 'jsmith',
         updatedTime: '2024-12-12T11:59:00Z',
+        probationOfficerName: 'Probation Officer Name',
       },
       {
         videoBookingId: 4,
@@ -1133,6 +1134,7 @@ describe('Schedule service', () => {
               viewAppointmentLink: 'http://localhost:3000/appointment-details/8',
               cancelledBy: 'External user',
               cancelledTime: '2024-12-12T11:59:00Z',
+              probationOfficerName: 'Probation Officer Name',
             },
           ],
           [
