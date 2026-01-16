@@ -55,6 +55,7 @@ export default class DownloadCsvHandler implements PageHandler {
         'Last updated': item.lastUpdatedOrCreated
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
+        'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
       })),
     )
   }
@@ -76,6 +77,7 @@ export default class DownloadCsvHandler implements PageHandler {
         'Last updated': item.lastUpdatedOrCreated
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
+        'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
       })),
     )
   }
@@ -91,5 +93,11 @@ export default class DownloadCsvHandler implements PageHandler {
     }
 
     return undefined
+  }
+
+  private probationOfficerNameOrUndefined = (item: ScheduleItem) => {
+    return item.appointmentTypeDescription === 'Probation Meeting'
+      ? item.probationOfficerName || 'Not yet known'
+      : undefined
   }
 }

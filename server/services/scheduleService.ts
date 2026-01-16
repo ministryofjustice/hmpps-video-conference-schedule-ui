@@ -62,6 +62,7 @@ export type ScheduleItem = {
   lastUpdatedOrCreated: string
   hmctsNumber?: string
   notesForPrisoner?: string
+  probationOfficerName?: string
 }
 
 export type DailySchedule = {
@@ -217,6 +218,7 @@ export default class ScheduleService {
       lastUpdatedOrCreated: updatedTime || createdTime,
       hmctsNumber: videoLinkRequired ? bvlsAppointment.hmctsNumber : undefined,
       notesForPrisoner: bvlsAppointment?.notesForPrisoners || scheduledAppointment.notesForPrisoner || undefined,
+      probationOfficerName: bvlsAppointment?.probationOfficerName || undefined,
     }
   }
 
