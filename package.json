@@ -95,12 +95,12 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.975.0",
+    "@aws-sdk/client-sqs": "^3.984.0",
     "@microsoft/applicationinsights-web": "^3.3.11",
     "@ministryofjustice/frontend": "^3.7.2",
-    "@ministryofjustice/hmpps-auth-clients": "^1.0.1",
-    "@ministryofjustice/hmpps-connect-dps-components": "^5.2.3",
-    "@ministryofjustice/hmpps-monitoring": "^1.0.0",
+    "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
+    "@ministryofjustice/hmpps-connect-dps-components": "^5.3.0",
+    "@ministryofjustice/hmpps-monitoring": "^1.0.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
@@ -125,18 +125,18 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "playwright": "1.58.0",
+    "playwright": "1.58.1",
     "redis": "^4.7.1",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.3.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.0",
-    "@ministryofjustice/eslint-config-hmpps": "1.0.2",
+    "@axe-core/playwright": "^4.11.1",
+    "@ministryofjustice/eslint-config-hmpps": "1.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^0.1.0",
-    "@playwright/test": "^1.58.0",
+    "@playwright/test": "^1.58.1",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@tsconfig/node24": "^24.0.4",
@@ -150,7 +150,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.23",
-    "@types/node": "^22.19.7",
+    "@types/node": "^22.19.9",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -195,7 +195,8 @@
     "js-yaml": "^4.1.0",
     "undici": "^7.18.2",
     "@ministryofjustice/hmpps-npm-script-allowlist@0.0.3": {
-      "tar": "^7.5.6"
+      "tar": "^7.5.7",
+      "@isaacs/brace-expansion": "^5.0.1"
     },
     "mocha@10.7.3": {
       "diff": "^5.2.2"

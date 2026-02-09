@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test'
-import AxeBuilder from '@axe-core/playwright'
+import { AxeBuilder } from '@axe-core/playwright'
 
 export default class AbstractPage {
   readonly page: Page
