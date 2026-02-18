@@ -95,11 +95,11 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.984.0",
+    "@aws-sdk/client-sqs": "^3.992.0",
     "@microsoft/applicationinsights-web": "^3.3.11",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
-    "@ministryofjustice/hmpps-connect-dps-components": "^5.3.0",
+    "@ministryofjustice/hmpps-connect-dps-components": "^5.3.2",
     "@ministryofjustice/hmpps-monitoring": "^1.0.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
@@ -125,7 +125,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "playwright": "1.58.1",
+    "playwright": "1.58.2",
     "redis": "^4.7.1",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.3.0",
@@ -136,7 +136,7 @@
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^0.1.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.58.2",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@tsconfig/node24": "^24.0.4",
@@ -150,7 +150,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.23",
-    "@types/node": "^22.19.9",
+    "@types/node": "^22.19.11",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -189,17 +189,18 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "js-yaml": "overrides dependency pulled in by grunt"
+    "fast-xml-parser": "overrides dependency pulled in by aws-sdk/client-sqs",
+    "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
   "overrides": {
-    "js-yaml": "^4.1.0",
-    "undici": "^7.18.2",
     "@ministryofjustice/hmpps-npm-script-allowlist@0.0.3": {
-      "tar": "^7.5.7",
+      "tar": "^7.5.9",
       "@isaacs/brace-expansion": "^5.0.1"
     },
-    "mocha@10.7.3": {
-      "diff": "^5.2.2"
+    "fast-xml-parser": "^5.3.6",
+    "qs": "^6.15.0",
+    "sinon": {
+      "diff": "^8.0.3"
     }
   }
 }
