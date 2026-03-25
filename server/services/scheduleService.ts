@@ -251,7 +251,8 @@ export default class ScheduleService {
         bvlsAppointment.prisonerNumber === appointment.offenderNo &&
         bvlsAppointment.startTime === appointment.startTime &&
         bvlsAppointment.endTime === appointment.endTime &&
-        bvlsAppointment.dpsLocationId === appointment.dpsLocationId
+        bvlsAppointment.dpsLocationId === appointment.dpsLocationId &&
+        ['VLB', 'VLPM'].includes(appointment.appointmentTypeCode)
       )
     })
   }
