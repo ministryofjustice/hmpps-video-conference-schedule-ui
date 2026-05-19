@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1043.0",
+    "@aws-sdk/client-sqs": "^3.1045.0",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
@@ -125,7 +125,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "playwright": "1.59.1",
+    "playwright": "1.60.0",
     "redis": "^4.7.1",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.3.0",
@@ -134,9 +134,9 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5",
     "@ministryofjustice/hmpps-precommit-hooks": "^0.1.0",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.60.0",
     "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@tsconfig/node24": "^24.0.4",
@@ -150,7 +150,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^22.19.17",
+    "@types/node": "^22.19.19",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -171,7 +171,7 @@
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-rollup": "^12.0.0",
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
     "jest-html-reporter": "^4.4.0",
     "jest-junit": "^16.0.0",
     "jsonwebtoken": "^9.0.3",
@@ -188,11 +188,9 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "minimatch": "overrides dependency pulled in by numerous grunt dev dependencies",
     "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
   "overrides": {
-    "qs": "^6.15.0",
     "minimatch@>3.0.0 <3.1.4": "^3.1.4"
   }
 }
