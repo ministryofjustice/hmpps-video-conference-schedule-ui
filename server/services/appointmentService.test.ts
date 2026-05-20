@@ -187,6 +187,7 @@ describe('Appointment service', () => {
         updatedTime: '2024-12-11T10:00:00Z',
         cancelledTime: '2024-12-11T10:00:00Z',
         cancelledBy: 'Fred',
+        extraInformation: 'notes for staff',
       },
     ] as ActivitiesAndAppointmentsApiAppointment[]
 
@@ -394,6 +395,7 @@ describe('Appointment service', () => {
           cancelledBy: 'Fred',
           dpsLocationId: '00000000-0000-0000-0000-000000000000',
           viewAppointmentLink: 'http://localhost:3000/appointments/6',
+          notesForStaff: 'notes for staff',
         },
       ])
 

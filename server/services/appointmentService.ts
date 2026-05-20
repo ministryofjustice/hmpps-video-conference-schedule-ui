@@ -14,6 +14,7 @@ export type Appointment = PrisonApiAppointment & {
   updatedTime?: string
   cancelledTime?: string
   cancelledBy?: string
+  notesForStaff?: string
   notesForPrisoner?: string
 }
 
@@ -74,6 +75,7 @@ export default class AppointmentService {
             updatedTime: apt.updatedTime,
             cancelledTime: apt.cancelledTime,
             cancelledBy: apt.cancelledBy,
+            notesForStaff: apt.extraInformation,
             notesForPrisoner: apt.prisonerExtraInformation,
           })),
         ),
