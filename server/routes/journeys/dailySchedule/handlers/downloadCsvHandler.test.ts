@@ -29,24 +29,24 @@ const appSetup = (journeySession = {}, prisonSupplier = moorlandPrisonPickUpTime
 }
 
 const expectedCsvNoPickupTimes =
-  'Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name' +
-  '\nSmith John,ABC123,A-1-001,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,' +
-  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,' +
-  '\nDoe John,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,' +
-  '\nDoe Jane,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,' +
-  '\nBat Man,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known' +
-  '\nFlintrock Fred,BC5000,B-1-5000,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,' +
-  '\nLawless Lucy,ZZ5000,X-1-4000,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name'
+  'Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
+  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
+  '\nDoe John,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
+  '\nDoe Jane,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
+  '\nBat Man,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
+  '\nFlintrock Fred,BC5000,B-1-5000,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,' +
+  '\nLawless Lucy,ZZ5000,X-1-4000,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,"Probation meeting staff notes with special characters, "" \' À"'
 
 const expectedCsvWithPickupTimes =
-  'Prisoner name,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name' +
-  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,' +
-  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,' +
-  '\nDoe John,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,' +
-  '\nDoe Jane,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,' +
-  '\nBat Man,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known' +
-  '\nFlintrock Fred,BC5000,B-1-5000,15:30,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,' +
-  '\nLawless Lucy,ZZ5000,X-1-4000,15:30,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name'
+  'Prisoner name,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
+  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
+  '\nDoe John,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
+  '\nDoe Jane,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
+  '\nBat Man,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
+  '\nFlintrock Fred,BC5000,B-1-5000,15:30,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,' +
+  '\nLawless Lucy,ZZ5000,X-1-4000,15:30,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,"Probation meeting staff notes with special characters, "" \' À"'
 
 beforeEach(() => {
   scheduleService.getSchedule.mockResolvedValue({
@@ -73,6 +73,7 @@ beforeEach(() => {
           videoLink: 'http://video.url',
           videoLinkRequired: true,
           videoLinkId: 1,
+          notesForStaff: 'Court hearing staff notes',
         },
       ],
       [
@@ -131,6 +132,7 @@ beforeEach(() => {
           lastUpdatedOrCreated: undefined,
           videoLinkRequired: true,
           probationOfficerName: 'Probation Officer Name',
+          notesForStaff: 'Probation meeting staff notes with special characters, " \' À',
         },
       ],
     ],

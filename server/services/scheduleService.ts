@@ -61,6 +61,7 @@ export type ScheduleItem = {
   cancelledBy?: string
   lastUpdatedOrCreated: string
   hmctsNumber?: string
+  notesForStaff?: string
   notesForPrisoner?: string
   probationOfficerName?: string
 }
@@ -217,6 +218,7 @@ export default class ScheduleService {
       cancelledBy: await this.getCancelledBy(scheduledAppointment, bvlsAppointment, user),
       lastUpdatedOrCreated: updatedTime || createdTime,
       hmctsNumber: videoLinkRequired ? bvlsAppointment.hmctsNumber : undefined,
+      notesForStaff: bvlsAppointment?.notesForStaff || scheduledAppointment.notesForStaff || undefined,
       notesForPrisoner: bvlsAppointment?.notesForPrisoners || scheduledAppointment.notesForPrisoner || undefined,
       probationOfficerName: bvlsAppointment?.probationOfficerName || undefined,
     }

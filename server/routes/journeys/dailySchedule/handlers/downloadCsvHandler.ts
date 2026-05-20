@@ -56,6 +56,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        'Staff notes': item.notesForStaff || '',
       })),
     )
   }
@@ -78,6 +79,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        'Staff notes': item.notesForStaff || '',
       })),
     )
   }
