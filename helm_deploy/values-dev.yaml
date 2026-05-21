@@ -24,6 +24,7 @@ generic-service:
     PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     PRISON_REGISTER_API_URL: "https://prison-register-dev.hmpps.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
+    FEATURE_INCLUDE_STAFF_NOTES_IN_CSV_DOWNLOAD: "true"
 
 generic-prometheus-alerts:
   businessHoursOnly: true
