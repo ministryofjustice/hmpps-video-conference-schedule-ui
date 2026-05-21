@@ -185,5 +185,6 @@ export default {
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
+    includeStaffNotesInCsvDownload: get('FEATURE_INCLUDE_STAFF_NOTES_IN_CSV_DOWNLOAD', false) === 'true',
   },
 }
