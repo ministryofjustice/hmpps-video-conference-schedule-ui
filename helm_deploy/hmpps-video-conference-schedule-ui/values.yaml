@@ -34,7 +34,6 @@ generic-service:
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "hmpps-video-conference-schedule-ui"
     FEATURE_TEMPORARY_BLOCKING_LOCATIONS: "false"
-    FEATURE_INCLUDE_STAFF_NOTES_IN_CSV_DOWNLOAD: "true"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

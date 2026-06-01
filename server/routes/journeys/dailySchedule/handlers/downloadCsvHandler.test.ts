@@ -9,7 +9,6 @@ import {
 } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
-import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/scheduleService')
@@ -50,8 +49,6 @@ const expectedCsvWithPickupTimes =
   '\nLawless Lucy,ZZ5000,X-1-4000,15:30,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,"Probation meeting staff notes with special characters, "" \' À"'
 
 beforeEach(() => {
-  config.featureToggles.includeStaffNotesInCsvDownload = true
-
   scheduleService.getSchedule.mockResolvedValue({
     appointmentGroups: [
       [

@@ -8,8 +8,6 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import MovementSlipsHandler from './handlers/movementSlips'
-import config from '../../../config'
-import DownloadCsvHandlerDeprecated from './handlers/downloadCsvHandlerDeprecated'
 
 export default function Index({
   auditService,
@@ -31,14 +29,7 @@ export default function Index({
 
   getAndPost('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
   get('/clear-filter', new ClearFilterHandler())
-
-  // This feature toggle is temporary and will be removed once the feature has been turned on
-  if (config.featureToggles.includeStaffNotesInCsvDownload) {
-    get('/download-csv', new DownloadCsvHandler(scheduleService))
-  } else {
-    // Can be removed once the feature has been turned on
-    get('/download-csv', new DownloadCsvHandlerDeprecated(scheduleService))
-  }
+  get('/download-csv', new DownloadCsvHandler(scheduleService))
 
   getAndPost('/select-date', new SelectDateHandler())
   get('/movement-slips', new MovementSlipsHandler(scheduleService))
