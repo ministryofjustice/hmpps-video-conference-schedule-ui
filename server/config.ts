@@ -173,6 +173,15 @@ export default {
       },
       agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000))),
     },
+    officialVisitsApi: {
+      url: get('OFFICIAL_VISITS_API_URL', 'http://localhost:8090', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('OFFICIAL_VISITS_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('OFFICIAL_VISITS_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('OFFICIAL_VISITS_API_TIMEOUT_RESPONSE', 30000))),
+    },
   },
   sqs: {
     audit: auditConfig(),
@@ -185,5 +194,6 @@ export default {
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
+    includeOfficialVisits: get('FEATURE_INCLUDE_OFFICIAL_VISITS', false) === 'true',
   },
 }
