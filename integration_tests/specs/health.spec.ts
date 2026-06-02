@@ -12,6 +12,7 @@ import activitiesAndAppointmentsApi from '../mockApis/activitiesAndAppointmentsA
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import prisonRegisterApi from '../mockApis/prisonRegisterApi'
 import componentsApi from '../mockApis/componentsApi'
+import officialVisitsApi from '../mockApis/officialVisitsApi'
 
 test.describe('Health', () => {
   test.afterEach(async () => {
@@ -28,6 +29,7 @@ test.describe('Health', () => {
         manageUsersApi.stubPing(),
         locationsInsidePrisonApi.stubPing(),
         nomisMappingApi.stubPing(),
+        officialVisitsApi.stubPing(),
         prisonApi.stubPing(),
         prisonRegisterApi.stubPing(),
         prisonerSearchApi.stubPing(),
@@ -64,6 +66,7 @@ test.describe('Health', () => {
         manageUsersApi.stubPing(),
         locationsInsidePrisonApi.stubPing(),
         nomisMappingApi.stubPing(),
+        officialVisitsApi.stubPing(),
         prisonApi.stubPing(),
         prisonRegisterApi.stubPing(),
         prisonerSearchApi.stubPing(),
