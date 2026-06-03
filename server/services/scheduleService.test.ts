@@ -12,6 +12,9 @@ import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User } from '../@types/manageUsersApi/types'
 import ReferenceDataService, { CellsByWing } from './referenceDataService'
+import OfficialVisitsService from './officialVisitsService'
+import { OfficialVisit } from '../@types/officialVisitsApi/types'
+import config from '../config'
 
 jest.mock('../services/appointmentService')
 jest.mock('../services/referenceDataService')
@@ -19,6 +22,7 @@ jest.mock('../data/nomisMappingApiClient')
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerSearchApiClient')
 jest.mock('../data/manageUsersApiClient')
+jest.mock('../services/officialVisitsService')
 
 const user = createUser([])
 
@@ -29,12 +33,14 @@ describe('Schedule service', () => {
   let bookAVideoLinkApiClient: jest.Mocked<BookAVideoLinkApiClient>
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
+  let officialVisitsService: jest.Mocked<OfficialVisitsService>
 
   let scheduleService: ScheduleService
 
   let appointments: Appointment[]
   let bvlsAppointments: BvlsAppointment[]
   let prisoners: Prisoner[]
+  let officialVisits: OfficialVisit[]
 
   beforeEach(() => {
     appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
@@ -43,6 +49,7 @@ describe('Schedule service', () => {
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
     manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
+    officialVisitsService = new OfficialVisitsService(null) as jest.Mocked<OfficialVisitsService>
     scheduleService = new ScheduleService(
       appointmentService,
       referenceDataService,
@@ -50,6 +57,7 @@ describe('Schedule service', () => {
       bookAVideoLinkApiClient,
       prisonerSearchApiClient,
       manageUsersApiClient,
+      officialVisitsService,
     )
 
     appointments = [
@@ -289,6 +297,29 @@ describe('Schedule service', () => {
       },
     ] as BvlsAppointment[]
 
+    officialVisits = [
+      {
+        officialVisitId: 1,
+        visitStatus: 'SCHEDULED',
+        visitStatusDescription: 'Scheduled',
+        visitTypeCode: 'VIDEO',
+        visitTypeDescription: 'Video visit',
+        visitDate: '2024-12-12',
+        startTime: '10:00',
+        endTime: '11:00',
+        dpsLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
+        locationDescription: 'Legal visits ward',
+        visitSlotId: 1,
+        staffNotes: 'Legal representation details',
+        prisonerNotes: 'Please arrive 10 minutes early',
+        createdBy: 'Fred Bloggs',
+        createdTime: '2024-12-12 14:45',
+        prisoner: {
+          prisonerNumber: 'ABC123',
+        },
+      },
+    ] as OfficialVisit[]
+
     prisoners = [
       {
         prisonerNumber: 'ABC123',
@@ -308,9 +339,7 @@ describe('Schedule service', () => {
       },
     ] as Prisoner[]
 
-    appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
     referenceDataService.getCellsByWing.mockResolvedValue([{ fullLocationPath: 'A', cells: ['A-001'] }] as CellsByWing)
-    bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
     nomisMappingApiClient.getLocationMappingsByNomisIds.mockResolvedValue([
       { nomisLocationId: 1, dpsLocationId: 'abc-123' },
@@ -326,7 +355,13 @@ describe('Schedule service', () => {
     )
   })
 
-  describe('getSchedule', () => {
+  describe('getSchedule without official visits', () => {
+    beforeEach(() => {
+      appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
+      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
+      officialVisitsService.getOfficialVisits.mockResolvedValue(officialVisits)
+    })
+
     it('builds a daily schedule', async () => {
       const date = new Date('2024-12-12')
       const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
@@ -1975,6 +2010,69 @@ describe('Schedule service', () => {
       expect(expectedAppointments[0]).toMatchObject({ tags: ['CHECK_AVAILABILITY'] })
       expect(expectedAppointments[1]).toMatchObject({ tags: [] })
       expect(expectedAppointments[2]).toMatchObject({ tags: [] })
+    })
+  })
+
+  describe('getSchedule with official visits', () => {
+    beforeEach(() => {
+      appointmentService.getVideoLinkAppointments.mockResolvedValue([])
+      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue([])
+      officialVisitsService.getOfficialVisits.mockResolvedValue(officialVisits)
+    })
+
+    it('builds a daily schedule with official visit', async () => {
+      config.featureToggles.includeOfficialVisits = true
+      const date = new Date('2024-12-12')
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+      expect(result).toEqual({
+        appointmentGroups: [
+          [
+            {
+              appointmentId: 1,
+              appointmentLocationDescription: 'Legal visits ward',
+              appointmentLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
+              appointmentSubtypeDescription: undefined,
+              appointmentTypeCode: 'VIDEO',
+              appointmentTypeDescription: 'Official Visit - Video',
+              cancelledBy: undefined,
+              cancelledTime: undefined,
+              endTime: '11:00',
+              externalAgencyCode: undefined,
+              externalAgencyDescription: undefined,
+              hmctsNumber: undefined,
+              lastUpdatedOrCreated: '2024-12-12 14:45',
+              notesForPrisoner: undefined,
+              notesForStaff: undefined,
+              prisoner: {
+                cellLocation: 'A-001',
+                firstName: 'Joe',
+                hasAlerts: false,
+                inPrison: true,
+                lastName: 'Bloggs',
+                prisonerNumber: 'ABC123',
+              },
+              probationOfficerName: undefined,
+              startTime: '10:00',
+              status: 'ACTIVE',
+              tags: [],
+              videoBookingId: undefined,
+              videoLink: undefined,
+              videoLinkRequired: undefined,
+              viewAppointmentLink: undefined,
+            },
+          ],
+        ],
+        appointmentsListed: 1,
+        numberOfPrisoners: 1,
+        cancelledAppointments: 0,
+        missingVideoLinks: 0,
+      })
+
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
+      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123'], user)
+      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
     })
   })
 })

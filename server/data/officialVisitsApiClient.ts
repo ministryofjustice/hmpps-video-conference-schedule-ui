@@ -20,6 +20,7 @@ export default class OfficialVisitsApiClient extends RestClient {
         data: {
           startDate: formatDate(onDate, 'yyyy-MM-dd'),
           endDate: formatDate(onDate, 'yyyy-MM-dd'),
+          visitTypes: ['VIDEO'],
         } as OfficialVisitSearchCriteria,
       },
       user,

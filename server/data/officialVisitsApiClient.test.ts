@@ -36,6 +36,7 @@ describe('prisonApiClient', () => {
         .post(`/official-visit/prison/${prisonCode}/find-by-criteria?page=0&size=200`, {
           startDate: onDate,
           endDate: onDate,
+          visitTypes: ['VIDEO'],
         } as RequestBodyMatcher)
         .matchHeader('authorization', 'Bearer systemToken')
         .reply(200, mockOfficialVisitSearchResults)

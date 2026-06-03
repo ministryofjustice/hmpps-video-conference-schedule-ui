@@ -15,6 +15,7 @@ import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import NomisMappingApiClient from './nomisMappingApiClient'
 import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
+import OfficialVisitsApiClient from './officialVisitsApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
@@ -32,6 +33,7 @@ export const dataAccess = () => ({
   prisonRegisterApiClient: new PrisonRegisterApiClient(),
   prisonerSearchApiClient: new PrisonerSearchApiClient(),
   locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(),
+  officialVisitsApiClient: new OfficialVisitsApiClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
