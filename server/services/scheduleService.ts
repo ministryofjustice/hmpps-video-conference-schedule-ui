@@ -22,6 +22,9 @@ import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
 import ReferenceDataService, { CellsByWing } from './referenceDataService'
 import { LocationMapping } from '../@types/nomisMappingApi/types'
+import OfficialVisitsService from './officialVisitsService'
+import config from '../config'
+import { OfficialVisit } from '../@types/officialVisitsApi/types'
 
 const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
@@ -82,6 +85,7 @@ export default class ScheduleService {
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
     private readonly manageUsersApiClient: ManageUsersApiClient,
+    private readonly officialVisitsService: OfficialVisitsService,
   ) {}
 
   public async getSchedule(
@@ -91,12 +95,20 @@ export default class ScheduleService {
     showStatus: 'ACTIVE' | 'CANCELLED',
     user: Express.User,
   ): Promise<DailySchedule> {
-    const [scheduledAppointments, bvlsAppointments] = await Promise.all([
+    const [scheduledAppointments, bvlsAppointments, officialVisits] = await Promise.all([
       this.appointmentService.getVideoLinkAppointments(prisonId, date, filters?.period, user),
       this.bookAVideoLinkApiClient.getVideoLinkAppointments(prisonId, date, user),
+      config.featureToggles.includeOfficialVisits
+        ? this.officialVisitsService.getOfficialVisits(prisonId, date, user)
+        : ([] as OfficialVisit[]),
     ])
 
-    const prisonerNumbers = _.uniq(scheduledAppointments.map(appointment => appointment.offenderNo))
+    const prisonerNumbers = _.uniq(
+      scheduledAppointments
+        .map(appointment => appointment.offenderNo)
+        .concat(officialVisits.map(ov => ov.prisoner.prisonerNumber)),
+    )
+
     const [prisoners, cellsByWing] = await Promise.all([
       this.prisonerSearchApiClient.getByPrisonerNumbers(prisonerNumbers, user),
       this.referenceDataService.getCellsByWing(prisonId, user),
@@ -118,7 +130,8 @@ export default class ScheduleService {
             appointment.dpsLocationId ||
             nomisLocationIdMappings.find(m => m.nomisLocationId === appointment.locationId)?.dpsLocationId,
         }))
-        .map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user)),
+        .map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user))
+        .concat(officialVisits.map(ov => this.createScheduleItemFromOfficialVisit(ov, prisoners, user))),
     )
 
     const filteredItems = scheduleItems
@@ -224,8 +237,60 @@ export default class ScheduleService {
     }
   }
 
+  private async createScheduleItemFromOfficialVisit(
+    officialVisit: OfficialVisit,
+    prisoners: Prisoner[],
+    user: Express.User,
+  ): Promise<ScheduleItem> {
+    const { createdTime } = officialVisit
+    const { updatedTime } = officialVisit
+
+    return {
+      prisoner: this.getPrisonerFromOfficialVisit(officialVisit, prisoners, user),
+      appointmentId: officialVisit.officialVisitId,
+      status: officialVisit.visitStatus === 'CANCELLED' ? 'CANCELLED' : 'ACTIVE',
+      startTime: officialVisit.startTime,
+      endTime: officialVisit.endTime,
+      appointmentTypeCode: officialVisit.visitTypeCode,
+      appointmentTypeDescription: 'Official Visit - Video',
+      appointmentLocationId: officialVisit.dpsLocationId,
+      appointmentLocationDescription: officialVisit.locationDescription,
+      videoBookingId: undefined,
+      videoLinkRequired: undefined,
+      videoLink: undefined,
+      appointmentSubtypeDescription: undefined,
+      externalAgencyCode: undefined,
+      externalAgencyDescription: undefined,
+      tags: [],
+      viewAppointmentLink: undefined,
+      cancelledTime: officialVisit.visitStatus === 'CANCELLED' ? officialVisit.updatedTime : undefined,
+      cancelledBy:
+        officialVisit.visitStatus === 'CANCELLED'
+          ? await this.getCancelledByFromOfficialVisit(officialVisit, user)
+          : undefined,
+      lastUpdatedOrCreated: updatedTime || createdTime,
+      hmctsNumber: undefined,
+      notesForStaff: undefined,
+      notesForPrisoner: undefined,
+      probationOfficerName: undefined,
+    }
+  }
+
   private getPrisoner(scheduledAppointment: Appointment, prisoners: Prisoner[], user: Express.User) {
     const prisoner = prisoners.find(p => p.prisonerNumber === scheduledAppointment.offenderNo)
+
+    return {
+      prisonerNumber: prisoner.prisonerNumber,
+      firstName: prisoner.firstName,
+      lastName: prisoner.lastName,
+      cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
+      inPrison: prisoner.prisonId === user.activeCaseLoadId,
+      hasAlerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).length > 0,
+    }
+  }
+
+  private getPrisonerFromOfficialVisit(officialVisit: OfficialVisit, prisoners: Prisoner[], user: Express.User) {
+    const prisoner = prisoners.find(p => p.prisonerNumber === officialVisit.prisoner.prisonerNumber)
 
     return {
       prisonerNumber: prisoner.prisonerNumber,
@@ -270,6 +335,22 @@ export default class ScheduleService {
 
       if (cancelledByUser) {
         return bvlsAppointment && cancelledByUser.authSource === 'auth' ? 'External user' : cancelledByUser.name
+      }
+    }
+    return undefined
+  }
+
+  private async getCancelledByFromOfficialVisit(officialVisit: OfficialVisit, user: Express.User) {
+    const cancelledBy = officialVisit.updatedBy
+    if (cancelledBy) {
+      const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user).catch(err => {
+        if (err.status !== 404) {
+          throw err
+        }
+      })
+
+      if (cancelledByUser) {
+        return cancelledByUser.name
       }
     }
     return undefined

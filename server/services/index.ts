@@ -4,6 +4,7 @@ import PrisonService from './prisonService'
 import ScheduleService from './scheduleService'
 import AppointmentService from './appointmentService'
 import ReferenceDataService from './referenceDataService'
+import OfficialVisitsService from './officialVisitsService'
 
 export const services = () => {
   const {
@@ -17,6 +18,7 @@ export const services = () => {
     prisonerSearchApiClient,
     activitiesAndAppointmentsApiClient,
     locationsInsidePrisonApiClient,
+    officialVisitsApiClient,
   } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
@@ -31,6 +33,7 @@ export const services = () => {
     activitiesAndAppointmentsApiClient,
     bookAVideoLinkApiClient,
   )
+  const officialVisitsService = new OfficialVisitsService(officialVisitsApiClient)
   const scheduleService = new ScheduleService(
     appointmentService,
     referenceDataService,
@@ -38,6 +41,7 @@ export const services = () => {
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
     manageUsersApiClient,
+    officialVisitsService,
   )
 
   return {
