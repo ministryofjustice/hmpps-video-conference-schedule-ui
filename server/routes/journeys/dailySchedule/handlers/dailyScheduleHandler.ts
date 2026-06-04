@@ -56,8 +56,8 @@ export default class DailyScheduleHandler implements PageHandler {
     const [appointmentsRolledOut, appointmentTypes, appointmentLocations, courtsAndProbationTeams, wings, schedule] =
       await Promise.all([
         this.prisonService.isAppointmentsRolledOutAt(user.activeCaseLoadId, user),
-        this.referenceDataService.getAppointmentCategories(user),
-        this.referenceDataService.getAppointmentLocations(user.activeCaseLoadId, user),
+        this.referenceDataService.getVideoEventTypes(user),
+        this.referenceDataService.getVideoLocations(user.activeCaseLoadId, user),
         this.referenceDataService.getCourtsAndProbationTeams(user),
         this.referenceDataService.getCellsByWing(user.activeCaseLoadId, user),
         this.scheduleService.getSchedule(
@@ -98,7 +98,10 @@ export default class DailyScheduleHandler implements PageHandler {
       wing || appointmentType || period || appointmentLocation || courtOrProbationTeam
         ? { wing, appointmentType, period, appointmentLocation, courtOrProbationTeam }
         : undefined
-    req.session.journey.scheduleFilters.caseLoadId = res.locals.user.activeCaseLoadId ?? undefined
+
+    if (req.session.journey.scheduleFilters) {
+      req.session.journey.scheduleFilters.caseLoadId = res.locals.user.activeCaseLoadId ?? undefined
+    }
 
     res.redirect(req.get('Referrer') || '/')
   }

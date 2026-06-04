@@ -5,6 +5,7 @@ import { Location, ResidentialHierarchy } from '../@types/locationsInsidePrisonA
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import ActivitiesAndAppointmentsApiClient from '../data/activitiesAndAppointmentsApiClient'
 import { Court, ProbationTeam } from '../@types/bookAVideoLinkApi/types'
+import config from '../config'
 
 jest.mock('../data/locationsInsidePrisonApiClient')
 jest.mock('../data/activitiesAndAppointmentsApiClient')
@@ -31,11 +32,11 @@ describe('Reference data service', () => {
     )
   })
 
-  describe('getAppointmentLocations', () => {
+  describe('getVideoLocations', () => {
     it('Retrieves the location by its nomis ID', async () => {
       locationsInsidePrisonApiClient.getAppointmentLocations.mockResolvedValue([{ id: 'abc-123' } as Location])
 
-      const result = await referenceDataService.getAppointmentLocations('MDI', user)
+      const result = await referenceDataService.getVideoLocations('MDI', user)
 
       expect(result).toEqual([{ id: 'abc-123' }])
       expect(locationsInsidePrisonApiClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
@@ -59,6 +60,43 @@ describe('Reference data service', () => {
         { code: 'VLOO', description: 'Video Link - Official Other' },
       ])
       expect(activitiesAndAppointmentsApiClient.getAppointmentCategories).toHaveBeenCalledWith(user)
+    })
+  })
+
+  describe('getVideoEventTypes', () => {
+    it('Fetches the video event types from A&A', async () => {
+      activitiesAndAppointmentsApiClient.getAppointmentCategories.mockResolvedValue([
+        { code: 'CHAP', description: 'Chaplaincy' },
+        { code: 'VLB', description: 'Video Link - Court Hearing' },
+        { code: 'VLPM', description: 'Video Link - Probation Meeting' },
+        { code: 'VLOO', description: 'Video Link - Official Other' },
+      ])
+
+      const result = await referenceDataService.getVideoEventTypes(user)
+
+      expect(result).toEqual([
+        { code: 'VLB', description: 'Video Link - Court Hearing' },
+        { code: 'VLPM', description: 'Video Link - Probation Meeting' },
+        { code: 'VLOO', description: 'Video Link - Official Other' },
+      ])
+      expect(activitiesAndAppointmentsApiClient.getAppointmentCategories).toHaveBeenCalledWith(user)
+    })
+
+    it('Fetches the video event types from service', async () => {
+      config.featureToggles.includeOfficialVisits = true
+
+      const result = await referenceDataService.getVideoEventTypes(user)
+
+      expect(result).toEqual([
+        { code: 'VLAP', description: 'Video Link - Another Prison' },
+        { code: 'VLB', description: 'Video Link - Court Hearing' },
+        { code: 'VLLA', description: 'Video Link - Legal Appointment' },
+        { code: 'VLOO', description: 'Video Link - Official Other' },
+        { code: 'VLOV', description: 'Video Link - Official Visit' },
+        { code: 'VLPA', description: 'Video Link - Parole Hearing' },
+        { code: 'VLPM', description: 'Video Link - Probation Meeting' },
+      ])
+      expect(activitiesAndAppointmentsApiClient.getAppointmentCategories).not.toHaveBeenCalledWith(user)
     })
   })
 

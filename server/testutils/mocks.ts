@@ -16,7 +16,7 @@ export const mockOfficialVisit = {
   prisonDescription: 'Moorland (HMP & YOI)',
   visitStatus: 'SCHEDULED',
   visitStatusDescription: 'Completed',
-  visitTypeCode: 'TELEPHONE',
+  visitTypeCode: 'VIDEO',
   visitTypeDescription: 'Telephone',
   visitDate: '2022-12-23',
   startTime: '10:00',

@@ -2033,7 +2033,7 @@ describe('Schedule service', () => {
               appointmentLocationDescription: 'Legal visits ward',
               appointmentLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
               appointmentSubtypeDescription: undefined,
-              appointmentTypeCode: 'VIDEO',
+              appointmentTypeCode: 'VLOV',
               appointmentTypeDescription: 'Official Visit - Video',
               cancelledBy: undefined,
               cancelledTime: undefined,
