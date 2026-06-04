@@ -66,8 +66,8 @@ describe('GET', () => {
         })
 
         expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
-        expect(referenceDataService.getAppointmentCategories).toHaveBeenLastCalledWith(user)
-        expect(referenceDataService.getAppointmentLocations).toHaveBeenLastCalledWith('MDI', user)
+        expect(referenceDataService.getVideoEventTypes).toHaveBeenLastCalledWith(user)
+        expect(referenceDataService.getVideoLocations).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getCellsByWing).toHaveBeenLastCalledWith('MDI', user)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
@@ -269,7 +269,7 @@ describe('GET - with pick-up times present', () => {
     referenceDataService.getAppointmentCategories.mockResolvedValue([
       { code: 'VLB', description: 'Video link - court hearing' },
     ])
-    referenceDataService.getAppointmentLocations.mockResolvedValue([{ id: 'test' } as Location])
+    referenceDataService.getVideoLocations.mockResolvedValue([{ id: 'test' } as Location])
     referenceDataService.getCourtsAndProbationTeams.mockResolvedValue([
       { courtId: 1, code: 'MANCM', description: 'Manchester Magistrates', enabled: true },
     ])
@@ -388,5 +388,15 @@ describe('POST', () => {
           caseLoadId: 'MDI',
         }),
       )
+  })
+
+  it('should clear the filter in session', async () => {
+    // Filter is defaulted in the setup at the top of the file
+    return request(app)
+      .post('/')
+      .send({})
+      .expect(302)
+      .expect('location', `/`)
+      .then(() => expectJourneySession(app, 'scheduleFilters', undefined))
   })
 })

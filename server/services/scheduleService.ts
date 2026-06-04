@@ -20,7 +20,7 @@ import { parseDate } from '../utils/utils'
 import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
-import ReferenceDataService, { CellsByWing } from './referenceDataService'
+import ReferenceDataService, { CellsByWing, OFFICIAL_VISIT_TYPE } from './referenceDataService'
 import { LocationMapping } from '../@types/nomisMappingApi/types'
 import OfficialVisitsService from './officialVisitsService'
 import config from '../config'
@@ -251,7 +251,7 @@ export default class ScheduleService {
       status: officialVisit.visitStatus === 'CANCELLED' ? 'CANCELLED' : 'ACTIVE',
       startTime: officialVisit.startTime,
       endTime: officialVisit.endTime,
-      appointmentTypeCode: officialVisit.visitTypeCode,
+      appointmentTypeCode: OFFICIAL_VISIT_TYPE.code,
       appointmentTypeDescription: 'Official Visit - Video',
       appointmentLocationId: officialVisit.dpsLocationId,
       appointmentLocationDescription: officialVisit.locationDescription,
