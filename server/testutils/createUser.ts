@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { HmppsUser } from '../interfaces/hmppsUser'
 
 function createUserToken(authorities: string[]) {
   const payload = {
@@ -15,4 +16,14 @@ function createUserToken(authorities: string[]) {
 
 export default function createUser(authorities: string[]) {
   return { token: createUserToken(authorities), username: 'jbloggs', activeCaseLoadId: 'MDI' } as Express.User
+}
+
+export function createHmppsUser(authorities: string[], roles: string[] = []) {
+  return {
+    token: createUserToken(authorities),
+    username: 'jbloggs',
+    activeCaseLoadId: 'MDI',
+    displayName: 'Hmpps User',
+    roles,
+  } as unknown as HmppsUser
 }
