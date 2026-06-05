@@ -1,6 +1,6 @@
 import OfficialVisitsApiClient from '../data/officialVisitsApiClient'
 import OfficialVisitsService from './officialVisitsService'
-import createUser from '../testutils/createUser'
+import createUser, { createHmppsUser } from '../testutils/createUser'
 import { mockOfficialVisit } from '../testutils/mocks'
 
 jest.mock('../data/officialVisitsApiClient')
@@ -19,6 +19,32 @@ describe('Official visit service', () => {
       officialVisitsApiClient.getOfficialVisits.mockResolvedValue([mockOfficialVisit])
       const result = await officialVisitsService.getOfficialVisits('MDI', new Date('2024-12-12'), createUser([]))
       expect(result).toEqual([mockOfficialVisit])
+    })
+  })
+
+  describe('isPermittedToViewOfficialVisit', () => {
+    it('express user is not permitted to view visits', async () => {
+      const result = officialVisitsService.isPermittedToViewOfficialVisit(createUser([]))
+
+      expect(result).toEqual(false)
+    })
+
+    it('hmpps user is not permitted to view visits', async () => {
+      const result = officialVisitsService.isPermittedToViewOfficialVisit(createHmppsUser([]))
+
+      expect(result).toEqual(false)
+    })
+
+    it('hmpps user with view role is permitted to view visits', async () => {
+      const result = officialVisitsService.isPermittedToViewOfficialVisit(createHmppsUser([], ['OFFVIS_VIEW_ONLY']))
+
+      expect(result).toEqual(true)
+    })
+
+    it('hmpps user with manage role is permitted to view visits', async () => {
+      const result = officialVisitsService.isPermittedToViewOfficialVisit(createHmppsUser([], ['OFFVIS_MANAGE']))
+
+      expect(result).toEqual(true)
     })
   })
 })

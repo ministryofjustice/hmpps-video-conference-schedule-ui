@@ -2,7 +2,7 @@ import sinon from 'sinon'
 import { formatDate, set, startOfToday, startOfTomorrow, startOfYesterday, subMinutes } from 'date-fns'
 import createUser from '../testutils/createUser'
 import AppointmentService, { Appointment } from './appointmentService'
-import ScheduleService from './scheduleService'
+import ScheduleService, { ScheduleItem } from './scheduleService'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
@@ -2014,55 +2014,83 @@ describe('Schedule service', () => {
   })
 
   describe('getSchedule with official visits', () => {
+    let expected: ScheduleItem
+
     beforeEach(() => {
       appointmentService.getVideoLinkAppointments.mockResolvedValue([])
       bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue([])
       officialVisitsService.getOfficialVisits.mockResolvedValue(officialVisits)
+
+      expected = {
+        appointmentId: 1,
+        appointmentLocationDescription: 'Legal visits ward',
+        appointmentLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
+        appointmentSubtypeDescription: undefined,
+        appointmentTypeCode: 'VLOV',
+        appointmentTypeDescription: 'Official Visit - Video',
+        cancelledBy: undefined,
+        cancelledTime: undefined,
+        endTime: '11:00',
+        externalAgencyCode: undefined,
+        externalAgencyDescription: undefined,
+        hmctsNumber: undefined,
+        lastUpdatedOrCreated: '2024-12-12 14:45',
+        notesForPrisoner: undefined,
+        notesForStaff: undefined,
+        prisoner: {
+          cellLocation: 'A-001',
+          firstName: 'Joe',
+          hasAlerts: false,
+          inPrison: true,
+          lastName: 'Bloggs',
+          prisonerNumber: 'ABC123',
+        },
+        probationOfficerName: undefined,
+        startTime: '10:00',
+        status: 'ACTIVE',
+        tags: [],
+        videoBookingId: undefined,
+        videoLink: undefined,
+        videoLinkRequired: undefined,
+        viewAppointmentLink: 'http://localhost:3000/view/visit/1',
+      }
     })
 
-    it('builds a daily schedule with official visit', async () => {
+    it('builds a daily schedule with official visit without view permissions', async () => {
       config.featureToggles.includeOfficialVisits = true
       const date = new Date('2024-12-12')
+      officialVisitsService.isPermittedToViewOfficialVisit.mockReturnValue(false)
+
+      const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
+
+      expected = {
+        ...expected,
+        viewAppointmentLink: undefined,
+      }
+
+      expect(result).toEqual({
+        appointmentGroups: [[expected]],
+        appointmentsListed: 1,
+        numberOfPrisoners: 1,
+        cancelledAppointments: 0,
+        missingVideoLinks: 0,
+      })
+
+      expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
+      expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
+      expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123'], user)
+      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
+    })
+
+    it('builds a daily schedule with official visit with link with view permissions', async () => {
+      config.featureToggles.includeOfficialVisits = true
+      const date = new Date('2024-12-12')
+      officialVisitsService.isPermittedToViewOfficialVisit.mockReturnValue(true)
+
       const result = await scheduleService.getSchedule('MDI', date, undefined, 'ACTIVE', user)
 
       expect(result).toEqual({
-        appointmentGroups: [
-          [
-            {
-              appointmentId: 1,
-              appointmentLocationDescription: 'Legal visits ward',
-              appointmentLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
-              appointmentSubtypeDescription: undefined,
-              appointmentTypeCode: 'VLOV',
-              appointmentTypeDescription: 'Official Visit - Video',
-              cancelledBy: undefined,
-              cancelledTime: undefined,
-              endTime: '11:00',
-              externalAgencyCode: undefined,
-              externalAgencyDescription: undefined,
-              hmctsNumber: undefined,
-              lastUpdatedOrCreated: '2024-12-12 14:45',
-              notesForPrisoner: undefined,
-              notesForStaff: undefined,
-              prisoner: {
-                cellLocation: 'A-001',
-                firstName: 'Joe',
-                hasAlerts: false,
-                inPrison: true,
-                lastName: 'Bloggs',
-                prisonerNumber: 'ABC123',
-              },
-              probationOfficerName: undefined,
-              startTime: '10:00',
-              status: 'ACTIVE',
-              tags: [],
-              videoBookingId: undefined,
-              videoLink: undefined,
-              videoLinkRequired: undefined,
-              viewAppointmentLink: undefined,
-            },
-          ],
-        ],
+        appointmentGroups: [[expected]],
         appointmentsListed: 1,
         numberOfPrisoners: 1,
         cancelledAppointments: 0,

@@ -244,6 +244,7 @@ export default class ScheduleService {
   ): Promise<ScheduleItem> {
     const { createdTime } = officialVisit
     const { updatedTime } = officialVisit
+    const officialVisitUrl: string = `${config.officialVisitsUrl}/view/visit/${officialVisit.officialVisitId}`
 
     return {
       prisoner: this.getPrisonerFromOfficialVisit(officialVisit, prisoners, user),
@@ -262,7 +263,9 @@ export default class ScheduleService {
       externalAgencyCode: undefined,
       externalAgencyDescription: undefined,
       tags: [],
-      viewAppointmentLink: undefined,
+      viewAppointmentLink: this.officialVisitsService.isPermittedToViewOfficialVisit(user)
+        ? officialVisitUrl
+        : undefined,
       cancelledTime: officialVisit.visitStatus === 'CANCELLED' ? officialVisit.updatedTime : undefined,
       cancelledBy:
         officialVisit.visitStatus === 'CANCELLED'
