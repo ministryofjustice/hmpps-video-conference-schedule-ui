@@ -84,25 +84,4 @@ export default {
         },
       },
     }),
-  stubGetNoOfficialVisits: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'POST',
-        urlPattern: '/official-visits-api/official-visit/prison/MDI/find-by-criteria\\?page=0&size=200.*',
-        bodyPatterns: [
-          {
-            equalToJson: {
-              startDate: formatDate(today, 'yyyy-MM-dd'),
-              endDate: formatDate(today, 'yyyy-MM-dd'),
-              visitTypes: ['VIDEO'],
-            },
-          },
-        ],
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { content: [] },
-      },
-    }),
 }

@@ -87,6 +87,12 @@ export default class MovementSlipsHandler implements PageHandler {
               endTime: this.getEndTime(group, AppointmentType.OFFICIAL_OTHER),
             }
           : undefined,
+        officialVisit: this.isAppointmentType(AppointmentType.OFFICIAL_VISIT, group)
+          ? {
+              startTime: this.getStartTime(group, AppointmentType.OFFICIAL_VISIT),
+              endTime: this.getEndTime(group, AppointmentType.OFFICIAL_VISIT),
+            }
+          : undefined,
         pickUpTime: prison.pickUpTime ? removeMinutes(group[0].startTime, prison.pickUpTime) : undefined,
         location: this.getLocation(group),
         notes: group[0].notesForPrisoner,
@@ -108,9 +114,6 @@ export default class MovementSlipsHandler implements PageHandler {
 
   private getMeetingType = (group: ScheduleItem[]) =>
     group.find(g => g.appointmentTypeCode === AppointmentType.PROBATION)?.appointmentSubtypeDescription
-
-  private getStartTimeOld = (group: ScheduleItem[], type: string) =>
-    group.find(g => g.appointmentTypeDescription.includes(type))?.startTime
 
   private getStartTime = (group: ScheduleItem[], type: AppointmentType, desc?: string) => {
     if (desc) {
@@ -170,6 +173,12 @@ export default class MovementSlipsHandler implements PageHandler {
       return location
     }
 
+    location = group.find(g => g.appointmentTypeCode === AppointmentType.OFFICIAL_VISIT)?.appointmentLocationDescription
+
+    if (isNotEmpty(location)) {
+      return location
+    }
+
     return undefined
   }
 }
@@ -179,6 +188,7 @@ enum AppointmentType {
   COURT = 'VLB',
   LEGAL = 'VLLA',
   OFFICIAL_OTHER = 'VLOO',
+  OFFICIAL_VISIT = 'VLOV',
   PAROLE = 'VLPA',
   PROBATION = 'VLPM',
 }

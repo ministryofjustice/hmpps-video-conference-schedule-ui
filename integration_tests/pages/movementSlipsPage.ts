@@ -33,6 +33,8 @@ export default class MovementSlipsPage extends AbstractPage {
 
   legalAppointment = (slipNumber: number) => this.getByDataQa('legal-appointment', slipNumber)
 
+  officialVisit = (slipNumber: number) => this.getByDataQa('official-visit', slipNumber)
+
   pickUpTime = (slipNumber: number) => this.getByDataQa('pick-up-time', slipNumber)
 
   location = (slipNumber: number) => this.getByDataQa('location', slipNumber)

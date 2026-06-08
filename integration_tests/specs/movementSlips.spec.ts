@@ -10,6 +10,7 @@ import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import MovementSlipsPage from '../pages/movementSlipsPage'
 import { formatDate } from '../../server/utils/utils'
 import officialVisitsApi from '../mockApis/officialVisitsApi'
+import manageUsersApi from '../mockApis/manageUsersApi'
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -25,8 +26,8 @@ test.describe('Movement slips', () => {
     await componentsApi.stubComponents()
     await locationsInsidePrisonApi.stubGetAppointmentLocations()
     await locationsInsidePrisonApi.stubGetResidentialHierarchy()
-    // Temporary until we have the done the movement slip work for official visits
-    await officialVisitsApi.stubGetNoOfficialVisits()
+    await manageUsersApi.stubUser()
+    await officialVisitsApi.stubGetOfficialVisits()
     await prisonerSearchApi.stubGetPrisoners()
   })
 
@@ -41,6 +42,7 @@ test.describe('Movement slips', () => {
     await expect(movementSlipsPage.prisoner(1)).toHaveText('John Smith, G9566GQ. Location: MDI-1-1-001')
     await expect(movementSlipsPage.prisoner(2)).toHaveText('Damire Stoneheart, W4356WE. Location: MDI-3-4-001')
     await expect(movementSlipsPage.prisoner(3)).toHaveText('Billy Kid, B8965HE. Location: MDI-5-4-001')
+    await expect(movementSlipsPage.prisoner(4)).toHaveText('Jane Doe, Z5461FA. Location: MDI-6-4-001')
   })
 
   test('User can view movement slips with pick-up time 10 minutes before', async ({ page }) => {
@@ -80,6 +82,16 @@ test.describe('Movement slips', () => {
     await expect(movementSlipsPage.legalAppointment(3)).toHaveText('06:00 to 07:00')
     await expect(movementSlipsPage.location(3)).toHaveText('E Wing Video Link')
     await expect(movementSlipsPage.notes(3)).toHaveText('VLLA notes for prisoner B8965HE')
+
+    await expect(movementSlipsPage.slipHeader(4)).toHaveText(
+      'Moorland (HMP) Video appointment movement authorisation slip',
+    )
+    await expect(movementSlipsPage.prisoner(4)).toHaveText('Jane Doe, Z5461FA. Location: MDI-6-4-001')
+    await expect(movementSlipsPage.date(4)).toHaveText(formatDate(today) as string)
+    await expect(movementSlipsPage.pickUpTime(4)).toHaveText('09:50')
+    await expect(movementSlipsPage.officialVisit(4)).toHaveText('10:00 to 11:00')
+    await expect(movementSlipsPage.location(4)).toHaveText('Legal visits ward')
+    await expect(movementSlipsPage.notes(4)).not.toBeVisible()
   })
 
   test('User can view movement slips with pick-up time 20 minutes before', async ({ page }) => {
@@ -119,6 +131,16 @@ test.describe('Movement slips', () => {
     await expect(movementSlipsPage.legalAppointment(3)).toHaveText('06:00 to 07:00')
     await expect(movementSlipsPage.location(3)).toHaveText('E Wing Video Link')
     await expect(movementSlipsPage.notes(3)).toHaveText('VLLA notes for prisoner B8965HE')
+
+    await expect(movementSlipsPage.slipHeader(4)).toHaveText(
+      'Moorland (HMP) Video appointment movement authorisation slip',
+    )
+    await expect(movementSlipsPage.prisoner(4)).toHaveText('Jane Doe, Z5461FA. Location: MDI-6-4-001')
+    await expect(movementSlipsPage.date(4)).toHaveText(formatDate(today) as string)
+    await expect(movementSlipsPage.pickUpTime(4)).toHaveText('09:40')
+    await expect(movementSlipsPage.officialVisit(4)).toHaveText('10:00 to 11:00')
+    await expect(movementSlipsPage.location(4)).toHaveText('Legal visits ward')
+    await expect(movementSlipsPage.notes(4)).not.toBeVisible()
   })
 
   test('User can view movement slips with no pick-up time', async ({ page }) => {
