@@ -88,13 +88,13 @@ describe('Reference data service', () => {
       const result = await referenceDataService.getVideoEventTypes(user)
 
       expect(result).toEqual([
-        { code: 'VLAP', description: 'Video Link - Another Prison' },
         { code: 'VLB', description: 'Video Link - Court Hearing' },
+        { code: 'VLPM', description: 'Video Link - Probation Meeting' },
+        { code: 'VLAP', description: 'Video Link - Another Prison' },
         { code: 'VLLA', description: 'Video Link - Legal Appointment' },
         { code: 'VLOO', description: 'Video Link - Official Other' },
-        { code: 'VLOV', description: 'Video Link - Official Visit' },
         { code: 'VLPA', description: 'Video Link - Parole Hearing' },
-        { code: 'VLPM', description: 'Video Link - Probation Meeting' },
+        { code: 'VLOV', description: 'Official Visit' },
       ])
       expect(activitiesAndAppointmentsApiClient.getAppointmentCategories).not.toHaveBeenCalledWith(user)
     })

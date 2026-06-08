@@ -8,6 +8,7 @@ import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import activitiesAndAppointmentsApi from '../mockApis/activitiesAndAppointmentsApi'
 import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
+import officialVisitsApi from '../mockApis/officialVisitsApi'
 
 test.describe('SignIn', () => {
   test.beforeEach(async () => {
@@ -21,6 +22,7 @@ test.describe('SignIn', () => {
     await componentsApi.stubComponents()
     await locationsInsidePrisonApi.stubGetAppointmentLocations()
     await locationsInsidePrisonApi.stubGetResidentialHierarchy()
+    await officialVisitsApi.stubGetOfficialVisits()
     await prisonerSearchApi.stubGetPrisoners()
   })
 

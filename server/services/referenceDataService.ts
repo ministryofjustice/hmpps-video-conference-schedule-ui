@@ -27,9 +27,9 @@ const BVLS_TYPES = [
   { code: 'VLPM', description: 'Video Link - Probation Meeting' },
 ] as VideoEventType[]
 
-export const OFFICIAL_VISIT_TYPE = { code: 'VLOV', description: 'Video Link - Official Visit' } as VideoEventType
+export const OFFICIAL_VISIT_TYPE = { code: 'VLOV', description: 'Official Visit' } as VideoEventType
 
-export const VIDEO_EVENT_TYPES = [...APPOINTMENT_TYPES, ...BVLS_TYPES, OFFICIAL_VISIT_TYPE] as VideoEventType[]
+export const VIDEO_EVENT_TYPES = [...BVLS_TYPES, ...APPOINTMENT_TYPES, OFFICIAL_VISIT_TYPE] as VideoEventType[]
 
 export default class ReferenceDataService {
   constructor(
@@ -43,9 +43,7 @@ export default class ReferenceDataService {
   }
 
   public async getVideoEventTypes(user: Express.User) {
-    return config.featureToggles.includeOfficialVisits
-      ? VIDEO_EVENT_TYPES.sort((a, b) => a.description.localeCompare(b.description))
-      : this.getAppointmentCategories(user)
+    return config.featureToggles.includeOfficialVisits ? VIDEO_EVENT_TYPES : this.getAppointmentCategories(user)
   }
 
   public async getAppointmentCategories(user: Express.User) {

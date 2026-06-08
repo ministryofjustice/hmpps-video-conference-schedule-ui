@@ -6,13 +6,13 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/example-api/health/ping',
+        urlPattern: '/manage-users-api/users/.*',
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          username: 'USER1',
+          username: 'USER2',
           active: true,
           userId: '123456',
           authSource: 'nomis',
