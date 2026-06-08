@@ -9,6 +9,7 @@ import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import MovementSlipsPage from '../pages/movementSlipsPage'
 import { formatDate } from '../../server/utils/utils'
+import officialVisitsApi from '../mockApis/officialVisitsApi'
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -24,6 +25,8 @@ test.describe('Movement slips', () => {
     await componentsApi.stubComponents()
     await locationsInsidePrisonApi.stubGetAppointmentLocations()
     await locationsInsidePrisonApi.stubGetResidentialHierarchy()
+    // Temporary until we have the done the movement slip work for official visits
+    await officialVisitsApi.stubGetNoOfficialVisits()
     await prisonerSearchApi.stubGetPrisoners()
   })
 

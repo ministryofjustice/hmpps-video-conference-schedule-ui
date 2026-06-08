@@ -8,6 +8,8 @@ import activitiesAndAppointmentsApi from '../mockApis/activitiesAndAppointmentsA
 import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import CancellationsPage from '../pages/cancellationsPage'
+import officialVisitsApi from '../mockApis/officialVisitsApi'
+import manageUsersApi from '../mockApis/manageUsersApi'
 
 test.describe('Daily schedule', () => {
   test.beforeEach(async () => {
@@ -21,6 +23,8 @@ test.describe('Daily schedule', () => {
     await componentsApi.stubComponents()
     await locationsInsidePrisonApi.stubGetAppointmentLocations()
     await locationsInsidePrisonApi.stubGetResidentialHierarchy()
+    await manageUsersApi.stubUser()
+    await officialVisitsApi.stubGetOfficialVisits()
     await prisonerSearchApi.stubGetPrisoners()
   })
 
@@ -31,9 +35,9 @@ test.describe('Daily schedule', () => {
   test('User can view daily schedule', async ({ page }) => {
     await login(page, { name: 'A TestUser' })
     const homePage = await HomePage.verifyOnPage(page)
-    await expect(homePage.appointmentStats).toHaveText('5')
-    await expect(homePage.prisonerStats).toHaveText('3')
-    await expect(homePage.cancelledAppointmentStats).toHaveText('2')
+    await expect(homePage.appointmentStats).toHaveText('6')
+    await expect(homePage.prisonerStats).toHaveText('4')
+    await expect(homePage.cancelledAppointmentStats).toHaveText('3')
     await expect(homePage.missingVideoLinkStats).toHaveText('1')
     await homePage.showFiltersButton.click()
     await homePage.selectCheckbox('Video Link - Court Hearing')
@@ -46,6 +50,10 @@ test.describe('Daily schedule', () => {
     await homePage.selectCheckbox('Video Link - Probation')
     await homePage.applyFiltersButton.click()
     await expect(page.getByText('Filter returned 0 results.')).toBeVisible()
+    await homePage.showFiltersButton.click()
+    await homePage.selectCheckbox('Official Visit')
+    await homePage.applyFiltersButton.click()
+    await expect(page.getByText('Filter returned 1 results.')).toBeVisible()
     await homePage.printAllMovementSlipsLink.click()
   })
 
@@ -54,7 +62,7 @@ test.describe('Daily schedule', () => {
     const homePage = await HomePage.verifyOnPage(page)
     await homePage.viewCancellationsLink.first().click()
     const cancellationsPage = await CancellationsPage.verifyOnPage(page)
-    await expect(cancellationsPage.cancelledAppointmentStats).toHaveText('2')
+    await expect(cancellationsPage.cancelledAppointmentStats).toHaveText('3')
   })
 
   test('User can view daily schedule with pick-up times', async ({ page }) => {
