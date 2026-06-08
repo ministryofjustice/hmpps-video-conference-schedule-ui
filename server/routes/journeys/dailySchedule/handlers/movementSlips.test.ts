@@ -429,6 +429,71 @@ describe('GET', () => {
       })
   })
 
+  it('should render an official visit movement slip', () => {
+    scheduleService.getSchedule.mockResolvedValue({
+      appointmentsListed: 1,
+      numberOfPrisoners: 1,
+      cancelledAppointments: 0,
+      missingVideoLinks: 0,
+      appointmentGroups: [
+        [
+          {
+            appointmentId: 1,
+            appointmentLocationDescription: 'Legal visits ward',
+            appointmentLocationId: 'aaaa-bbbb-9f9f9f9f-9f9f9f9f',
+            appointmentSubtypeDescription: undefined,
+            appointmentTypeCode: 'VLOV',
+            appointmentTypeDescription: 'Official Visit - Video',
+            cancelledBy: undefined,
+            cancelledTime: undefined,
+            endTime: '11:00',
+            externalAgencyCode: undefined,
+            externalAgencyDescription: undefined,
+            hmctsNumber: undefined,
+            lastUpdatedOrCreated: '2024-12-12 14:45',
+            notesForPrisoner: 'prisoner notes',
+            notesForStaff: 'staff notes',
+            prisoner: {
+              cellLocation: 'A-001',
+              firstName: 'Joe',
+              hasAlerts: false,
+              inPrison: true,
+              lastName: 'Bloggs',
+              prisonerNumber: 'JOE123',
+            },
+            probationOfficerName: undefined,
+            startTime: '10:00',
+            status: 'ACTIVE',
+            tags: [],
+            videoBookingId: undefined,
+            videoLink: undefined,
+            videoLinkRequired: undefined,
+            viewAppointmentLink: 'http://localhost:3000/view/visit/1',
+          },
+        ],
+      ],
+    })
+
+    return request(app)
+      .get('/movement-slips?date=2055-07-16')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getByClass($, 'movement-slip-header').text().trim()).toEqual(
+          'Moorland (HMP) Video appointment movement authorisation slip',
+        )
+        expect(getByDataQa($, 'date-1').text()).toEqual('16 July 2055')
+        expect(getByDataQa($, 'prisoner-name-and-number-1').text().trim()).toEqual(
+          'Joe Bloggs, JOE123. Location: A-001',
+        )
+        expect(getByDataQa($, 'official-visit-1').text().trim()).toEqual('10:00 to 11:00')
+        expect(getByDataQa($, 'pick-up-time-1').text().trim()).toEqual('09:30')
+        expect(getByDataQa($, 'location-1').text().trim()).toEqual('Legal visits ward')
+        expect(getByDataQa($, 'notes-1').text().trim()).toContain('')
+      })
+  })
+
   it(`should render movements slip page for today`, () => {
     scheduleService.getSchedule.mockResolvedValue({
       appointmentsListed: 1,

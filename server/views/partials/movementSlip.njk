@@ -48,6 +48,10 @@
                 {{ labelAndValue(slipNum, 'Parole hearing', movementSlip.parole.startTime + ' to ' +  movementSlip.parole.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
 
+            {% if movementSlip.officialVisit %}
+                {{ labelAndValue(slipNum, 'Official visit', movementSlip.officialVisit.startTime + ' to ' +  movementSlip.officialVisit.endTime, '', 'movement-slip__summary__row__key--normal') }}
+            {% endif %}
+
             {% if movementSlip.probation %}
                 {{ labelAndValue(slipNum, 'Probation meeting - ' + movementSlip.probation.meetingType, movementSlip.probation.startTime + ' to ' +  movementSlip.probation.endTime, '', 'movement-slip__summary__row__key--normal') }}
             {% endif %}
@@ -61,8 +65,10 @@
             <img alt='Information' src='/assets/images/icon-information.svg' />
             Be ready on time. No vaping allowed. Refusal to attend will be recorded.
         </div>
-        <h1 class="govuk-heading-s">Notes</h1>
-        <div data-qa='notes-{{ slipNum }}' class="govuk-body-m">{{ movementSlip.notes }}</div>
+        {% if not movementSlip.officialVisit %}
+          <h1 class="govuk-heading-s">Notes</h1>
+          <div data-qa='notes-{{ slipNum }}' class="govuk-body-m">{{ movementSlip.notes }}</div>
+        {% endif %}
         <p class="govuk-body-s movement-slip-footer">Date printed {{ printedAt | formatDate("d MMMM yyyy") }}</p>
     </div>
 
