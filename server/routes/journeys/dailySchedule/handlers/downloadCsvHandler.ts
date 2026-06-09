@@ -5,6 +5,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
 import { convertToTitleCase, formatDate, removeMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
+import { OFFICIAL_VISIT_TYPE } from '../../../../services/referenceDataService'
 
 export default class DownloadCsvHandler implements PageHandler {
   public PAGE_NAME = Page.DOWNLOAD_DAILY_SCHEDULE
@@ -56,7 +57,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
-        'Staff notes': item.notesForStaff || '',
+        'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
   }
@@ -79,7 +80,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
-        'Staff notes': item.notesForStaff || '',
+        'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
   }
@@ -101,5 +102,9 @@ export default class DownloadCsvHandler implements PageHandler {
     return item.appointmentTypeDescription === 'Probation Meeting'
       ? item.probationOfficerName || 'Not yet known'
       : undefined
+  }
+
+  private includeStaffNotesIfNotOfficialVisit = (item: ScheduleItem) => {
+    return item.notesForStaff && item.appointmentTypeCode !== OFFICIAL_VISIT_TYPE.code ? item.notesForStaff : ''
   }
 }

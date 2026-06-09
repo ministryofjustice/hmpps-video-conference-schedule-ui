@@ -24,6 +24,8 @@ export default class HomePage extends AbstractPage {
 
   readonly showAllPickUpTimesButton: Locator
 
+  readonly downloadCsv: Locator
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1', { hasText: 'Video link daily schedule: Moorland (HMP)' })
@@ -37,6 +39,7 @@ export default class HomePage extends AbstractPage {
     this.printAllMovementSlipsLink = page.getByRole('link', { name: 'Print all movement slips' })
     this.viewCancellationsLink = page.getByRole('link', { name: 'View' })
     this.showAllPickUpTimesButton = page.getByRole('button', { name: 'Show all pick-up times' })
+    this.downloadCsv = page.getByRole('button', { name: 'Export as spreadsheet (.csv file)' })
   }
 
   static async verifyOnPage(page: Page): Promise<HomePage> {

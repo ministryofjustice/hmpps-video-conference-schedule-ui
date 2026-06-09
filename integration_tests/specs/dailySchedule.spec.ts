@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 
+import { format } from 'date-fns'
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
 import componentsApi from '../mockApis/componentsApi'
@@ -10,6 +11,8 @@ import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import CancellationsPage from '../pages/cancellationsPage'
 import officialVisitsApi from '../mockApis/officialVisitsApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
+
+const today = format(new Date(), 'yyyy-MM-dd')
 
 test.describe('Daily schedule', () => {
   test.beforeEach(async () => {
@@ -86,5 +89,13 @@ test.describe('Daily schedule', () => {
     await expect(tagLocator.nth(0)).toHaveText('Link missing')
     await expect(tagLocator.nth(1)).toHaveText('Pin protected')
     await expect(tagLocator.nth(2)).toHaveText('Check room')
+  })
+
+  test('User can download a CSV file of the daily schedule for the day', async ({ page }) => {
+    await login(page, { name: 'A TestUser' })
+    const homePage = await HomePage.verifyOnPage(page)
+    const [download] = await Promise.all([page.waitForEvent('download'), homePage.downloadCsv.click()])
+    expect(download).toBeTruthy()
+    expect(download.suggestedFilename()).toBe(`daily-schedule-${today}.csv`)
   })
 })
