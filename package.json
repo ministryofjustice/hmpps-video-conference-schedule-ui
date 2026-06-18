@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1061.0",
+    "@aws-sdk/client-sqs": "^3.1066.0",
     "@microsoft/applicationinsights-web": "^3.4.1",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
@@ -150,7 +150,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^22.19.19",
+    "@types/node": "^22.19.21",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -160,7 +160,7 @@
     "@types/uuid": "^10.0.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "axe-core": "^4.12.0",
+    "axe-core": "^4.12.1",
     "cheerio": "^1.2.0",
     "concurrently": "10.0.3",
     "dotenv": "^16.6.1",
@@ -178,7 +178,7 @@
     "lint-staged": "^15.5.2",
     "nock": "^13.5.6",
     "nodemon": "^3.1.14",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "prettier-plugin-jinja-template": "^2.2.0",
     "sass": "^1.100.0",
     "sinon": "^19.0.5",
@@ -191,6 +191,9 @@
     "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
   "overrides": {
-    "minimatch@>3.0.0 <3.1.4": "^3.1.4"
+    "minimatch@>3.0.0 <3.1.4": "^3.1.4",
+    "form-data": "4.0.6",
+    "js-yaml": "4.2.0",
+    "@opentelemetry/core": "2.8.0"
   }
 }
