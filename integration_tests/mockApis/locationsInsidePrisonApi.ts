@@ -19,7 +19,7 @@ export default {
       request: {
         method: 'GET',
         urlPattern:
-          '/locations-inside-prison-api/locations/non-residential/prison/MDI/service/APPOINTMENT\\?formatLocalName=true&sortByLocalName=true',
+          '/locations-inside-prison-api/locations/non-residential/prison/MDI/service/APPOINTMENT\\?formatLocalName=true&sortByLocalName=true&filterParents=false',
       },
       response: {
         status: 200,

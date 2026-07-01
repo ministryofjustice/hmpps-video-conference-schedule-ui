@@ -11,7 +11,7 @@ export default class LocationsInsidePrisonApiClient extends RestClient {
     return this.get(
       {
         path: `/locations/non-residential/prison/${prisonId}/service/APPOINTMENT`,
-        query: { formatLocalName: true, sortByLocalName: true },
+        query: { formatLocalName: true, sortByLocalName: true, filterParents: false },
       },
       user,
     )
