@@ -29,7 +29,9 @@ describe('locationsInsidePrisonApiClient', () => {
       const response = { data: 'data' }
 
       fakeLocationsInsidePrisonApiClient
-        .get('/locations/prison/MDI/non-residential-usage-type/APPOINTMENT?formatLocalName=true&sortByLocalName=true')
+        .get(
+          '/locations/non-residential/prison/MDI/service/APPOINTMENT?formatLocalName=true&sortByLocalName=true&filterParents=false',
+        )
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

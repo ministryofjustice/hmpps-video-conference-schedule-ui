@@ -10,8 +10,8 @@ export default class LocationsInsidePrisonApiClient extends RestClient {
   getAppointmentLocations(prisonId: string, user: Express.User): Promise<Location[]> {
     return this.get(
       {
-        path: `/locations/prison/${prisonId}/non-residential-usage-type/APPOINTMENT`,
-        query: { formatLocalName: true, sortByLocalName: true },
+        path: `/locations/non-residential/prison/${prisonId}/service/APPOINTMENT`,
+        query: { formatLocalName: true, sortByLocalName: true, filterParents: false },
       },
       user,
     )
