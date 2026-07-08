@@ -1,24 +1,30 @@
-function MojFilter($filter) {
-  this.toggleButton = $filter.querySelector('.moj-action-bar__filter')
-  this.filtersApplied = $filter.getAttribute('filters-applied') === 'true'
+import { FilterToggleButton } from '@ministryofjustice/frontend'
 
-  // The MOJFrontend component from the moj-frontend library contains a bug where the filters will pop out and expand
-  // when the media changes from `print` to `screen`, i.e. when you close the print dialogue. Overriding the following function
-  // resolves that, although this will just mean that the smaller screens (ipad, phones) may not behave as expected. Meh.
-  MOJFrontend.FilterToggleButton.prototype.setupResponsiveChecks = () => undefined;
+function MojFilter(container) {
+  this.container = container
+  this.toggleButton = container.querySelector('.moj-action-bar__filter')
+  this.filtersApplied = container.getAttribute('filters-applied') === 'true'
 
-  new MOJFrontend.FilterToggleButton({
+  FilterToggleButton.prototype.setupResponsiveChecks = () => undefined
+
+  new FilterToggleButton(container, {
     bigModeMediaQuery: '(min-width: 48.063em)',
     startHidden: !this.filtersApplied,
     toggleButton: {
       container: this.toggleButton,
       showText: 'Show filter',
       hideText: 'Hide filter',
-      classes: 'govuk-button--blue'
+      classes: 'govuk-button--blue',
     },
-    filter: {
-      container: $filter.querySelector('.moj-filter')
-    }
+    toggleButtonContainer: {
+      selector: '.moj-action-bar__filter',
+    },
+    closeButton: {
+      text: 'Close',
+    },
+    closeButtonContainer: {
+      selector: '.moj-filter__header-action',
+    },
   })
 }
 
