@@ -1,16 +1,41 @@
-import type { Router } from 'express'
-import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
+import { Router } from 'express'
+import { Strategy } from 'passport-oauth2'
 import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
-import auth from '../authentication/auth'
+import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
 
-const router = express.Router()
+passport.serializeUser((user, done) => {
+  // Not used but required for Passport
+  done(null, user)
+})
 
-export default function setUpAuth(): Router {
-  auth.init()
+passport.deserializeUser((user, done) => {
+  // Not used but required for Passport
+  done(null, user as Express.User)
+})
+
+passport.use(
+  new Strategy(
+    {
+      authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
+      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
+      clientID: config.apis.hmppsAuth.apiClientId,
+      clientSecret: config.apis.hmppsAuth.apiClientSecret,
+      callbackURL: `${config.domain}/sign-in/callback`,
+      state: true,
+      customHeaders: { Authorization: generateOauthClientToken() },
+    },
+    (token, refreshToken, params, profile, done) => {
+      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+    },
+  ),
+)
+
+export default function setupAuthentication() {
+  const router = Router()
   const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
   router.use(passport.initialize())
@@ -57,7 +82,7 @@ export default function setUpAuth(): Router {
   })
 
   router.use((req, res, next) => {
-    res.locals.user = req.user
+    res.locals.user = req.user as Express.User
     next()
   })
 

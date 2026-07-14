@@ -1,4 +1,5 @@
 import nock from 'nock'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
@@ -10,11 +11,16 @@ const user = createUser([])
 
 describe('bookAVideoLinkApiClient', () => {
   let fakeBookAVideoLinkApiClient: nock.Scope
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   let bookAVideoLinkApiClient: BookAVideoLinkApiClient
 
   beforeEach(() => {
+    mockAuthenticationClient = {
+      getToken: jest.fn().mockResolvedValue('systemToken'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
     fakeBookAVideoLinkApiClient = nock(config.apis.bookAVideoLinkApi.url)
-    bookAVideoLinkApiClient = new BookAVideoLinkApiClient()
+    bookAVideoLinkApiClient = new BookAVideoLinkApiClient(mockAuthenticationClient)
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

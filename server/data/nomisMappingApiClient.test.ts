@@ -1,5 +1,6 @@
 import nock from 'nock'
 
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import createUser from '../testutils/createUser'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
@@ -11,11 +12,16 @@ const user = createUser([])
 
 describe('nomisMappingApiClient', () => {
   let fakeNomisMappingApiClient: nock.Scope
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   let nomisMappingApiClient: NomisMappingApiClient
 
   beforeEach(() => {
+    mockAuthenticationClient = {
+      getToken: jest.fn().mockResolvedValue('systemToken'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
     fakeNomisMappingApiClient = nock(config.apis.nomisMappingApi.url)
-    nomisMappingApiClient = new NomisMappingApiClient()
+    nomisMappingApiClient = new NomisMappingApiClient(mockAuthenticationClient)
     jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 

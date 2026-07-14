@@ -1,5 +1,6 @@
 import nock from 'nock'
 
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import FrontendComponentApiClient from './frontendComponentApiClient'
 import createUser from '../testutils/createUser'
@@ -8,11 +9,16 @@ const user = createUser([])
 
 describe('frontendComponentApiClient', () => {
   let fakeFrontendComponentApi: nock.Scope
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   let frontendComponentApiClient: FrontendComponentApiClient
 
   beforeEach(() => {
+    mockAuthenticationClient = {
+      getToken: jest.fn().mockResolvedValue('systemToken'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
     fakeFrontendComponentApi = nock(config.apis.frontendComponents.url)
-    frontendComponentApiClient = new FrontendComponentApiClient()
+    frontendComponentApiClient = new FrontendComponentApiClient(mockAuthenticationClient)
   })
 
   afterEach(() => {

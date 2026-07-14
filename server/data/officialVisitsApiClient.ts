@@ -1,5 +1,7 @@
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import RestClient from './restClient'
+import logger from '../../logger'
 import {
   OfficialVisitSearchCriteria,
   OfficialVisitSearchResults,
@@ -8,8 +10,8 @@ import {
 import { formatDate } from '../utils/utils'
 
 export default class OfficialVisitsApiClient extends RestClient {
-  constructor() {
-    super('Official Visits API', config.apis.officialVisitsApi)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Official Visits API', config.apis.officialVisitsApi, logger, authenticationClient)
   }
 
   async getOfficialVisits(atPrisonCode: string, onDate: Date, user: Express.User): Promise<OfficialVisit[]> {
@@ -23,7 +25,7 @@ export default class OfficialVisitsApiClient extends RestClient {
           visitTypes: ['VIDEO'],
         } as OfficialVisitSearchCriteria,
       },
-      user,
+      asSystem(user.username),
     ).then(result => result.content || [])
   }
 }
