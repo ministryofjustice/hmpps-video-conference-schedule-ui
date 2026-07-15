@@ -1,6 +1,7 @@
 import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
 
 export enum Page {
+  AVAILABILTY_CHECKER_PAGE = 'AVAILABILTY_CHECKER',
   CLEAR_FILTER = 'CLEAR_FILTER',
   DAILY_SCHEDULE_PAGE = 'DAILY_SCHEDULE_PAGE',
   DOWNLOAD_DAILY_SCHEDULE = 'DOWNLOAD_DAILY_SCHEDULE',

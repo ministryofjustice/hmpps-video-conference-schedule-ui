@@ -196,5 +196,6 @@ export default {
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
     includeOfficialVisits: get('FEATURE_INCLUDE_OFFICIAL_VISITS', false) === 'true',
+    availabilityCheckerPrisons: get('FEATURE_AVAILABILITY_CHECKER_PRISONS', null),
   },
 }

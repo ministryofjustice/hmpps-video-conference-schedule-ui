@@ -57,6 +57,8 @@ generic-service:
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
+    feature-toggles:
+      FEATURE_AVAILABILITY_CHECKER_PRISONS: "FEATURE_AVAILABILITY_CHECKER_PRISONS?"
 
   allowlist:
     groups:
