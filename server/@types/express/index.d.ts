@@ -38,6 +38,7 @@ declare module 'express-serve-static-core' {
 export declare global {
   namespace Express {
     interface User extends Partial<HmppsUser> {
+      username: string
       token: string
       authSource: string
       activeCaseLoad?: CaseLoad | undefined

@@ -1,5 +1,7 @@
-import RestClient, { TokenType } from './restClient'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { RestClient, asUser } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
+import logger from '../../logger'
 
 type AvailableComponent = 'header' | 'footer'
 
@@ -10,8 +12,8 @@ interface Component {
 }
 
 export default class FrontendComponentApiClient extends RestClient {
-  constructor() {
-    super('Frontend Component API', config.apis.frontendComponents)
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Frontend Component API', config.apis.frontendComponents, logger, authenticationClient)
   }
 
   getComponents(components: AvailableComponent[], user: Express.User): Promise<Record<AvailableComponent, Component>> {
@@ -21,8 +23,7 @@ export default class FrontendComponentApiClient extends RestClient {
         query: `component=${components.join('&component=')}`,
         headers: { 'x-user-token': user.token },
       },
-      user,
-      TokenType.USER_TOKEN,
+      asUser(user.token),
     )
   }
 }

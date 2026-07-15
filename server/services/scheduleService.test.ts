@@ -45,10 +45,10 @@ describe('Schedule service', () => {
   beforeEach(() => {
     appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
     referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
-    nomisMappingApiClient = new NomisMappingApiClient() as jest.Mocked<NomisMappingApiClient>
-    bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
-    prisonerSearchApiClient = new PrisonerSearchApiClient() as jest.Mocked<PrisonerSearchApiClient>
-    manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
+    nomisMappingApiClient = new NomisMappingApiClient(null) as jest.Mocked<NomisMappingApiClient>
+    bookAVideoLinkApiClient = new BookAVideoLinkApiClient(null) as jest.Mocked<BookAVideoLinkApiClient>
+    prisonerSearchApiClient = new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
+    manageUsersApiClient = new ManageUsersApiClient(null) as jest.Mocked<ManageUsersApiClient>
     officialVisitsService = new OfficialVisitsService(null) as jest.Mocked<OfficialVisitsService>
     scheduleService = new ScheduleService(
       appointmentService,

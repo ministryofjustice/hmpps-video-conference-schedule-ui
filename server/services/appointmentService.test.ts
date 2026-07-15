@@ -23,9 +23,11 @@ describe('Appointment service', () => {
   let appointmentsApiAppointments: ActivitiesAndAppointmentsApiAppointment[]
 
   beforeEach(() => {
-    prisonApiClient = new PrisonApiClient() as jest.Mocked<PrisonApiClient>
-    appointmentsApiClient = new ActivitiesAndAppointmentsApiClient() as jest.Mocked<ActivitiesAndAppointmentsApiClient>
-    bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
+    prisonApiClient = new PrisonApiClient(null) as jest.Mocked<PrisonApiClient>
+    appointmentsApiClient = new ActivitiesAndAppointmentsApiClient(
+      null,
+    ) as jest.Mocked<ActivitiesAndAppointmentsApiClient>
+    bookAVideoLinkApiClient = new BookAVideoLinkApiClient(null) as jest.Mocked<BookAVideoLinkApiClient>
     appointmentService = new AppointmentService(prisonApiClient, appointmentsApiClient, bookAVideoLinkApiClient)
 
     prisonApiAppointments = [

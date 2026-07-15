@@ -20,10 +20,13 @@ describe('Reference data service', () => {
   let referenceDataService: ReferenceDataService
 
   beforeEach(() => {
-    locationsInsidePrisonApiClient = new LocationsInsidePrisonApiClient() as jest.Mocked<LocationsInsidePrisonApiClient>
-    activitiesAndAppointmentsApiClient =
-      new ActivitiesAndAppointmentsApiClient() as jest.Mocked<ActivitiesAndAppointmentsApiClient>
-    bookAVideoLinkApiClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
+    locationsInsidePrisonApiClient = new LocationsInsidePrisonApiClient(
+      null,
+    ) as jest.Mocked<LocationsInsidePrisonApiClient>
+    activitiesAndAppointmentsApiClient = new ActivitiesAndAppointmentsApiClient(
+      null,
+    ) as jest.Mocked<ActivitiesAndAppointmentsApiClient>
+    bookAVideoLinkApiClient = new BookAVideoLinkApiClient(null) as jest.Mocked<BookAVideoLinkApiClient>
 
     referenceDataService = new ReferenceDataService(
       locationsInsidePrisonApiClient,

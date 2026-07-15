@@ -1,8 +1,8 @@
 import nock from 'nock'
 
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import createUser from '../testutils/createUser'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -11,12 +11,16 @@ const user = createUser([])
 
 describe('activitiesAndAppointmentsApiClient', () => {
   let fakeActivitiesAndAppointmentsApiClient: nock.Scope
+  let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   let activitiesAndAppointmentsApiClient: ActivitiesAndAppointmentsApiClient
 
   beforeEach(() => {
+    mockAuthenticationClient = {
+      getToken: jest.fn().mockResolvedValue('systemToken'),
+    } as unknown as jest.Mocked<AuthenticationClient>
+
     fakeActivitiesAndAppointmentsApiClient = nock(config.apis.activitiesAndAppointmentsApi.url)
-    activitiesAndAppointmentsApiClient = new ActivitiesAndAppointmentsApiClient()
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    activitiesAndAppointmentsApiClient = new ActivitiesAndAppointmentsApiClient(mockAuthenticationClient)
   })
 
   afterEach(() => {

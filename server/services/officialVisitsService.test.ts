@@ -10,7 +10,7 @@ describe('Official visit service', () => {
   let officialVisitsService: OfficialVisitsService
 
   beforeEach(() => {
-    officialVisitsApiClient = new OfficialVisitsApiClient() as jest.Mocked<OfficialVisitsApiClient>
+    officialVisitsApiClient = new OfficialVisitsApiClient(null) as jest.Mocked<OfficialVisitsApiClient>
     officialVisitsService = new OfficialVisitsService(officialVisitsApiClient)
   })
 
