@@ -1,19 +1,513 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 
 {% set hideBackLink = true %}
+{% set pageTitle = "Video link availability checker: " + prison.name %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">The availability checker is currently unavailable</h1>
-            <p class="govuk-body">We apologise for any inconvenience this may cause and thank you for your patience.</p>
-
-            {{ govukButton({
-                text: "Return to HMPPS Digital Services",
-                classes: 'govuk-!-margin-top-6',
-                href: authUrl
-            }) }}
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ mojDatePicker({
+                            id: 'date',
+                            name: 'date',
+                            label: {
+                                text: "Date",
+                                classes: 'govuk-label--s'
+                            },
+                            hint: {
+                                text: 'For example, ' + now() | formatDate('dd/MM/yyyy')
+                            },
+                            errorMessage: validationErrors | findError('date'),
+                            value: formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy')
+                        }) }}
+                    </div>
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ govukRadios({
+                            idPrefix: "period",
+                            name: "period",
+                            fieldset: {
+                                legend: {
+                                    text: "Session",
+                                    classes: "govuk-fieldset__legend--s govuk-!-margin-bottom-7"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "AM",
+                                    text: "Morning",
+                                    checked: formResponses.period == "AM" or period == "AM"
+                                },
+                                {
+                                    value: "PM",
+                                    text: "Afternoon",
+                                    checked: formResponses.period == "PM" or period == "PM"
+                                },
+                                {
+                                    value: "ED",
+                                    text: "Evening",
+                                    checked: formResponses.period == "ED" or period == "ED"
+                                }
+                            ],
+                            errorMessage: validationErrors | findError("duration"),
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+                    </div>
+                </div>
+                <div>
+                    {{ govukButton({
+                        html: "Update",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+                    <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="govuk-grid-row govuk-!-margin-top-3">
+        <div class="govuk-grid-column-full">
+            {% set rows = [] %}
+            {{ roomsAvailabilityRows(period, rows) }}
+
+            {% if period == "AM" %}
+                {{ govukTable({
+                    caption: "Date and time availability",
+                    captionClasses: "govuk-table__caption--m",
+                    firstCellIsHeader: true,
+                    head: [
+                        {
+                            text: "Rooms"
+                        },
+                        {
+                            text: "08:00",
+                            attributes: {
+                                "data-qa": "time-8"
+                            }
+                        },
+                        {
+                            text: "09:00"
+                        },
+                        {
+                            text: "10:00"
+                        },
+                        {
+                            text: "11:00"
+                        },
+                        {
+                            text: "12:00"
+                        }
+                    ],
+                    rows: rows
+                }) }}
+            {% endif %}
+            {% if period == "PM" %}
+                {{ govukTable({
+                    caption: "Date and time availability",
+                    captionClasses: "govuk-table__caption--m",
+                    firstCellIsHeader: true,
+                    head: [
+                        {
+                            text: "Rooms"
+                        },
+                        {
+                            text: "13:00",
+                            attributes: {
+                                "data-qa": "time-13"
+                            }
+                        },
+                        {
+                            text: "14:00"
+                        },
+                        {
+                            text: "15:00"
+                        },
+                        {
+                            text: "16:00"
+                        },
+                        {
+                            text: "17:00"
+                        }
+                    ],
+                    rows: rows
+                }) }}
+            {% endif %}
+            {% if period == "ED" %}
+                {{ govukTable({
+                    caption: "Date and time availability",
+                    captionClasses: "govuk-table__caption--m",
+                    firstCellIsHeader: true,
+                    head: [
+                        {
+                            text: "Rooms"
+                        },
+                        {
+                            text: "18:00",
+                            attributes: {
+                                "data-qa": "time-18"
+                            }
+                        },
+                        {
+                            text: "19:00"
+                        },
+                        {
+                            text: "20:00"
+                        }
+                    ],
+                    rows: rows
+                }) }}
+            {% endif %}        </div>
+    </div>
 {% endblock %}
+
+{% macro roomsAvailabilityRows(period, rows) %}
+    {% if period == "AM" %}
+        {% set rows = (rows.push(
+            [
+                {
+                    text: "VCC Court 01"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 02"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 03"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 04"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 05"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 06"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ]
+        ), rows) %}
+    {% endif %}
+
+    {% if period == "PM" %}
+        {% set rows = (rows.push(
+            [
+                {
+                    text: "VCC Court 01"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 02"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 03"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 04"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 05"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 06"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                }
+            ]
+        ), rows) %}
+    {% endif %}
+
+    {% if period == "ED" %}
+        {% set rows = (rows.push(
+            [
+                {
+                    text: "VCC Court 01"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 02"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 03"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 04"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 05"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Booked"
+                }
+            ],
+            [
+                {
+                    text: "VCC Court 06"
+                },
+                {
+                    text: "Booked"
+                },
+                {
+                    text: "Free"
+                },
+                {
+                    text: "Booked"
+                }
+            ]
+        ), rows) %}
+    {% endif %}
+{% endmacro %}

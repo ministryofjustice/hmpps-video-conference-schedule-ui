@@ -3,8 +3,9 @@ import request from 'supertest'
 import { load } from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
+import { existsByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import config from '../../../../config'
+import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonService')
@@ -19,11 +20,19 @@ const risleyUser = {
   activeCaseLoadId: 'RSI',
 }
 
+const risleyPrison: Prison = {
+  prisonId: 1,
+  code: 'RSI',
+  name: 'Risley (HMP)',
+  enabled: true,
+}
+
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService },
     userSupplier: () => risleyUser,
     journeySessionSupplier: () => journeySession,
+    prisonSupplier: () => risleyPrison,
   })
 }
 
@@ -36,23 +45,31 @@ describe('GET', () => {
     appSetup()
   })
 
-  it('should render availability checker when Risley prison is enabled', () => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+  it.each([
+    ['AM', '2024-12-10', 'time-8'],
+    ['PM', '2024-12-11', 'time-13'],
+    ['ED', '2024-12-12', 'time-18'],
+  ])(
+    'should render period (%s) and date (%s) for availability checker at Risley prison is enabled',
+    (period: string, date: string, time: string) => {
+      config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
-    return request(app)
-      .get('/availability-checker')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = load(res.text)
+      return request(app)
+        .get(`/availability-checker?period=${period}&date=${date}`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('The availability checker is currently unavailable')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
+          expect(existsByDataQa($, time)).toBe(true)
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+            details: JSON.stringify({ query: { period, date } }),
+          })
         })
-      })
-  })
+    },
+  )
 
   it('should not render availability checker when Risley prison is not enabled', () => {
     config.featureToggles.availabilityCheckerPrisons = 'MDI'
@@ -86,5 +103,25 @@ describe('GET', () => {
           details: JSON.stringify({ query: {} }),
         })
       })
+  })
+})
+
+describe('POST', () => {
+  beforeEach(() => {
+    appSetup()
+  })
+
+  it.each([
+    ['10/12/2024', 'AM', '2024-12-10'],
+    ['11/12/2024', 'PM', '2024-12-11'],
+    ['12/12/2024', 'ED', '2024-12-12'],
+  ])('should redirect to date and period (%s) (%s)', (date: string, period: string, parsedDate: string) => {
+    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+
+    return request(app)
+      .post('/availability-checker')
+      .send({ date, period })
+      .expect(302)
+      .expect('location', `availability-checker?date=${parsedDate}&period=${period}`)
   })
 })
