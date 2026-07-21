@@ -1,0 +1,43 @@
+.room-availability {
+
+}
+
+.govuk-list {
+  &__green {
+    @extend .govuk-list--bullet;
+    li::marker {
+      color: green;
+    }
+  }
+
+  &__orange {
+    @extend .govuk-list--bullet;
+    li::marker {
+      color: orange;
+    }
+  }
+
+  &__grey {
+    td {
+      background-color: gray;
+    }
+  }
+}
+
+.govuk-table {
+  .govuk-table__header {
+    border-top: 1px solid #b1b4b6;
+  }
+
+  .govuk-table__cell {
+    &--booked {
+      background-color: #F3F2F180;
+    }
+
+    &--no-border {
+      &.govuk-table__cell--booked {
+        border-bottom: white 5px solid;
+      }
+    }
+  }
+}

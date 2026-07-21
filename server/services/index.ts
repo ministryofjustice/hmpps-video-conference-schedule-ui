@@ -5,6 +5,7 @@ import ScheduleService from './scheduleService'
 import AppointmentService from './appointmentService'
 import ReferenceDataService from './referenceDataService'
 import OfficialVisitsService from './officialVisitsService'
+import RoomAvailabilityService from './roomAvailabilityService'
 
 export const services = () => {
   const {
@@ -44,6 +45,8 @@ export const services = () => {
     officialVisitsService,
   )
 
+  const roomAvailabilityService = new RoomAvailabilityService()
+
   return {
     applicationInfo,
     referenceDataService,
@@ -51,6 +54,7 @@ export const services = () => {
     prisonService,
     scheduleService,
     appointmentService,
+    roomAvailabilityService,
   }
 }
 

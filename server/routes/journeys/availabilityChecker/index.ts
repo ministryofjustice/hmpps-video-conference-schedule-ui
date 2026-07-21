@@ -5,7 +5,7 @@ import type { Services } from '../../../services'
 import AvailabilityCheckerHandler from './handlers/availabilityCheckerHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 
-export default function Index({ auditService }: Services): Router {
+export default function Index({ auditService, roomAvailabilityService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const get = (path: string, handler: PageHandler) =>
@@ -17,7 +17,7 @@ export default function Index({ auditService }: Services): Router {
     post(path, handler.POST, handler.BODY)
   }
 
-  getAndPost('/', new AvailabilityCheckerHandler())
+  getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))
 
   return router
 }
