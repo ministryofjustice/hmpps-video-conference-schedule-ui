@@ -8,6 +8,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import config from '../../../../config'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
+import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
 
 class Body {
   @Expose()
@@ -22,6 +23,8 @@ class Body {
 }
 
 export default class AvailabilityCheckerHandler implements PageHandler {
+  constructor(private readonly roomAvailabilityService: RoomAvailabilityService) {}
+
   public PAGE_NAME = Page.AVAILABILTY_CHECKER_PAGE
 
   public BODY = Body
@@ -34,9 +37,14 @@ export default class AvailabilityCheckerHandler implements PageHandler {
       const prison = req.middleware!.prison!
       const dateFromQueryParam = new Date(req.query.date?.toString())
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
-      const period = req.query.period || 'AM'
+      const period: string = <string>req.query.period || 'AM'
 
-      res.render('pages/availabilityChecker/availabilityChecker', { prison, date, period })
+      res.render('pages/availabilityChecker/availabilityChecker', {
+        prison,
+        date,
+        period,
+        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(period),
+      })
     } else {
       res.render('pages/error/404')
     }

@@ -3,15 +3,16 @@ import request from 'supertest'
 import { load } from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
+import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
 import { existsByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import config from '../../../../config'
 import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonService')
-jest.mock('../../../../services/scheduleService')
+jest.mock('../../../../services/roomAvailabilityService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const roomAvailabilityService = new RoomAvailabilityService() as jest.Mocked<RoomAvailabilityService>
 
 let app: Express
 
@@ -29,7 +30,7 @@ const risleyPrison: Prison = {
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService },
+    services: { auditService, roomAvailabilityService },
     userSupplier: () => risleyUser,
     journeySessionSupplier: () => journeySession,
     prisonSupplier: () => risleyPrison,

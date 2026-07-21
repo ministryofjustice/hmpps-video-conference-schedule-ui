@@ -79,7 +79,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-3">
         <div class="govuk-grid-column-full">
             {% set rows = [] %}
-            {{ roomsAvailabilityRows(period, rows) }}
+            {{ roomsAvailabilityRows(period, roomAvailability, rows) }}
 
             {% if period == "AM" %}
                 {{ govukTable({
@@ -167,347 +167,79 @@
                     ],
                     rows: rows
                 }) }}
-            {% endif %}        </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
-{% macro roomsAvailabilityRows(period, rows) %}
-    {% if period == "AM" %}
-        {% set rows = (rows.push(
-            [
-                {
-                    text: "VCC Court 01"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 02"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 03"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 04"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 05"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 06"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ]
-        ), rows) %}
-    {% endif %}
+{% macro roomsAvailabilityRows(period, roomAvailability, rows) %}
+    {% for room in roomAvailability %}
+        {% if period == "ED" %}
+            {% set rows = (rows.push(
+                [
+                    {
+                        text: room.description
+                    },
+                    {
+                        html: roomHtml(room, 0),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[0].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 1),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[1].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 2),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[2].fullyBooked else ''
+                    }
+                ]
+            ), rows) %}
+        {% else %}
+            {% set rows = (rows.push(
+                [
+                    {
+                        text: room.description
+                    },
+                    {
+                        html: roomHtml(room, 0),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[0].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 1),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[1].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 2),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[2].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 3),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[3].fullyBooked else ''
+                    },
+                    {
+                        html: roomHtml(room, 4),
+                        classes: 'govuk-table__cell--booked' if room.hourlySlots[4].fullyBooked else ''
+                    }
+                ]
+            ), rows) %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
 
-    {% if period == "PM" %}
-        {% set rows = (rows.push(
-            [
-                {
-                    text: "VCC Court 01"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 02"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 03"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 04"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 05"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 06"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                }
-            ]
-        ), rows) %}
-    {% endif %}
-
-    {% if period == "ED" %}
-        {% set rows = (rows.push(
-            [
-                {
-                    text: "VCC Court 01"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 02"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 03"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 04"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 05"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Booked"
-                }
-            ],
-            [
-                {
-                    text: "VCC Court 06"
-                },
-                {
-                    text: "Booked"
-                },
-                {
-                    text: "Free"
-                },
-                {
-                    text: "Booked"
-                }
-            ]
-        ), rows) %}
+{% macro roomHtml(room, index) %}
+    {% if room.hourlySlots[index].fullyBooked %}
+    <div>Booked</div>
+    {% else %}
+      {% if room.hourlySlots[index].free.length %}
+          <ul class="govuk-list govuk-list__orange govuk-list--spaced">
+              {% for startEnd in room.hourlySlots[index].free %}
+                  <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
+              {% endfor %}
+          </ul>
+      {% else %}
+          <ul class="govuk-list govuk-list__green">
+              <li>Free</li>
+          </ul>
+      {% endif %}
     {% endif %}
 {% endmacro %}
