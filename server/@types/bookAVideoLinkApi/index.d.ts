@@ -1968,13 +1968,19 @@ export interface components {
        */
       endDate: string
       /**
-       * @description The status of the booking to match, defaults to ACTIVE
-       * @example ACTIVE
+       * @description The time slot (optional) one of AM, PM or ED
+       * @example AM
        */
       timeSlot?: string | null
     }
     /** @description A booked event within a single location */
     BookedEvent: {
+      /**
+       * Format: uuid
+       * @description The location where this event is scheduled to take place
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId: string
       /**
        * @description Event type booked (APPOINTMENT, OFFICIAL_VISIT, COURT, PROBATION)
        * @example APPOINTMENT
@@ -2010,7 +2016,7 @@ export interface components {
        * @description The prisoner this event is booked for
        * @example G1234GV
        */
-      prisonerCode: string
+      prisonerNumber: string
       /**
        * Format: int64
        * @description The event primary key in the remote service (e.g. appointmentId, officialVisitId, videoBookingId)

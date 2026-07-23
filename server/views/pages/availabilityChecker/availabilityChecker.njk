@@ -29,6 +29,7 @@
                             hint: {
                                 text: 'For example, ' + now() | formatDate('dd/MM/yyyy')
                             },
+                            excludedDays: "saturday sunday",
                             errorMessage: validationErrors | findError('date'),
                             value: formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy')
                         }) }}
@@ -71,20 +72,19 @@
                         preventDoubleClick: true,
                         type: "submit"
                     }) }}
-                    <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
                 </div>
             </form>
         </div>
     </div>
     <div class="govuk-grid-row govuk-!-margin-top-3">
         <div class="govuk-grid-column-full">
+            <div class="govuk-heading-s">Date and time availability</div>
+            <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
             {% set rows = [] %}
             {{ roomsAvailabilityRows(period, roomAvailability, rows) }}
 
             {% if period == "AM" %}
                 {{ govukTable({
-                    caption: "Date and time availability",
-                    captionClasses: "govuk-table__caption--m",
                     firstCellIsHeader: true,
                     head: [
                         {
@@ -114,8 +114,6 @@
             {% endif %}
             {% if period == "PM" %}
                 {{ govukTable({
-                    caption: "Date and time availability",
-                    captionClasses: "govuk-table__caption--m",
                     firstCellIsHeader: true,
                     head: [
                         {
@@ -145,8 +143,6 @@
             {% endif %}
             {% if period == "ED" %}
                 {{ govukTable({
-                    caption: "Date and time availability",
-                    captionClasses: "govuk-table__caption--m",
                     firstCellIsHeader: true,
                     head: [
                         {
@@ -178,19 +174,35 @@
             {% set rows = (rows.push(
                 [
                     {
-                        text: room.description
+                        text: room.description,
+                        attributes: {
+                          'width': '40%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 0),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[0].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[0].freeSlots.length else '',
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 1),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[1].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[1].freeSlots.length else '',
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 2),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[2].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[2].freeSlots.length else '',
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
                     }
                 ]
             ), rows) %}
@@ -198,27 +210,51 @@
             {% set rows = (rows.push(
                 [
                     {
-                        text: room.description
+                        text: room.description,
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 0),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[0].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[0].freeSlots.length else '',
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 1),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[1].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[1].freeSlots.length else '',
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 2),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[2].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[2].freeSlots.length else '',
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 3),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[3].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[3].freeSlots.length else '',
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
                     },
                     {
                         html: roomHtml(room, 4),
-                        classes: 'govuk-table__cell--booked' if room.hourlySlots[4].fullyBooked else ''
+                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[4].freeSlots.length else '',
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
                     }
                 ]
             ), rows) %}
@@ -227,19 +263,21 @@
 {% endmacro %}
 
 {% macro roomHtml(room, index) %}
-    {% if room.hourlySlots[index].fullyBooked %}
+    {% if not room.hourlySlots[index].freeSlots.length %}
     <div>Booked</div>
     {% else %}
-      {% if room.hourlySlots[index].free.length %}
-          <ul class="govuk-list govuk-list__orange govuk-list--spaced">
-              {% for startEnd in room.hourlySlots[index].free %}
-                  <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
-              {% endfor %}
-          </ul>
-      {% else %}
-          <ul class="govuk-list govuk-list__green">
-              <li>Free</li>
-          </ul>
+      {% if room.hourlySlots[index].freeSlots.length %}
+          {% if room.hourlySlots[index].freeSlots.length == 1 and room.hourlySlots[index].freeSlots[0].durationInMinutes == 60 %}
+              <ul class="govuk-list govuk-list__green govuk-list--spaced">
+                  <li>Free</li>
+              </ul>
+          {% else %}
+              <ul class="govuk-list govuk-list__orange govuk-list--spaced">
+                  {% for startEnd in room.hourlySlots[index].freeSlots %}
+                      <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
       {% endif %}
     {% endif %}
 {% endmacro %}

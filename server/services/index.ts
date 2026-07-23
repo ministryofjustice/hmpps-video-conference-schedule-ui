@@ -45,7 +45,7 @@ export const services = () => {
     officialVisitsService,
   )
 
-  const roomAvailabilityService = new RoomAvailabilityService()
+  const roomAvailabilityService = new RoomAvailabilityService(bookAVideoLinkApiClient)
 
   return {
     applicationInfo,
