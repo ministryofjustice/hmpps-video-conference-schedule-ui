@@ -12,7 +12,7 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/roomAvailabilityService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const roomAvailabilityService = new RoomAvailabilityService() as jest.Mocked<RoomAvailabilityService>
+const roomAvailabilityService = new RoomAvailabilityService(null) as jest.Mocked<RoomAvailabilityService>
 
 let app: Express
 

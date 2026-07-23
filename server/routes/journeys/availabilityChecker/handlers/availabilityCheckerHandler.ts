@@ -9,6 +9,7 @@ import config from '../../../../config'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
 import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
+import { Period } from '../../../../services/appointmentService'
 
 class Body {
   @Expose()
@@ -18,7 +19,7 @@ class Body {
   date: Date
 
   @Expose()
-  @IsNotEmpty({ message: 'Select a period' })
+  @IsNotEmpty({ message: 'Select a session' })
   period: string
 }
 
@@ -37,13 +38,13 @@ export default class AvailabilityCheckerHandler implements PageHandler {
       const prison = req.middleware!.prison!
       const dateFromQueryParam = new Date(req.query.date?.toString())
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
-      const period: string = <string>req.query.period || 'AM'
+      const period: Period = <Period>req.query.period || 'AM'
 
       res.render('pages/availabilityChecker/availabilityChecker', {
         prison,
         date,
         period,
-        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(period),
+        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(prison.code, date, date, period, user),
       })
     } else {
       res.render('pages/error/404')

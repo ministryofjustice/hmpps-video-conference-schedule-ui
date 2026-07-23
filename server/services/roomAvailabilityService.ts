@@ -1,3 +1,7 @@
+import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
+import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
+import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
+
 export type Room = {
   id: string
   description: string
@@ -10,149 +14,132 @@ export type RoomAvailability = {
 
 export type HourlySlot = {
   hour: number
-  fullyBooked: boolean
-  free: StartTimeEndTime[]
+  freeSlots: TimeSlot[]
 }
 
-export type StartTimeEndTime = {
-  startTime: string
-  endTime: string
-}
+export type Period = 'AM' | 'PM' | 'ED'
 
 export default class RoomAvailabilityService {
-  constructor() {}
+  constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}
 
-  public async getRoomAvailability(period: string): Promise<RoomAvailability[]> {
+  public async getRoomAvailability(
+    prisonId: string,
+    fromDate: Date,
+    endDate: Date,
+    period: Period,
+    user: Express.User,
+  ): Promise<RoomAvailability[]> {
+    const videoEvents = await this.bookAVideoLinkApiClient.getVideoEvents(prisonId, { fromDate, endDate }, user)
+
     if (period === 'AM') {
-      return [
-        {
-          description: 'VCC Room 13',
-          hourlySlots: [
-            {
-              hour: 8,
-              fullyBooked: true,
-              free: [],
-            },
-            {
-              hour: 9,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 10,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 11,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 12,
-              fullyBooked: false,
-              free: [],
-            },
-          ],
-        },
-        {
-          description: 'VCC Room 14',
-          hourlySlots: [
-            {
-              hour: 8,
-              fullyBooked: true,
-              free: [],
-            },
-            {
-              hour: 9,
-              fullyBooked: false,
-              free: [
-                {
-                  startTime: '09:00',
-                  endTime: '09:30',
-                },
-                {
-                  startTime: '09:45',
-                  endTime: '10:00',
-                },
-              ],
-            },
-            {
-              hour: 10,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 11,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 12,
-              fullyBooked: false,
-              free: [],
-            },
-          ],
-        },
-      ] as unknown as RoomAvailability[]
+      return videoEvents.locations.map(le => this.toMorningRoomAvailability(le))
     }
 
     if (period === 'PM') {
-      return [
-        {
-          description: 'VCC Room 12',
-          hourlySlots: [
-            {
-              hour: 13,
-              fullyBooked: true,
-              free: [],
-            },
-            {
-              hour: 14,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 15,
-              fullyBooked: false,
-              free: [],
-            },
-            {
-              hour: 16,
-              fullyBooked: true,
-              free: [],
-            },
-            {
-              hour: 17,
-              fullyBooked: false,
-              free: [],
-            },
-          ],
-        },
-      ] as unknown as RoomAvailability[]
+      return videoEvents.locations.map(le => this.toAfternoonRoomAvailability(le))
     }
 
-    return [
-      {
-        description: 'VCC Room 1',
-        hourlySlots: [
-          {
-            hour: 18,
-            fullyBooked: false,
-            free: [],
-          },
-          {
-            hour: 19,
-            fullyBooked: false,
-            free: [],
-          },
-          {
-            hour: 20,
-            fullyBooked: false,
-            free: [],
-          },
-        ],
-      },
-    ] as unknown as RoomAvailability[]
+    return videoEvents.locations.map(le => this.toEveningRoomAvailability(le))
+  }
+
+  private toMorningRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+
+    return {
+      description: locationEvent.localName,
+      hourlySlots: [
+        {
+          hour: 8,
+          freeSlots: this.getFreeSlotsFor(8, busySlots),
+        },
+        {
+          hour: 9,
+          freeSlots: this.getFreeSlotsFor(9, busySlots),
+        },
+        {
+          hour: 10,
+          freeSlots: this.getFreeSlotsFor(10, busySlots),
+        },
+        {
+          hour: 11,
+          freeSlots: this.getFreeSlotsFor(11, busySlots),
+        },
+        {
+          hour: 12,
+          freeSlots: this.getFreeSlotsFor(12, busySlots),
+        },
+      ],
+    } as unknown as RoomAvailability
+  }
+
+  private toAfternoonRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+
+    return {
+      description: locationEvent.localName,
+      hourlySlots: [
+        {
+          hour: 13,
+          freeSlots: this.getFreeSlotsFor(13, busySlots),
+        },
+        {
+          hour: 14,
+          freeSlots: this.getFreeSlotsFor(14, busySlots),
+        },
+        {
+          hour: 15,
+          freeSlots: this.getFreeSlotsFor(15, busySlots),
+        },
+        {
+          hour: 16,
+          freeSlots: this.getFreeSlotsFor(16, busySlots),
+        },
+        {
+          hour: 17,
+          freeSlots: this.getFreeSlotsFor(17, busySlots),
+        },
+      ],
+    } as unknown as RoomAvailability
+  }
+
+  private toEveningRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+
+    return {
+      description: locationEvent.localName,
+      hourlySlots: [
+        {
+          hour: 18,
+          freeSlots: this.getFreeSlotsFor(18, busySlots),
+        },
+        {
+          hour: 19,
+          freeSlots: this.getFreeSlotsFor(19, busySlots),
+        },
+        {
+          hour: 20,
+          freeSlots: this.getFreeSlotsFor(20, busySlots),
+        },
+      ],
+    } as unknown as RoomAvailability
+  }
+
+  private getBusySlotsFor(locationEvent: LocationEvent): TimeSlot[] {
+    let busySlots: TimeSlot[] = []
+
+    locationEvent.events.forEach(event => {
+      const startTime = simpleTimeToDate(event.startTime)
+      const endTime = simpleTimeToDate(event.endTime)
+      busySlots = busySlots.concat(generateHourlySlots(startTime, endTime))
+    })
+
+    return busySlots
+  }
+
+  private getFreeSlotsFor(hour: number, busySlots: TimeSlot[]): TimeSlot[] {
+    return calculateFreeTimeSlots(
+      hour,
+      busySlots.filter(slot => slot.hour === hour),
+    )
   }
 }

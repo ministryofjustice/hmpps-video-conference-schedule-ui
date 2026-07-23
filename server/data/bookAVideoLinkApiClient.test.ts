@@ -67,4 +67,22 @@ describe('bookAVideoLinkApiClient', () => {
       expect(output).toEqual(response)
     })
   })
+
+  describe('getVideoEvents', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/video-events/prison/MDI/list-by-location')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getVideoEvents(
+        'MDI',
+        { fromDate: new Date('2026-07-01'), endDate: new Date('2026-07-10') },
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+  })
 })

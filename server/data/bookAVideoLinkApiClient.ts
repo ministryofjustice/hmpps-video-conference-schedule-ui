@@ -3,7 +3,7 @@ import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
 import logger from '../../logger'
 import { formatDate } from '../utils/utils'
-import { BvlsAppointment, Court, ProbationTeam, Prison } from '../@types/bookAVideoLinkApi/types'
+import { BvlsAppointment, Court, ProbationTeam, Prison, VideoEvents } from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -27,5 +27,22 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public getPrison(prisonId: string, user: Express.User): Promise<Prison> {
     return this.get({ path: `/prisons/${prisonId}` }, asSystem(user.username))
+  }
+
+  public getVideoEvents(
+    prisonId: string,
+    params: { fromDate: Date; endDate: Date; timeSlot?: 'AM' | 'PM' | 'ED' },
+    user: Express.User,
+  ): Promise<VideoEvents> {
+    return this.post(
+      {
+        path: `/video-events/prison/${prisonId}/list-by-location`,
+        data: {
+          startDate: formatDate(params.fromDate, 'yyyy-MM-dd'),
+          endDate: formatDate(params.endDate, 'yyyy-MM-dd'),
+        },
+      },
+      asSystem(user.username),
+    )
   }
 }
