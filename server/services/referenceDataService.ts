@@ -27,7 +27,7 @@ const BVLS_TYPES = [
   { code: 'VLPM', description: 'Video Link - Probation Meeting' },
 ] as VideoEventType[]
 
-export const OFFICIAL_VISIT_TYPE = { code: 'VLOV', description: 'Official Visit' } as VideoEventType
+export const OFFICIAL_VISIT_TYPE = { code: 'VLOV', description: 'Official Visit - Video' } as VideoEventType
 
 export const VIDEO_EVENT_TYPES = [...BVLS_TYPES, ...APPOINTMENT_TYPES, OFFICIAL_VISIT_TYPE] as VideoEventType[]
 

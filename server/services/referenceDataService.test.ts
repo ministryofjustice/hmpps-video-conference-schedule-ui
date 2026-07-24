@@ -97,7 +97,7 @@ describe('Reference data service', () => {
         { code: 'VLLA', description: 'Video Link - Legal Appointment' },
         { code: 'VLOO', description: 'Video Link - Official Other' },
         { code: 'VLPA', description: 'Video Link - Parole Hearing' },
-        { code: 'VLOV', description: 'Official Visit' },
+        { code: 'VLOV', description: 'Official Visit - Video' },
       ])
       expect(activitiesAndAppointmentsApiClient.getAppointmentCategories).not.toHaveBeenCalledWith(user)
     })

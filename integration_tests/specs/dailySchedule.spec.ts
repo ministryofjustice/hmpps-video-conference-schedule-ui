@@ -54,7 +54,7 @@ test.describe('Daily schedule', () => {
     await homePage.applyFiltersButton.click()
     await expect(page.getByText('Filter returned 0 results.')).toBeVisible()
     await homePage.showFiltersButton.click()
-    await homePage.selectCheckbox('Official Visit')
+    await homePage.selectCheckbox('Official Visit - Video')
     await homePage.applyFiltersButton.click()
     await expect(page.getByText('Filter returned 1 results.')).toBeVisible()
     await homePage.printAllMovementSlipsLink.click()
