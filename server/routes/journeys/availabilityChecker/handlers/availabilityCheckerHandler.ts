@@ -2,7 +2,7 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty } from 'class-validator'
-import { formatDate, isValid, startOfDay } from 'date-fns'
+import { formatDate, isValid, isWeekend, nextMonday, startOfDay } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import config from '../../../../config'
@@ -10,12 +10,14 @@ import { parseDatePickerDate } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
 import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
 import { Period } from '../../../../services/appointmentService'
+import IsWeekDay from '../../../validators/isWeekDay'
 
 class Body {
   @Expose()
   @Transform(({ value }) => parseDatePickerDate(value))
   @IsValidDate({ message: 'Enter a valid date' })
   @IsNotEmpty({ message: 'Enter a date' })
+  @IsWeekDay({ message: 'Select a working day' })
   date: Date
 
   @Expose()
@@ -38,13 +40,21 @@ export default class AvailabilityCheckerHandler implements PageHandler {
       const prison = req.middleware!.prison!
       const dateFromQueryParam = new Date(req.query.date?.toString())
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+      const weekDay = isWeekend(date) ? nextMonday(date) : date
+
       const period: Period = <Period>req.query.period || 'AM'
 
       res.render('pages/availabilityChecker/availabilityChecker', {
         prison,
-        date,
+        date: weekDay,
         period,
-        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(prison.code, date, date, period, user),
+        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(
+          prison.code,
+          weekDay,
+          weekDay,
+          period,
+          user,
+        ),
       })
     } else {
       res.render('pages/error/404')
