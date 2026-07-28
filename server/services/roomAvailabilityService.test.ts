@@ -22,13 +22,14 @@ describe('Room availability service', () => {
       const result = await roomAvailabilityService.getRoomAvailability(
         'MDI',
         new Date('2026-07-01'),
-        new Date('2026-07-01'),
+        new Date('2026-07-02'),
         'AM',
         user,
       )
       expect(result).toEqual([
         {
           description: 'VCC Room 1',
+          date: '2026-07-01',
           hourlySlots: [
             {
               hour: 8,
@@ -59,14 +60,75 @@ describe('Room availability service', () => {
             },
           ],
         },
+        {
+          description: 'VCC Room 1',
+          date: '2026-07-02',
+          hourlySlots: [
+            {
+              hour: 8,
+              freeSlots: [
+                {
+                  hour: 8,
+                  durationInMinutes: 60,
+                  startTime: '08:00',
+                  endTime: '09:00',
+                },
+              ],
+            },
+            {
+              hour: 9,
+              freeSlots: [
+                {
+                  hour: 9,
+                  durationInMinutes: 60,
+                  startTime: '09:00',
+                  endTime: '10:00',
+                },
+              ],
+            },
+            {
+              hour: 10,
+              freeSlots: [
+                {
+                  hour: 10,
+                  durationInMinutes: 60,
+                  startTime: '10:00',
+                  endTime: '11:00',
+                },
+              ],
+            },
+            {
+              hour: 11,
+              freeSlots: [
+                {
+                  hour: 11,
+                  durationInMinutes: 60,
+                  startTime: '11:00',
+                  endTime: '12:00',
+                },
+              ],
+            },
+            {
+              hour: 12,
+              freeSlots: [
+                {
+                  hour: 12,
+                  durationInMinutes: 60,
+                  startTime: '12:00',
+                  endTime: '13:00',
+                },
+              ],
+            },
+          ],
+        },
       ])
     })
   })
 
   const videoEvents = {
     prisonCode: 'MDI',
-    startDate: '2026-07-21',
-    endDate: '2026-07-21',
+    startDate: '2026-07-01',
+    endDate: '2026-07-02',
     timeSlot: 'AM',
     locations: [
       {
@@ -78,7 +140,7 @@ describe('Room availability service', () => {
             eventType: 'APPOINTMENT',
             subType: 'VLOO',
             subTypeDescription: 'Video link - official other',
-            eventDate: '2026-07-21',
+            eventDate: '2026-07-01',
             startTime: '08:00',
             endTime: '09:00',
             prisonerCode: 'G4950GV',
@@ -88,7 +150,7 @@ describe('Room availability service', () => {
             eventType: 'APPOINTMENT',
             subType: 'VLOO',
             subTypeDescription: 'Video link - official other',
-            eventDate: '2026-07-21',
+            eventDate: '2026-07-01',
             startTime: '09:30',
             endTime: '10:30',
             prisonerCode: 'G4950GV',
@@ -98,7 +160,7 @@ describe('Room availability service', () => {
             eventType: 'COURT',
             subType: 'BAIL',
             subTypeDescription: 'Bail hearing',
-            eventDate: '2026-07-21',
+            eventDate: '2026-07-01',
             startTime: '10:30',
             endTime: '11:30',
             prisonerCode: 'G4950GV',
@@ -108,7 +170,7 @@ describe('Room availability service', () => {
             eventType: 'PROBATION',
             subType: 'FTR56',
             subTypeDescription: 'Fixed term recall',
-            eventDate: '2026-07-21',
+            eventDate: '2026-07-01',
             startTime: '11:30',
             endTime: '13:30',
             prisonerCode: 'G4950GV',
