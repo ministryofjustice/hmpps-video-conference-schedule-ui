@@ -6,6 +6,7 @@ import AvailabilityCheckerHandler from './handlers/availabilityCheckerHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import config from '../../../config'
 import WorkingWeekAvailabilityCheckerHandler from './handlers/workingWeekAvailabilityCheckerHandler'
+import TimelineAvailabilityCheckerHandler from './handlers/timelineAvailabilityCheckerHandler'
 
 export default function Index({ auditService, roomAvailabilityService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -19,7 +20,11 @@ export default function Index({ auditService, roomAvailabilityService }: Service
     post(path, handler.POST, handler.BODY)
   }
 
-  if (config.featureToggles.workingWeekAvailabilityChecker) {
+  // Several choices of implementation - in preference order
+  if (config.featureToggles.timelineAvailabilityChecker) {
+    getAndPost('/', new TimelineAvailabilityCheckerHandler(roomAvailabilityService))
+  }
+  else if (config.featureToggles.workingWeekAvailabilityChecker) {
     getAndPost('/', new WorkingWeekAvailabilityCheckerHandler(roomAvailabilityService))
   } else {
     getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))

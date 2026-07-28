@@ -1,0 +1,140 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+
+{% set hideBackLink = true %}
+{% set pageTitle = "Video link availability checker: " + prison.name %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ mojDatePicker({
+                            id: 'date',
+                            name: 'date',
+                            label: {
+                                text: "Date",
+                                classes: 'govuk-label--s'
+                            },
+                            hint: {
+                                text: 'For example, ' + now() | formatDate('dd/MM/yyyy')
+                            },
+                            excludedDays: "saturday sunday",
+                            errorMessage: validationErrors | findError('date'),
+                            value: formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy')
+                        }) }}
+                    </div>
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ govukRadios({
+                            idPrefix: "period",
+                            name: "period",
+                            fieldset: {
+                                legend: {
+                                    text: "Session",
+                                    classes: "govuk-fieldset__legend--s govuk-!-margin-bottom-7"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "AM",
+                                    text: "Morning",
+                                    checked: formResponses.period == "AM" or period == "AM"
+                                },
+                                {
+                                    value: "PM",
+                                    text: "Afternoon",
+                                    checked: formResponses.period == "PM" or period == "PM"
+                                },
+                                {
+                                    value: "ED",
+                                    text: "Evening",
+                                    checked: formResponses.period == "ED" or period == "ED"
+                                }
+                            ],
+                            errorMessage: validationErrors | findError("duration"),
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+                    </div>
+                    <div class="appointments-link-div">
+                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
+                    </div>
+                </div>
+                <div>
+                    {{ govukButton({
+                        html: "Update",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row govuk-!-margin-top-3">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-heading-s">Date and time availability</div>
+            <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
+        </div>
+    </div>
+
+
+    {# Entire block is the schedule container to display session data #}
+    <div class="schedule-container">
+        <!-- Timeline Header labels -->
+        <div class="schedule-row header">
+            <div class="location-col">Location</div>
+            <div class="timeline-col header-timeline">
+                {% for label in sessionData.hourLabels %}
+                    <div class="hour-label-container">
+                        <div class="hour-label">{{ label }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Rows for Locations -->
+        {% for row in sessionData.locations %}
+            <div class="schedule-row">
+                <div class="location-col"><strong>{{ row.localName }}</strong></div>
+
+                <!-- Injected column count setup establishes precise timeline spacing locks -->
+                <div class="timeline-col content-timeline" style="grid-template-columns: repeat({{ sessionData.totalGridColumns }}, 1fr);">
+
+                    <!-- Render background hour tracking grid segments -->
+                    {% for i in range(0, sessionData.backgroundHoursCount) %}
+                        <div class="hour-marker-line" style="grid-column: span 12;"></div>
+                    {% endfor %}
+
+                    <!-- Booked Appointment Blocks (Rendered cleanly using structural grid positions) -->
+                    {% for event in row.events %}
+                        <div class="appointment-card"
+                             style="grid-column: {{ event.gridColumnInline }}; grid-row: {{ event.gridRowInline }};"
+                             title="{{ event.subTypeDescription }}">
+                            <span class="app-title">{{ event.subTypeDescription }}</span>
+                            <span class="app-time">{{ event.startTime }} - {{ event.endTime }}</span>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Thin Availability Indicator Lines -->
+                    {% for slot in row.freeSlots %}
+                        <div class="free-space-line" style="left: {{ slot.leftPct }}; width: {{ slot.widthPct }};">
+                            <span class="tooltip">Available: {{ slot.startTime }} - {{ slot.endTime }}</span>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
