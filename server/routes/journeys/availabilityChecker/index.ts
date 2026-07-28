@@ -4,6 +4,8 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import type { Services } from '../../../services'
 import AvailabilityCheckerHandler from './handlers/availabilityCheckerHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
+import config from '../../../config'
+import WorkingWeekAvailabilityCheckerHandler from './handlers/workingWeekAvailabilityCheckerHandler'
 
 export default function Index({ auditService, roomAvailabilityService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -17,7 +19,11 @@ export default function Index({ auditService, roomAvailabilityService }: Service
     post(path, handler.POST, handler.BODY)
   }
 
-  getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))
+  if (config.featureToggles.workingWeekAvailabilityChecker) {
+    getAndPost('/', new WorkingWeekAvailabilityCheckerHandler(roomAvailabilityService))
+  } else {
+    getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))
+  }
 
   return router
 }

@@ -1,0 +1,131 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "partials/availability.njk" import availability %}
+
+{% set hideBackLink = true %}
+{% set pageTitle = "Video link availability checker: " + prison.name %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ mojDatePicker({
+                            id: 'date',
+                            name: 'date',
+                            label: {
+                                text: "Date",
+                                classes: 'govuk-label--s'
+                            },
+                            hint: {
+                                text: 'For example, ' + now() | formatDate('dd/MM/yyyy')
+                            },
+                            excludedDays: "saturday sunday",
+                            errorMessage: validationErrors | findError('date'),
+                            value: formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy')
+                        }) }}
+                    </div>
+                    <div class="govuk-grid-column-one-quarter">
+                        {{ govukRadios({
+                            idPrefix: "period",
+                            name: "period",
+                            fieldset: {
+                                legend: {
+                                    text: "Session",
+                                    classes: "govuk-fieldset__legend--s govuk-!-margin-bottom-7"
+                                }
+                            },
+                            items: [
+                                {
+                                    value: "AM",
+                                    text: "Morning",
+                                    checked: formResponses.period == "AM" or period == "AM"
+                                },
+                                {
+                                    value: "PM",
+                                    text: "Afternoon",
+                                    checked: formResponses.period == "PM" or period == "PM"
+                                },
+                                {
+                                    value: "ED",
+                                    text: "Evening",
+                                    checked: formResponses.period == "ED" or period == "ED"
+                                }
+                            ],
+                            errorMessage: validationErrors | findError("duration"),
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+                    </div>
+                    <div class="appointments-link-div">
+                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
+                    </div>
+                </div>
+                <div>
+                    {{ govukButton({
+                        html: "Update",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="govuk-grid-row govuk-!-margin-top-3">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-heading-s">Date and time availability</div>
+            <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
+            <div>
+                {{ govukTabs({
+                    items: [
+                        {
+                            label: monday | formatDate('iii d MMM'),
+                            id: "monday",
+                            panel: {
+                            html: availability(period, mondayAvailability)
+                        }
+                        },
+                        {
+                            label: tuesday | formatDate('iii d MMM'),
+                            id: "tuesday",
+                            panel: {
+                            html: availability(period, tuesdayAvailability)
+                        }
+                        },
+                        {
+                            label: wednesday | formatDate('iii d MMM'),
+                            id: "wednesday",
+                            panel: {
+                            html: availability(period, wednesdayAvailability)
+                        }
+                        },
+                        {
+                            label: thursday | formatDate('iii d MMM'),
+                            id: "thursday",
+                            panel: {
+                            html: availability(period, thursdayAvailability)
+                        }
+                        },
+                        {
+                            label: friday | formatDate('iii d MMM'),
+                            id: "friday",
+                            panel: {
+                            html: availability(period, fridayAvailability)
+                        }
+                        }
+                    ]
+                }) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

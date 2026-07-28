@@ -65,6 +65,9 @@
                             classes: "govuk-!-width-one-third"
                         }) }}
                     </div>
+                    <div class="appointments-link-div">
+                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
+                    </div>
                 </div>
                 <div>
                     {{ govukButton({
@@ -182,7 +185,6 @@
                     },
                     {
                         html: roomHtml(room, 0),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[0].freeSlots.length else '',
                         attributes: {
                           'width': '20%',
                           'word-break': 'break-all'
@@ -190,7 +192,6 @@
                     },
                     {
                         html: roomHtml(room, 1),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[1].freeSlots.length else '',
                         attributes: {
                           'width': '20%',
                           'word-break': 'break-all'
@@ -198,7 +199,6 @@
                     },
                     {
                         html: roomHtml(room, 2),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[2].freeSlots.length else '',
                         attributes: {
                           'width': '20%',
                           'word-break': 'break-all'
@@ -218,7 +218,6 @@
                     },
                     {
                         html: roomHtml(room, 0),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[0].freeSlots.length else '',
                         attributes: {
                           'width': '16%',
                           'word-break': 'break-all'
@@ -226,7 +225,6 @@
                     },
                     {
                         html: roomHtml(room, 1),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[1].freeSlots.length else '',
                         attributes: {
                           'width': '16%',
                           'word-break': 'break-all'
@@ -234,7 +232,6 @@
                     },
                     {
                         html: roomHtml(room, 2),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[2].freeSlots.length else '',
                         attributes: {
                           'width': '16%',
                           'word-break': 'break-all'
@@ -242,7 +239,6 @@
                     },
                     {
                         html: roomHtml(room, 3),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[3].freeSlots.length else '',
                         attributes: {
                           'width': '16%',
                           'word-break': 'break-all'
@@ -250,7 +246,6 @@
                     },
                     {
                         html: roomHtml(room, 4),
-                        classes: 'govuk-table__cell--booked' if not room.hourlySlots[4].freeSlots.length else '',
                         attributes: {
                           'width': '16%',
                           'word-break': 'break-all'
@@ -264,20 +259,20 @@
 
 {% macro roomHtml(room, index) %}
     {% if not room.hourlySlots[index].freeSlots.length %}
-      Booked
+        <div class="govuk-table__cell--booked">Booked</div>
     {% else %}
-      {% if room.hourlySlots[index].freeSlots.length %}
-          {% if room.hourlySlots[index].freeSlots.length == 1 and room.hourlySlots[index].freeSlots[0].durationInMinutes == 60 %}
-              <ul class="govuk-list govuk-list__green">
-                  <li>Free</li>
-              </ul>
-          {% else %}
-              <ul class="govuk-list govuk-list__orange">
-                  {% for startEnd in room.hourlySlots[index].freeSlots %}
-                      <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
-                  {% endfor %}
-              </ul>
-          {% endif %}
-      {% endif %}
+        {% if room.hourlySlots[index].freeSlots.length %}
+            {% if room.hourlySlots[index].freeSlots.length == 1 and room.hourlySlots[index].freeSlots[0].durationInMinutes == 60 %}
+                <ul class="govuk-list govuk-list__green">
+                    <li>Free</li>
+                </ul>
+            {% else %}
+                <ul class="govuk-list govuk-list__orange">
+                    {% for startEnd in room.hourlySlots[index].freeSlots %}
+                        <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
     {% endif %}
 {% endmacro %}

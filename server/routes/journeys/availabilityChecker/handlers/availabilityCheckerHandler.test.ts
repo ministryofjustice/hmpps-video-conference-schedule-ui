@@ -5,7 +5,7 @@ import { startOfDay } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
-import { existsByDataQa, getPageHeader } from '../../../testutils/cheerio'
+import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import config from '../../../../config'
 import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
@@ -65,6 +65,7 @@ describe('GET', () => {
 
           expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
           expect(existsByDataQa($, time)).toBe(true)
+          expect(getByDataQa($, 'appointments-link').attr('href')).toEqual('http://localhost:3000/appointments')
           expect(roomAvailabilityService.getRoomAvailability).toHaveBeenCalledWith(
             'RSI',
             startOfDay(date),
