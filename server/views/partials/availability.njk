@@ -1,0 +1,195 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% macro availability(period, rooms) %}
+        {% set rows = [] %}
+        {{ roomsAvailabilityRows(period, rooms, rows) }}
+
+        {% if period == "AM" %}
+            {{ govukTable({
+                firstCellIsHeader: true,
+                head: [
+                    {
+                        text: "Rooms"
+                    },
+                    {
+                        text: "08:00",
+                        attributes: {
+                        "data-qa": "time-8"
+                    }
+                    },
+                    {
+                        text: "09:00"
+                    },
+                    {
+                        text: "10:00"
+                    },
+                    {
+                        text: "11:00"
+                    },
+                    {
+                        text: "12:00"
+                    }
+                ],
+                rows: rows
+            }) }}
+        {% endif %}
+        {% if period == "PM" %}
+            {{ govukTable({
+                firstCellIsHeader: true,
+                head: [
+                    {
+                        text: "Rooms"
+                    },
+                    {
+                        text: "13:00",
+                        attributes: {
+                        "data-qa": "time-13"
+                    }
+                    },
+                    {
+                        text: "14:00"
+                    },
+                    {
+                        text: "15:00"
+                    },
+                    {
+                        text: "16:00"
+                    },
+                    {
+                        text: "17:00"
+                    }
+                ],
+                rows: rows
+            }) }}
+        {% endif %}
+        {% if period == "ED" %}
+            {{ govukTable({
+                firstCellIsHeader: true,
+                head: [
+                    {
+                        text: "Rooms"
+                    },
+                    {
+                        text: "18:00",
+                        attributes: {
+                        "data-qa": "time-18"
+                    }
+                    },
+                    {
+                        text: "19:00"
+                    },
+                    {
+                        text: "20:00"
+                    }
+                ],
+                rows: rows
+            }) }}
+        {% endif %}
+{% endmacro %}
+
+
+{% macro roomsAvailabilityRows(period, roomAvailability, rows) %}
+    {% for room in roomAvailability %}
+        {% if period == "ED" %}
+            {% set rows = (rows.push(
+                [
+                    {
+                        text: room.description,
+                        attributes: {
+                          'width': '40%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 0),
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 1),
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 2),
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
+                    }
+                ]
+            ), rows) %}
+        {% else %}
+            {% set rows = (rows.push(
+                [
+                    {
+                        text: room.description,
+                        attributes: {
+                          'width': '20%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 0),
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 1),
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 2),
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 3),
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
+                    },
+                    {
+                        html: roomHtml(room, 4),
+                        attributes: {
+                          'width': '16%',
+                          'word-break': 'break-all'
+                        }
+                    }
+                ]
+            ), rows) %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro roomHtml(room, index) %}
+    {% if not room.hourlySlots[index].freeSlots.length %}
+        <div class="govuk-table__cell--booked">Booked</div>
+    {% else %}
+        {% if room.hourlySlots[index].freeSlots.length %}
+            {% if room.hourlySlots[index].freeSlots.length == 1 and room.hourlySlots[index].freeSlots[0].durationInMinutes == 60 %}
+                <ul class="govuk-list govuk-list__green">
+                    <li>Free</li>
+                </ul>
+            {% else %}
+                <ul class="govuk-list govuk-list__orange">
+                    {% for startEnd in room.hourlySlots[index].freeSlots %}
+                        <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endmacro %}

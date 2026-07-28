@@ -48,6 +48,7 @@ export default class AvailabilityCheckerHandler implements PageHandler {
         prison,
         date: weekDay,
         period,
+        appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments`,
         roomAvailability: await this.roomAvailabilityService.getRoomAvailability(
           prison.code,
           weekDay,

@@ -1,10 +1,7 @@
-.room-availability {
-
-}
-
 .govuk-list {
   &__green {
     @extend .govuk-list--bullet;
+
     li::marker {
       color: green;
     }
@@ -16,12 +13,6 @@
       color: orange;
     }
   }
-
-  &__grey {
-    td {
-      background-color: gray;
-    }
-  }
 }
 
 .govuk-table {
@@ -30,14 +21,15 @@
   }
 
   .govuk-table__cell {
+    @extend .govuk-table__cell;
     &--booked {
-      background-color: #F3F2F180;
-    }
-
-    &--no-border {
-      &.govuk-table__cell--booked {
-        border-bottom: white 5px solid;
-      }
+      background-color: #F3F2F180; /* Sets the background color to grey */
+      padding: 10px;
     }
   }
+}
+
+.appointments-link-div {
+  text-align: right;
+  margin-right: 10px;
 }
