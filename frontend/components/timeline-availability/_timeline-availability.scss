@@ -1,4 +1,5 @@
 $green-line-color: #00aa5b;
+$red-line-color: #d32f2f; // Clean, accessible crimson red
 $appointment-bg: #eaf3fc;
 $appointment-border: #1e88e5;
 $border-color: #d3d3d3;
@@ -18,7 +19,6 @@ $border-color: #d3d3d3;
     border-bottom: 1px solid $border-color;
     box-sizing: border-box;
 
-    // Securely maps dynamic heights via data attributes
     &[data-row-height] {
       height: calc(attr(data-row-height px, 90px));
     }
@@ -124,7 +124,6 @@ $border-color: #d3d3d3;
     }
   }
 
-  /* Secure Absolute Placement via data attributes */
   .appointment-card {
     position: absolute;
     height: 48px;
@@ -140,7 +139,6 @@ $border-color: #d3d3d3;
     overflow: hidden;
     border-radius: 4px;
 
-    // Securely processes variables from the data map
     left: calc(attr(data-left %, 0%));
     width: calc(attr(data-width %, 0%));
     top: calc(attr(data-top px, 30px));
@@ -161,22 +159,19 @@ $border-color: #d3d3d3;
     }
   }
 
-  .free-space-line {
+  // Baseline properties shared between status lines
+  %status-indicator-line {
     position: absolute;
     height: 4px;
     z-index: 3;
-    background-color: $green-line-color;
     border-radius: 2px;
-    cursor: pointer;
     box-sizing: border-box;
-    transition: background-color 0.15s ease, height 0.1s ease, top 0.1s ease;
-
+    top: 12px;
     left: calc(attr(data-left %, 0%));
     width: calc(attr(data-width %, 0%));
-    top: 12px;
+    transition: background-color 0.15s ease, height 0.1s ease, top 0.1s ease;
 
     &:hover {
-      background-color: darken($green-line-color, 15%);
       height: 6px;
       top: 11px;
       .tooltip { opacity: 1; }
@@ -197,6 +192,27 @@ $border-color: #d3d3d3;
       pointer-events: none;
       transition: opacity 0.15s ease;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+  }
+
+  /* Green Line */
+  .free-space-line {
+    @extend %status-indicator-line;
+    background-color: $green-line-color;
+
+    &:hover {
+      background-color: darken($green-line-color, 15%);
+    }
+  }
+
+  /* Red Line */
+  .booked-space-line {
+    @extend %status-indicator-line;
+    background-color: $red-line-color;
+    cursor: not-allowed; // Visual cue indicating the space cannot be clicked for booking
+
+    &:hover {
+      background-color: darken($red-line-color, 15%);
     }
   }
 }

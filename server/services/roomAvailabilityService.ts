@@ -51,6 +51,7 @@ export interface MappedLocation {
   localName: string
   events: MappedEvent[]
   freeSlots: FreeSlot[]
+  bookedSlots: FreeSlot[]
   totalRowHeight: string
 }
 
@@ -299,28 +300,41 @@ export default class RoomAvailabilityService {
 
       // Collate contiguous uncovered minutes back into concrete free-space objects
       const derivedFreeSlots: Array<FreeSlot> = []
-      let insideFreeGap = false
-      let gapStart = startMins
+      const derivedBookedSlots: Array<FreeSlot> = []
+
+      let insideGap = false
+      let blockStart = startMins
+
+      // Initialize tracking state based on first minute
+      if (coveredMinutes.length > 0) {
+        insideGap = !coveredMinutes[0]
+      }
 
       for (let i = 0; i <= coveredMinutes.length; i++) {
         const isCurrentlyCovered = i === coveredMinutes.length ? true : coveredMinutes[i]
+        const stateChanged = i === coveredMinutes.length || (isCurrentlyCovered === insideGap)
 
-        if (!isCurrentlyCovered && !insideFreeGap) {
-          insideFreeGap = true
-          gapStart = startMins + i
-        } else if (isCurrentlyCovered && insideFreeGap) {
-          insideFreeGap = false
-          const gapEnd = startMins + i
+        if (stateChanged) {
+          const blockEnd = startMins + i
+          const left = ((blockStart - startMins) / totalSessionMins) * 100
+          const width = ((blockEnd - blockStart) / totalSessionMins) * 100
 
-          const left = ((gapStart - startMins) / totalSessionMins) * 100
-          const width = ((gapEnd - gapStart) / totalSessionMins) * 100
-
-          derivedFreeSlots.push({
-            startTime: minsToTimeStr(gapStart),
-            endTime: minsToTimeStr(gapEnd),
+          const slotData = {
+            startTime: minsToTimeStr(blockStart),
+            endTime: minsToTimeStr(blockEnd),
             leftPct: left.toFixed(4),
-            widthPct: width.toFixed(4),
-          } as FreeSlot)
+            widthPct: width.toFixed(4)
+          }
+
+          if (insideGap) {
+            derivedFreeSlots.push(slotData);
+          } else if (i !== coveredMinutes.length || blockStart !== blockEnd) {
+            // Prevent empty blocks at final loop boundaries
+            derivedBookedSlots.push(slotData);
+          }
+
+          insideGap = !isCurrentlyCovered;
+          blockStart = startMins + i;
         }
       }
 
@@ -329,6 +343,7 @@ export default class RoomAvailabilityService {
         localName: loc.localName,
         events: mappedEvents,
         freeSlots: derivedFreeSlots,
+        bookedSlots: derivedBookedSlots,
         totalRowHeight: ((totalRowTracks * 56) + 40).toString(),
       } as MappedLocation
     })

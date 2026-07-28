@@ -133,7 +133,7 @@
                         </div>
                     {% endfor %}
 
-                    <!-- Thin Availability Indicator Lines -->
+                    <!-- Thin Availability Indicator Lines (Green) -->
                     {% for slot in row.freeSlots %}
                         <div class="free-space-line"
                              data-left="{{ slot.leftPct }}"
@@ -142,10 +142,18 @@
                         </div>
                     {% endfor %}
 
+                    <!-- Thin Occupied Indicator Lines (Red) -->
+                    {% for slot in row.bookedSlots %}
+                        <div class="booked-space-line"
+                             data-left="{{ slot.leftPct }}"
+                             data-width="{{ slot.widthPct }}">
+                            <span class="tooltip">Booked: {{ slot.startTime }} - {{ slot.endTime }}</span>
+                        </div>
+                    {% endfor %}
+
                 </div>
             </div>
         {% endfor %}
     </div>
-
 
 {% endblock %}
