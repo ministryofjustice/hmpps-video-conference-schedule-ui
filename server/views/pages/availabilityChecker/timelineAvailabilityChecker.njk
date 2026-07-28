@@ -90,35 +90,43 @@
 
     {# Entire block is the schedule container to display session data #}
     <div class="schedule-container">
-        <!-- Timeline Header labels -->
+        <!-- Timeline Header Labels -->
         <div class="schedule-row header">
             <div class="location-col">Location</div>
-            <div class="timeline-col header-timeline">
+            <div class="timeline-col grid-header-timeline" data-total-hours="{{ sessionData.totalHours }}">
                 {% for label in sessionData.hourLabels %}
-                    <div class="hour-label-container">
-                        <div class="hour-label">{{ label }}</div>
-                    </div>
+                    {% if not loop.last %}
+                        <div class="hour-label-container">
+                            <div class="hour-label">{{ label }}</div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
+                <div class="hour-label-container final-stamp">
+                    <div class="hour-label">{{ sessionData.hourLabels | last }}</div>
+                </div>
             </div>
         </div>
 
         <!-- Rows for Locations -->
         {% for row in sessionData.locations %}
-            <div class="schedule-row">
+            <div class="schedule-row" data-row-height="{{ row.totalRowHeight }}">
                 <div class="location-col"><strong>{{ row.localName }}</strong></div>
 
-                <!-- Injected column count setup establishes precise timeline spacing locks -->
-                <div class="timeline-col content-timeline" style="grid-template-columns: repeat({{ sessionData.totalGridColumns }}, 1fr);">
+                <div class="timeline-col content-timeline">
 
-                    <!-- Render background hour tracking grid segments -->
-                    {% for i in range(0, sessionData.backgroundHoursCount) %}
-                        <div class="hour-marker-line" style="grid-column: span 12;"></div>
-                    {% endfor %}
+                    <!-- Background hour lines -->
+                    <div class="grid-background-lines" data-total-hours="{{ sessionData.totalHours }}">
+                        {% for i in range(0, sessionData.totalHours | int) %}
+                            <div class="hour-marker-line"></div>
+                        {% endfor %}
+                    </div>
 
-                    <!-- Booked Appointment Blocks (Rendered cleanly using structural grid positions) -->
+                    <!-- Booked Appointment Blocks -->
                     {% for event in row.events %}
                         <div class="appointment-card"
-                             style="grid-column: {{ event.gridColumnInline }}; grid-row: {{ event.gridRowInline }};"
+                             data-left="{{ event.leftPct }}"
+                             data-width="{{ event.widthPct }}"
+                             data-top="{{ event.trackOffset }}"
                              title="{{ event.subTypeDescription }}">
                             <span class="app-title">{{ event.subTypeDescription }}</span>
                             <span class="app-time">{{ event.startTime }} - {{ event.endTime }}</span>
@@ -127,7 +135,9 @@
 
                     <!-- Thin Availability Indicator Lines -->
                     {% for slot in row.freeSlots %}
-                        <div class="free-space-line" style="left: {{ slot.leftPct }}; width: {{ slot.widthPct }};">
+                        <div class="free-space-line"
+                             data-left="{{ slot.leftPct }}"
+                             data-width="{{ slot.widthPct }}">
                             <span class="tooltip">Available: {{ slot.startTime }} - {{ slot.endTime }}</span>
                         </div>
                     {% endfor %}
@@ -136,5 +146,6 @@
             </div>
         {% endfor %}
     </div>
+
 
 {% endblock %}

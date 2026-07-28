@@ -34,8 +34,9 @@ export interface MappedEvent {
   endTime: string
   prisonerNumber: string
   eventId?: number | null
-  gridColumnInLine: string
-  gridRowInLine: string
+  leftPct: string
+  widthPct: string
+  trackOffset: string
 }
 
 export interface FreeSlot {
@@ -50,13 +51,13 @@ export interface MappedLocation {
   localName: string
   events: MappedEvent[]
   freeSlots: FreeSlot[]
+  totalRowHeight: string
 }
 
 export interface SessionData {
-  totalGridColumns: number,
-  backgroundHoursCount: number,
-  hourLabels: string[],
-  locations: MappedLocation[],
+  hourLabels: string[]
+  totalHours: string
+  locations: MappedLocation[]
 }
 
 export type Period = 'AM' | 'PM' | 'ED'
@@ -209,13 +210,13 @@ export default class RoomAvailabilityService {
   }
 
   private mapTimelineData (locations: LocationEvent[], session: SessionConfig): SessionData {
-    const TRACK_MINUTES = 5; // 5-minute increments per grid cell
     const startMins = session.startHour * 60
     const endMins = session.endHour * 60
-    const totalGridColumns = (endMins - startMins) / TRACK_MINUTES
+    const totalSessionMins = endMins - startMins
 
     const hourLabels: string[] = [];
-    const totalHours = session.endHour - session.startHour;
+    const totalHours = session.endHour - session.startHour
+
     for (let i = 0; i <= totalHours; i++) {
       const currentHour = session.startHour + i
       const period = currentHour >= 12 ? 'pm' : 'am'
@@ -237,15 +238,7 @@ export default class RoomAvailabilityService {
       return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
     }
 
-    // Convert absolute minutes to 1-based CSS Grid column line numbers
-    const minsToGridColumn = (mins: number): number => {
-      const relativeMins = mins - startMins
-      const colIndex = Math.floor(relativeMins / TRACK_MINUTES) + 1
-      return Math.max(1, Math.min(colIndex, totalGridColumns + 1))
-    }
-
     const mappedLocations = locations.map(loc => {
-
       const sessionEvents = (loc.events || []).filter(e => {
         const eStart = timeToMins(e.startTime)
         const eEnd = timeToMins(e.endTime)
@@ -258,20 +251,17 @@ export default class RoomAvailabilityService {
 
       // Map exact percentage position values for appointments
       const mappedEvents = sessionEvents.map(e => {
-
         const eStart = Math.max(startMins, timeToMins(e.startTime))
         const eEnd = Math.min(endMins, timeToMins(e.endTime))
 
-        const colStart = minsToGridColumn(eStart)
-        const colEnd = minsToGridColumn(eEnd)
+        const leftPct = ((eStart - startMins) / totalSessionMins) * 100
+        const widthPct = ((eEnd - eStart) / totalSessionMins) * 100
 
-        // Find first vertical layer track index where this card fits safely
         let assignedTrack = 0
         let placed = false
 
         for (let i = 0; i < tracks.length; i++) {
-          const lastEndInTrack = tracks[i][tracks[i].length - 1];
-          if (eStart >= lastEndInTrack) {
+          if (eStart >= tracks[i][tracks[i].length - 1]) {
             assignedTrack = i
             tracks[i].push(eEnd)
             placed = true
@@ -286,17 +276,19 @@ export default class RoomAvailabilityService {
 
         return {
           ...e,
-          // Grid indices are 1-indexed, tracks are 0-indexed (add 1)
-          gridColumnInLine: `${colStart} / ${colEnd}`,
-          gridRowInLine: `${assignedTrack + 1}`,
+          leftPct: leftPct.toFixed(4),
+          widthPct: widthPct.toFixed(4),
+          trackOffset: ((assignedTrack * 56) + 30).toString()
         } as MappedEvent
       })
 
       logger.info(`Mapped events for location ${loc.dpsLocationId} ${loc.localName}`)
       logger.info(`${JSON.stringify(mappedEvents, null, 2)}`)
 
+      const totalRowTracks = Math.max(1, tracks.length)
+
       // Calculate free intervals from the events
-      const coveredMinutes = new Array(endMins - startMins).fill(false)
+      const coveredMinutes = new Array(totalSessionMins).fill(false)
       sessionEvents.forEach(e => {
         const eStart = Math.max(startMins, timeToMins(e.startTime))
         const eEnd = Math.min(endMins, timeToMins(e.endTime))
@@ -320,14 +312,14 @@ export default class RoomAvailabilityService {
           insideFreeGap = false
           const gapEnd = startMins + i
 
-          const left = ((gapStart - startMins) / (endMins - startMins)) * 100
-          const width = ((gapEnd - gapStart) / (endMins - startMins)) * 100
+          const left = ((gapStart - startMins) / totalSessionMins) * 100
+          const width = ((gapEnd - gapStart) / totalSessionMins) * 100
 
           derivedFreeSlots.push({
             startTime: minsToTimeStr(gapStart),
             endTime: minsToTimeStr(gapEnd),
-            leftPct: `${left.toFixed(4)}%`,
-            widthPct: `${width.toFixed(4)}%`,
+            leftPct: left.toFixed(4),
+            widthPct: width.toFixed(4),
           } as FreeSlot)
         }
       }
@@ -337,14 +329,16 @@ export default class RoomAvailabilityService {
         localName: loc.localName,
         events: mappedEvents,
         freeSlots: derivedFreeSlots,
+        totalRowHeight: ((totalRowTracks * 56) + 40).toString(),
       } as MappedLocation
     })
 
+    logger.info(`Mapped locations = ${JSON.stringify(mappedLocations, null, 2)}`)
+
     return {
-      totalGridColumns,
-      backgroundHoursCount: totalHours,
       hourLabels,
+      totalHours: totalHours.toString(),
       locations: mappedLocations
-    }
+    } as SessionData
   }
 }
