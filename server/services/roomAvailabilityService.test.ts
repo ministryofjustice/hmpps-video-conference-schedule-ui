@@ -28,6 +28,7 @@ describe('Room availability service', () => {
       )
       expect(result).toEqual([
         {
+          id: '81b02c1e-1e26-46e5-b4ee-00830c0cff5e',
           description: 'VCC Room 1',
           date: '2026-07-01',
           hourlySlots: [
@@ -61,6 +62,7 @@ describe('Room availability service', () => {
           ],
         },
         {
+          id: '81b02c1e-1e26-46e5-b4ee-00830c0cff5e',
           description: 'VCC Room 1',
           date: '2026-07-02',
           hourlySlots: [
