@@ -4,12 +4,8 @@ import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
 import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
 import { formatDate } from '../utils/utils'
 
-export type Room = {
-  id: string
-  description: string
-}
-
 export type RoomAvailability = {
+  id: string
   description: string
   date: string
   hourlySlots: [HourlySlot]
@@ -116,6 +112,7 @@ export default class RoomAvailabilityService {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
+      id: locationEvent.dpsLocationId,
       description: locationEvent.localName,
       date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
@@ -147,6 +144,7 @@ export default class RoomAvailabilityService {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
+      id: locationEvent.dpsLocationId,
       description: locationEvent.localName,
       date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
@@ -178,6 +176,7 @@ export default class RoomAvailabilityService {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
+      id: locationEvent.dpsLocationId,
       description: locationEvent.localName,
       date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
