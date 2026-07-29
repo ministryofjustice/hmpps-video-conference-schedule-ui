@@ -198,5 +198,6 @@ export default {
     includeOfficialVisits: get('FEATURE_INCLUDE_OFFICIAL_VISITS', false) === 'true',
     availabilityCheckerPrisons: get('FEATURE_AVAILABILITY_CHECKER_PRISONS', null),
     workingWeekAvailabilityChecker: get('FEATURE_WORKING_WEEK_AVAILABILITY_CHECKER', false) === 'true',
+    timelineAvailabilityChecker: get('FEATURE_TIMELINE_AVAILABILITY_CHECKER', false) === 'true',
   },
 }

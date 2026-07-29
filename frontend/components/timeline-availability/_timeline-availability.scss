@@ -1,0 +1,218 @@
+$green-line-color: #00aa5b;
+$red-line-color: #d32f2f; // Clean, accessible crimson red
+$appointment-bg: #eaf3fc;
+$appointment-border: #1e88e5;
+$border-color: #d3d3d3;
+
+.schedule-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: sans-serif;
+  border: 1px solid $border-color;
+  background-color: #fff;
+  box-sizing: border-box;
+
+  .schedule-row {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid $border-color;
+    box-sizing: border-box;
+
+    &[data-row-height] {
+      height: calc(attr(data-row-height px, 90px));
+    }
+
+    &.header {
+      height: 45px !important;
+      background-color: #ffffff;
+      font-weight: bold;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  .location-col {
+    width: 180px;
+    padding: 12px 16px;
+    flex-shrink: 0;
+    border-right: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #000000;
+    box-sizing: border-box;
+  }
+
+  .timeline-col {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    box-sizing: border-box;
+
+    &.grid-header-timeline {
+      display: grid;
+      width: 100%;
+      height: 100%;
+
+      &[data-total-hours] {
+        grid-template-columns: repeat(attr(data-total-hours int, 5), 1fr);
+      }
+
+      .hour-label-container {
+        position: relative;
+        border-left: 1px solid $border-color;
+        box-sizing: border-box;
+        height: 100%;
+
+        &:first-child {
+          border-left: none;
+        }
+
+        .hour-label {
+          position: absolute;
+          left: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 0.8rem;
+          color: #333333;
+          font-weight: 600;
+        }
+
+        &.final-stamp {
+          position: absolute;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 0;
+          border-left: 1px solid $border-color;
+
+          .hour-label {
+            left: 8px;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+
+    &.content-timeline {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+    }
+  }
+
+  .grid-background-lines {
+    display: grid;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    &[data-total-hours] {
+      grid-template-columns: repeat(attr(data-total-hours int, 5), 1fr);
+    }
+
+    .hour-marker-line {
+      border-right: 1px solid #eaeaea;
+      height: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  .appointment-card {
+    position: absolute;
+    height: 48px;
+    z-index: 2;
+    background-color: $appointment-bg;
+    border: 1px solid scale-color($appointment-border, $lightness: 50%);
+    border-left: 3px solid $appointment-border;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 4px;
+
+    left: calc(attr(data-left %, 0%));
+    width: calc(attr(data-width %, 0%));
+    top: calc(attr(data-top px, 30px));
+
+    .app-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: darken($appointment-border, 20%);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .app-time {
+      font-size: 0.65rem;
+      color: #555555;
+      margin-top: 1px;
+    }
+  }
+
+  // Baseline properties shared between status lines
+  %status-indicator-line {
+    position: absolute;
+    height: 4px;
+    z-index: 3;
+    border-radius: 2px;
+    box-sizing: border-box;
+    top: 12px;
+    left: calc(attr(data-left %, 0%));
+    width: calc(attr(data-width %, 0%));
+    transition: background-color 0.15s ease, height 0.1s ease, top 0.1s ease;
+
+    &:hover {
+      height: 6px;
+      top: 11px;
+      .tooltip { opacity: 1; }
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222222;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+  }
+
+  /* Green Line */
+  .free-space-line {
+    @extend %status-indicator-line;
+    background-color: $green-line-color;
+
+    &:hover {
+      background-color: darken($green-line-color, 15%);
+    }
+  }
+
+  /* Red Line */
+  .booked-space-line {
+    @extend %status-indicator-line;
+    background-color: $red-line-color;
+    cursor: not-allowed; // Visual cue indicating the space cannot be clicked for booking
+
+    &:hover {
+      background-color: darken($red-line-color, 15%);
+    }
+  }
+}
