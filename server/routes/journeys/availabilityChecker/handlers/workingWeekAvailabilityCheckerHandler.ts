@@ -84,6 +84,8 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
         wednesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextWednesday(startDate))),
         thursdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextThursday(startDate))),
         fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, endDate)),
+        previousWeek: previousMonday(startDate),
+        nextWeek: nextMonday(endDate),
       })
     } else {
       res.render('pages/error/404')
