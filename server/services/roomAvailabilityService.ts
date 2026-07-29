@@ -20,12 +20,14 @@ export type HourlySlot = {
   freeSlots: TimeSlot[]
 }
 
+// Timeline specific type
 export interface SessionConfig {
   name: string
   startHour: number // e.g., 8, 13, 18
   endHour: number // e.g., 12, 17, 20
 }
 
+// Timeline specific type
 export interface MappedEvent {
   dpsLocationId: string
   eventType: string
@@ -41,22 +43,25 @@ export interface MappedEvent {
   trackOffset: string
 }
 
-export interface FreeSlot {
+// Timeline specific type
+export interface MappedSlot {
   startTime: string
   endTime: string
   leftPct: string
   widthPct: string
 }
 
+// Timeline specific type
 export interface MappedLocation {
   dpsLocationId: string
   localName: string
   events: MappedEvent[]
-  freeSlots: FreeSlot[]
-  bookedSlots: FreeSlot[]
+  freeSlots: MappedSlot[]
+  bookedSlots: MappedSlot[]
   totalRowHeight: string
 }
 
+// Timeline specific type
 export interface SessionData {
   hourLabels: string[]
   totalHours: string
@@ -342,8 +347,8 @@ export default class RoomAvailabilityService {
       })
 
       // Collate contiguous uncovered minutes back into concrete free and booked slot objects
-      const derivedFreeSlots: Array<FreeSlot> = []
-      const derivedBookedSlots: Array<FreeSlot> = []
+      const derivedFreeSlots: Array<MappedSlot> = []
+      const derivedBookedSlots: Array<MappedSlot> = []
 
       let insideGap = false
       let blockStart = startMins
