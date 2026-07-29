@@ -1,6 +1,8 @@
+import { addDays, interval, isWithinInterval } from 'date-fns'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
 import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
+import { formatDate } from '../utils/utils'
 
 export type Room = {
   id: string
@@ -9,6 +11,7 @@ export type Room = {
 
 export type RoomAvailability = {
   description: string
+  date: string
   hourlySlots: [HourlySlot]
 }
 
@@ -74,22 +77,42 @@ export default class RoomAvailabilityService {
   ): Promise<RoomAvailability[]> {
     const videoEvents = await this.bookAVideoLinkApiClient.getVideoEvents(prisonId, { fromDate, endDate }, user)
 
-    if (period === 'AM') {
-      return videoEvents.locations.map(le => this.toMorningRoomAvailability(le))
+    let roomAvailability: RoomAvailability[] = []
+    let date: Date = fromDate
+
+    while (isWithinInterval(date, interval(fromDate, endDate))) {
+      const immutableDate = date
+
+      if (period === 'AM') {
+        roomAvailability = roomAvailability.concat(
+          videoEvents.locations.map(le => this.toMorningRoomAvailability(immutableDate, le)),
+        )
+      }
+
+      if (period === 'PM') {
+        roomAvailability = roomAvailability.concat(
+          videoEvents.locations.map(le => this.toAfternoonRoomAvailability(immutableDate, le)),
+        )
+      }
+
+      if (period === 'ED') {
+        roomAvailability = roomAvailability.concat(
+          videoEvents.locations.map(le => this.toEveningRoomAvailability(immutableDate, le)),
+        )
+      }
+
+      date = addDays(date, 1)
     }
 
-    if (period === 'PM') {
-      return videoEvents.locations.map(le => this.toAfternoonRoomAvailability(le))
-    }
-
-    return videoEvents.locations.map(le => this.toEveningRoomAvailability(le))
+    return roomAvailability
   }
 
-  private toMorningRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
-    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+  private toMorningRoomAvailability(date: Date, locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
       description: locationEvent.localName,
+      date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
         {
           hour: 8,
@@ -115,11 +138,12 @@ export default class RoomAvailabilityService {
     } as unknown as RoomAvailability
   }
 
-  private toAfternoonRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
-    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+  private toAfternoonRoomAvailability(date: Date, locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
       description: locationEvent.localName,
+      date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
         {
           hour: 13,
@@ -145,11 +169,12 @@ export default class RoomAvailabilityService {
     } as unknown as RoomAvailability
   }
 
-  private toEveningRoomAvailability(locationEvent: LocationEvent): RoomAvailability {
-    const busySlots: TimeSlot[] = this.getBusySlotsFor(locationEvent)
+  private toEveningRoomAvailability(date: Date, locationEvent: LocationEvent): RoomAvailability {
+    const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
     return {
       description: locationEvent.localName,
+      date: formatDate(date, 'yyyy-MM-dd'),
       hourlySlots: [
         {
           hour: 18,
@@ -167,14 +192,16 @@ export default class RoomAvailabilityService {
     } as unknown as RoomAvailability
   }
 
-  private getBusySlotsFor(locationEvent: LocationEvent): TimeSlot[] {
+  private getBusySlotsFor(date: Date, locationEvent: LocationEvent): TimeSlot[] {
     let busySlots: TimeSlot[] = []
 
-    locationEvent.events.forEach(event => {
-      const startTime = simpleTimeToDate(event.startTime)
-      const endTime = simpleTimeToDate(event.endTime)
-      busySlots = busySlots.concat(generateHourlySlots(startTime, endTime))
-    })
+    locationEvent.events
+      .filter(e => e.eventDate === formatDate(date, 'yyyy-MM-dd'))
+      .forEach(event => {
+        const startTime = simpleTimeToDate(event.startTime)
+        const endTime = simpleTimeToDate(event.endTime)
+        busySlots = busySlots.concat(generateHourlySlots(startTime, endTime))
+      })
 
     return busySlots
   }

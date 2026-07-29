@@ -23,7 +23,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import config from '../../../../config'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
-import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
+import RoomAvailabilityService, { RoomAvailability } from '../../../../services/roomAvailabilityService'
 import { Period } from '../../../../services/appointmentService'
 import IsWeekDay from '../../../validators/isWeekDay'
 
@@ -58,33 +58,16 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
       const weekDay = isWeekend(date) ? nextMonday(date) : date
       const period: Period = <Period>req.query.period || 'AM'
       const { startDate, endDate } = this.startAndEndOfWeek(weekDay)
+      const roomAvailability = await this.roomAvailabilityService.getRoomAvailability(
+        prison.code,
+        startDate,
+        endDate,
+        period,
+        user,
+      )
 
-      const [mondayAvailability, tuesdayAvailability, wednesdayAvailability, thursdayAvailability, fridayAvailability] =
-        await Promise.all([
-          this.roomAvailabilityService.getRoomAvailability(prison.code, startDate, startDate, period, user),
-          this.roomAvailabilityService.getRoomAvailability(
-            prison.code,
-            nextTuesday(startDate),
-            nextTuesday(startDate),
-            period,
-            user,
-          ),
-          this.roomAvailabilityService.getRoomAvailability(
-            prison.code,
-            nextWednesday(startDate),
-            nextWednesday(startDate),
-            period,
-            user,
-          ),
-          this.roomAvailabilityService.getRoomAvailability(
-            prison.code,
-            nextThursday(startDate),
-            nextThursday(startDate),
-            period,
-            user,
-          ),
-          this.roomAvailabilityService.getRoomAvailability(prison.code, endDate, endDate, period, user),
-        ])
+      const dayFilter = (availability: RoomAvailability, day: Date) =>
+        availability.date === formatDate(day, 'yyyy-MM-dd')
 
       res.render('pages/availabilityChecker/workingWeekAvailabilityChecker', {
         prison,
@@ -96,11 +79,13 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
         wednesday: nextWednesday(startDate),
         thursday: nextThursday(startDate),
         friday: endDate,
-        mondayAvailability,
-        tuesdayAvailability,
-        wednesdayAvailability,
-        thursdayAvailability,
-        fridayAvailability,
+        mondayAvailability: roomAvailability.filter(ra => dayFilter(ra, startDate)),
+        tuesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextTuesday(startDate))),
+        wednesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextWednesday(startDate))),
+        thursdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextThursday(startDate))),
+        fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, endDate)),
+        previousWeek: previousMonday(startDate),
+        nextWeek: nextMonday(endDate),
       })
     } else {
       res.render('pages/error/404')

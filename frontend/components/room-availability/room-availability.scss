@@ -17,7 +17,10 @@
 
 .govuk-table {
   .govuk-table__header {
-    border-top: 1px solid #b1b4b6;
+    @extend .govuk-table__header;
+    &--no-header {
+      border-top: none;
+    }
   }
 
   .govuk-table__cell {
