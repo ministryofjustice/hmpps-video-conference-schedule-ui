@@ -1,7 +1,6 @@
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import {LocationEvent} from '../@types/bookAVideoLinkApi/types'
-import {calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot} from '../utils/timeSlotUtils'
-import logger from "../../logger";
+import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
+import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
 
 export type Room = {
   id: string
@@ -19,9 +18,9 @@ export type HourlySlot = {
 }
 
 export interface SessionConfig {
-  name: string;
-  startHour: number; // e.g., 8, 13, 18
-  endHour: number;   // e.g., 12, 17, 20
+  name: string
+  startHour: number // e.g., 8, 13, 18
+  endHour: number // e.g., 12, 17, 20
 }
 
 export interface MappedEvent {
@@ -187,14 +186,18 @@ export default class RoomAvailabilityService {
     )
   }
 
-  public async getTimelineAvailability(prisonCode: string, onDate: Date, period: string, user: Express.User): Promise<SessionData> {
-
-    logger.info(`Call to getTimeLineAvailability: ${prisonCode} ${onDate} ${period}`)
-
-    // Get the events taking place in video locations on this date at this prison, split by the locations they are planned into
-    const events = await this.bookAVideoLinkApiClient.getVideoEvents(prisonCode, { fromDate: onDate, endDate: onDate }, user)
-
-    logger.info(`Events = ${JSON.stringify(events, null, 2)}`)
+  public async getTimelineAvailability(
+    prisonCode: string,
+    onDate: Date,
+    period: string,
+    user: Express.User,
+  ): Promise<SessionData> {
+    // Get the events taking place on this date at this prison, split by the locations they are planned into
+    const events = await this.bookAVideoLinkApiClient.getVideoEvents(
+      prisonCode,
+      { fromDate: onDate, endDate: onDate },
+      user,
+    )
 
     // Set up the session hours based on the period requested
     let session: SessionConfig
@@ -203,22 +206,35 @@ export default class RoomAvailabilityService {
     } else if (period === 'PM') {
       session = { name: 'Afternoon', startHour: 13, endHour: 18 }
     } else {
-      session = { name: 'Evening', startHour: 18, endHour: 20 }
+      session = { name: 'Evening', startHour: 18, endHour: 23 }
     }
 
-    // Return the events taking place mapped to the locations within the session hours
+    // Return the events taking place mapped to the locations within the session timeline
     return this.mapTimelineData(events.locations, session)
   }
 
-  private mapTimelineData (locations: LocationEvent[], session: SessionConfig): SessionData {
+  /**
+   * Method which accepts an array of LocationEvent data retrieved from the API containing
+   * the video locations at this prison, and all the events taking place there on the date provided.
+   *
+   * This function maps these locations and events into a SessionData object, used to display
+   * them on a calendar-like view in their relative time positions and duration, stacking overlapping
+   * events, and decorating them with the details of the event.
+   *
+   * @param locations LocationEvent[]
+   * @param session SessionData
+   * @private
+   */
+  private mapTimelineData(locations: LocationEvent[], session: SessionConfig): SessionData {
     const startMins = session.startHour * 60
     const endMins = session.endHour * 60
     const totalSessionMins = endMins - startMins
 
-    const hourLabels: string[] = [];
+    const hourLabels: string[] = []
     const totalHours = session.endHour - session.startHour
 
-    for (let i = 0; i <= totalHours; i++) {
+    // Generate the hour labels in this session
+    for (let i = 0; i <= totalHours; i += 1) {
       const currentHour = session.startHour + i
       const period = currentHour >= 12 ? 'pm' : 'am'
       let displayHour = currentHour > 12 ? currentHour - 12 : currentHour
@@ -239,18 +255,21 @@ export default class RoomAvailabilityService {
       return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
     }
 
+    // For each location
     const mappedLocations = locations.map(loc => {
-      const sessionEvents = (loc.events || []).filter(e => {
-        const eStart = timeToMins(e.startTime)
-        const eEnd = timeToMins(e.endTime)
-        return eStart < endMins && eEnd > startMins
-      })
+      // For each event taking place
+      const sessionEvents = (loc.events || [])
+        .filter(e => {
+          const eStart = timeToMins(e.startTime)
+          const eEnd = timeToMins(e.endTime)
+          return eStart < endMins && eEnd > startMins
+        })
         .sort((a, b) => timeToMins(a.startTime) - timeToMins(b.startTime))
 
-      // Dynamic multi-row layout track allocation to prevent overlapping hidden cards
+      // Multi-row layout track allocation to prevent overlapping hidden cards and makes them stack
       const tracks: number[][] = []
 
-      // Map exact percentage position values for appointments
+      // Map percentage position values for events
       const mappedEvents = sessionEvents.map(e => {
         const eStart = Math.max(startMins, timeToMins(e.startTime))
         const eEnd = Math.min(endMins, timeToMins(e.endTime))
@@ -261,12 +280,12 @@ export default class RoomAvailabilityService {
         let assignedTrack = 0
         let placed = false
 
-        for (let i = 0; i < tracks.length; i++) {
+        for (let i = 0; i < tracks.length; i += 1) {
           if (eStart >= tracks[i][tracks[i].length - 1]) {
             assignedTrack = i
             tracks[i].push(eEnd)
             placed = true
-            break;
+            break
           }
         }
 
@@ -279,12 +298,9 @@ export default class RoomAvailabilityService {
           ...e,
           leftPct: leftPct.toFixed(4),
           widthPct: widthPct.toFixed(4),
-          trackOffset: ((assignedTrack * 56) + 30).toString()
+          trackOffset: (assignedTrack * 56 + 30).toString(),
         } as MappedEvent
       })
-
-      logger.info(`Mapped events for location ${loc.dpsLocationId} ${loc.localName}`)
-      logger.info(`${JSON.stringify(mappedEvents, null, 2)}`)
 
       const totalRowTracks = Math.max(1, tracks.length)
 
@@ -293,12 +309,12 @@ export default class RoomAvailabilityService {
       sessionEvents.forEach(e => {
         const eStart = Math.max(startMins, timeToMins(e.startTime))
         const eEnd = Math.min(endMins, timeToMins(e.endTime))
-        for (let m = eStart; m < eEnd; m++) {
+        for (let m = eStart; m < eEnd; m += 1) {
           coveredMinutes[m - startMins] = true
         }
-      });
+      })
 
-      // Collate contiguous uncovered minutes back into concrete free-space objects
+      // Collate contiguous uncovered minutes back into concrete free and booked slot objects
       const derivedFreeSlots: Array<FreeSlot> = []
       const derivedBookedSlots: Array<FreeSlot> = []
 
@@ -310,9 +326,9 @@ export default class RoomAvailabilityService {
         insideGap = !coveredMinutes[0]
       }
 
-      for (let i = 0; i <= coveredMinutes.length; i++) {
+      for (let i = 0; i <= coveredMinutes.length; i += 1) {
         const isCurrentlyCovered = i === coveredMinutes.length ? true : coveredMinutes[i]
-        const stateChanged = i === coveredMinutes.length || (isCurrentlyCovered === insideGap)
+        const stateChanged = i === coveredMinutes.length || isCurrentlyCovered === insideGap
 
         if (stateChanged) {
           const blockEnd = startMins + i
@@ -323,18 +339,18 @@ export default class RoomAvailabilityService {
             startTime: minsToTimeStr(blockStart),
             endTime: minsToTimeStr(blockEnd),
             leftPct: left.toFixed(4),
-            widthPct: width.toFixed(4)
+            widthPct: width.toFixed(4),
           }
 
           if (insideGap) {
-            derivedFreeSlots.push(slotData);
+            derivedFreeSlots.push(slotData)
           } else if (i !== coveredMinutes.length || blockStart !== blockEnd) {
             // Prevent empty blocks at final loop boundaries
-            derivedBookedSlots.push(slotData);
+            derivedBookedSlots.push(slotData)
           }
 
-          insideGap = !isCurrentlyCovered;
-          blockStart = startMins + i;
+          insideGap = !isCurrentlyCovered
+          blockStart = startMins + i
         }
       }
 
@@ -344,16 +360,14 @@ export default class RoomAvailabilityService {
         events: mappedEvents,
         freeSlots: derivedFreeSlots,
         bookedSlots: derivedBookedSlots,
-        totalRowHeight: ((totalRowTracks * 56) + 40).toString(),
+        totalRowHeight: (totalRowTracks * 56 + 40).toString(),
       } as MappedLocation
     })
-
-    logger.info(`Mapped locations = ${JSON.stringify(mappedLocations, null, 2)}`)
 
     return {
       hourLabels,
       totalHours: totalHours.toString(),
-      locations: mappedLocations
+      locations: mappedLocations,
     } as SessionData
   }
 }

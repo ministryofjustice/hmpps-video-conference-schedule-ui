@@ -23,8 +23,7 @@ export default function Index({ auditService, roomAvailabilityService }: Service
   // Several choices of implementation - in preference order
   if (config.featureToggles.timelineAvailabilityChecker) {
     getAndPost('/', new TimelineAvailabilityCheckerHandler(roomAvailabilityService))
-  }
-  else if (config.featureToggles.workingWeekAvailabilityChecker) {
+  } else if (config.featureToggles.workingWeekAvailabilityChecker) {
     getAndPost('/', new WorkingWeekAvailabilityCheckerHandler(roomAvailabilityService))
   } else {
     getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))

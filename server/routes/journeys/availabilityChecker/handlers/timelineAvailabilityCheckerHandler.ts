@@ -33,11 +33,13 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
   public BODY = Body
 
   GET = async (req: Request, res: Response) => {
-    const enabledPrisons = config.featureToggles.availabilityCheckerPrisons?.split(',')
     const { user } = res.locals
+    const enabledPrisons = config.featureToggles.availabilityCheckerPrisons?.split(',')
 
     if (enabledPrisons && enabledPrisons.includes(user.activeCaseLoadId)) {
       const prison = req.middleware!.prison!
+
+      // Use the query parameter date in preference or default to today if a weekday, or the next Monday
       const dateFromQueryParam = new Date(req.query.date?.toString())
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
       const weekDay = isWeekend(date) ? nextMonday(date) : date
@@ -46,12 +48,7 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
       const period: Period = <Period>req.query.period || 'AM'
 
       // Get the session data to display in the template
-      const sessionData = await this.roomAvailabilityService.getTimelineAvailability(
-        prison.code,
-        weekDay,
-        period,
-        user,
-      )
+      const sessionData = await this.roomAvailabilityService.getTimelineAvailability(prison.code, weekDay, period, user)
 
       res.render('pages/availabilityChecker/timelineAvailabilityChecker', {
         prison,
@@ -67,6 +64,7 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
 
   POST = async (req: Request, res: Response) => {
     const { date, period } = req.body
+
     const queryParams = new URLSearchParams({
       date: formatDate(date, 'yyyy-MM-dd'),
       period,
