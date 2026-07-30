@@ -26,6 +26,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
     OFFICIAL_VISITS_API_URL: "https://official-visits-api-dev.hmpps.service.justice.gov.uk"
     OFFICIAL_VISITS_URL: "https://official-visits-ui-dev.hmpps.service.justice.gov.uk"
+    FEATURE_INCLUDE_OFFICIAL_VISITS: "true"
 
 generic-prometheus-alerts:
   businessHoursOnly: true
