@@ -207,13 +207,12 @@
             {% else %}
                 {% for startEnd in room.hourlySlots[index].freeSlots %}
                     {{ govukTag({
-                        html: '<div><div>Available</div><div>' + startEnd.startTime + ' - ' + startEnd.endTime + '</div></div>',
-                        classes: 'govuk-tag--no-text-transform govuk-tag--orange',
+                        html: '<div>Available</div><div>' + startEnd.startTime + ' - ' + startEnd.endTime + '</div>',
+                        classes: 'govuk-tag--no-text-transform govuk-tag--spacing govuk-tag--orange',
                         attributes: {
                             'data-qa': room.id + '-available-' + room.date + '-' + startEnd.startTime + '-' + startEnd.endTime
                         }
                     }) }}
-                    <p></p>
                 {% endfor %}
             {% endif %}
         {% endif %}

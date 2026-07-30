@@ -4,6 +4,10 @@
   &--no-text-transform {
     text-transform: none;
   }
+
+  &--spacing {
+    margin-bottom: 10px;
+  }
 }
 
 .govuk-table {
