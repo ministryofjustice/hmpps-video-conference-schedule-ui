@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 
 {% set hideBackLink = true %}
@@ -259,19 +260,27 @@
 
 {% macro roomHtml(room, index) %}
     {% if not room.hourlySlots[index].freeSlots.length %}
-        <div class="govuk-table__cell--booked">Booked</div>
+        <div data-qa="{{ room.id }}-booked-{{ room.date }}-{{ room.hourlySlots[index].hour }}">Booked</div>
     {% else %}
         {% if room.hourlySlots[index].freeSlots.length %}
             {% if room.hourlySlots[index].freeSlots.length == 1 and room.hourlySlots[index].freeSlots[0].durationInMinutes == 60 %}
-                <ul class="govuk-list govuk-list__green">
-                    <li>Free</li>
-                </ul>
+                {{ govukTag({
+                    text: 'Available',
+                    classes: 'govuk-tag--no-text-transform govuk-tag--green',
+                    attributes: {
+                        'data-qa': room.id + '-available-' + room.date + '-' + room.hourlySlots[index].hour
+                    }
+                }) }}
             {% else %}
-                <ul class="govuk-list govuk-list__orange">
-                    {% for startEnd in room.hourlySlots[index].freeSlots %}
-                        <li>Free {{ startEnd.startTime }} - {{ startEnd.endTime }}</li>
-                    {% endfor %}
-                </ul>
+                {% for startEnd in room.hourlySlots[index].freeSlots %}
+                    {{ govukTag({
+                        html: '<div>Available</div><div>' + startEnd.startTime + ' - ' + startEnd.endTime + '</div>',
+                        classes: 'govuk-tag--no-text-transform govuk-tag--spacing govuk-tag--orange',
+                        attributes: {
+                            'data-qa': room.id + '-available-' + room.date + '-' + startEnd.startTime + '-' + startEnd.endTime
+                        }
+                    }) }}
+                {% endfor %}
             {% endif %}
         {% endif %}
     {% endif %}

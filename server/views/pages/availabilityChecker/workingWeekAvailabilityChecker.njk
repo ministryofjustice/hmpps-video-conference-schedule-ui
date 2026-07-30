@@ -86,6 +86,17 @@
         <div class="govuk-grid-column-full">
             <div class="govuk-heading-s">Date and time availability</div>
             <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
+            {{ govukPagination({
+                previous: {
+                    text: 'Previous week',
+                    href: "/availability-checker?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                },
+                next: {
+                    text: 'Next week',
+                    href: "/availability-checker?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                },
+                items: []
+            }) }}
             <div>
                 {{ govukTabs({
                     items: [
@@ -127,17 +138,6 @@
                     ]
                 }) }}
             </div>
-            {{ govukPagination({
-                previous: {
-                    text: 'Previous week',
-                    href: "/availability-checker?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period
-                },
-                next: {
-                    text: 'Next week',
-                    href: "/availability-checker?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
-                },
-                items: []
-            }) }}
         </div>
     </div>
 {% endblock %}
