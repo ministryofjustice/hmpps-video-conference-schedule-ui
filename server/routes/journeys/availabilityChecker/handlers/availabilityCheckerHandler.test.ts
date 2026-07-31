@@ -65,7 +65,9 @@ describe('GET', () => {
 
           expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
           expect(existsByDataQa($, time)).toBe(true)
-          expect(getByDataQa($, 'appointments-link').attr('href')).toEqual('http://localhost:3000/appointments')
+          expect(getByDataQa($, 'appointments-link').attr('href')).toEqual(
+            'http://localhost:3000/appointments/create/start-group',
+          )
           expect(roomAvailabilityService.getRoomAvailability).toHaveBeenCalledWith(
             'RSI',
             startOfDay(date),
