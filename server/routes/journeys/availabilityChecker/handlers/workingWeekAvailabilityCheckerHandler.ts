@@ -73,7 +73,7 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
         prison,
         date: weekDay,
         period,
-        appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments`,
+        appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments/create/start-group`,
         monday: startDate,
         tuesday: nextTuesday(startDate),
         wednesday: nextWednesday(startDate),

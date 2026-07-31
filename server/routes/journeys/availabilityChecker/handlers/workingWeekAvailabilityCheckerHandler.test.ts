@@ -305,7 +305,9 @@ describe('GET', () => {
         const $ = load(res.text)
 
         expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
-        expect(getByDataQa($, 'appointments-link').attr('href')).toEqual('http://localhost:3000/appointments')
+        expect(getByDataQa($, 'appointments-link').attr('href')).toEqual(
+          'http://localhost:3000/appointments/create/start-group',
+        )
 
         // Availability on 2026-07-27
         expect(existsByDataQa($, '1-booked-2026-07-27-8')).toBe(true)
