@@ -4,6 +4,7 @@ import RefreshButton from './components/refresh-button/refresh-button'
 import { PrintButton, ExportButton } from './components/action-bar/print-and-export'
 import { ShowHideLinkButton } from './components/show-hide-link-button/show-hide-link-button'
 import MojFilter from './components/moj-filter/moj-filter'
+import { initSchedule } from './components/timeline-availability/timeline-init'
 
 function initAll() {
   var $autoCompleteElements = document.getElementsByName('autocompleteElements')
@@ -35,6 +36,8 @@ function initAll() {
   nodeListForEach($showHideLinkButtons, function ($showHideLinkButton) {
     new ShowHideLinkButton($showHideLinkButton)
   })
+
+  initSchedule()
 }
 
 export { initAll }
