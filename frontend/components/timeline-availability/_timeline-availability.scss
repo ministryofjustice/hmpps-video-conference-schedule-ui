@@ -1,5 +1,5 @@
 $green-line-color: #00aa5b;
-$red-line-color: #d32f2f; // Clean, accessible crimson red
+$red-line-color: #d32f2f;
 $appointment-bg: #eaf3fc;
 $appointment-border: #1e88e5;
 $border-color: #d3d3d3;
@@ -18,10 +18,7 @@ $border-color: #d3d3d3;
     width: 100%;
     border-bottom: 1px solid $border-color;
     box-sizing: border-box;
-
-    &[data-row-height] {
-      height: calc(attr(data-row-height px, 90px));
-    }
+    height: var(--row-height, 90px);
 
     &.header {
       height: 45px !important;
@@ -53,10 +50,7 @@ $border-color: #d3d3d3;
       display: grid;
       width: 100%;
       height: 100%;
-
-      &[data-total-hours] {
-        grid-template-columns: repeat(attr(data-total-hours int, 5), 1fr);
-      }
+      grid-template-columns: repeat(var(--total-hours, 5), 1fr);
 
       .hour-label-container {
         position: relative;
@@ -112,15 +106,17 @@ $border-color: #d3d3d3;
     right: 0;
     z-index: 1;
     pointer-events: none;
-
-    &[data-total-hours] {
-      grid-template-columns: repeat(attr(data-total-hours int, 5), 1fr);
-    }
+    grid-template-columns: repeat(var(--total-hours, 5), 1fr);
 
     .hour-marker-line {
       border-right: 1px solid #eaeaea;
       height: 100%;
       box-sizing: border-box;
+
+      // Fixes potential pixel-rounding calculation bugs in Safari layout engines
+      &:last-child {
+        border-right: none;
+      }
     }
   }
 
@@ -129,7 +125,9 @@ $border-color: #d3d3d3;
     height: 48px;
     z-index: 2;
     background-color: $appointment-bg;
-    border: 1px solid scale-color($appointment-border, $lightness: 50%);
+
+    // Modern CSS native color-mix fallback strategy for absolute variable stability
+    border: 1px solid color-mix(in srgb, $appointment-border 50%, white);
     border-left: 3px solid $appointment-border;
     box-sizing: border-box;
     padding: 4px 6px;
@@ -139,14 +137,14 @@ $border-color: #d3d3d3;
     overflow: hidden;
     border-radius: 4px;
 
-    left: calc(attr(data-left %, 0%));
-    width: calc(attr(data-width %, 0%));
-    top: calc(attr(data-top px, 30px));
+    left: var(--left, 0%);
+    width: var(--width, 0%);
+    top: var(--top, 30px);
 
     .app-title {
       font-size: 0.75rem;
       font-weight: 700;
-      color: darken($appointment-border, 20%);
+      color: color-mix(in srgb, $appointment-border 80%, black);
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -159,7 +157,6 @@ $border-color: #d3d3d3;
     }
   }
 
-  // Baseline properties shared between status lines
   %status-indicator-line {
     position: absolute;
     height: 4px;
@@ -167,8 +164,8 @@ $border-color: #d3d3d3;
     border-radius: 2px;
     box-sizing: border-box;
     top: 12px;
-    left: calc(attr(data-left %, 0%));
-    width: calc(attr(data-width %, 0%));
+    left: var(--left, 0%);
+    width: var(--width, 0%);
     transition: background-color 0.15s ease, height 0.1s ease, top 0.1s ease;
 
     &:hover {
@@ -201,7 +198,7 @@ $border-color: #d3d3d3;
     background-color: $green-line-color;
 
     &:hover {
-      background-color: darken($green-line-color, 15%);
+      background-color: color-mix(in srgb, $green-line-color 85%, black);
     }
   }
 
@@ -209,10 +206,10 @@ $border-color: #d3d3d3;
   .booked-space-line {
     @extend %status-indicator-line;
     background-color: $red-line-color;
-    cursor: not-allowed; // Visual cue indicating the space cannot be clicked for booking
+    cursor: not-allowed;
 
     &:hover {
-      background-color: darken($red-line-color, 15%);
+      background-color: color-mix(in srgb, $red-line-color 85%, black);
     }
   }
 }

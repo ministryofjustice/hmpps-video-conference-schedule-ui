@@ -16,7 +16,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <form method='POST'>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-quarter">
                         {{ mojDatePicker({
@@ -66,7 +66,9 @@
                         }) }}
                     </div>
                     <div class="appointments-link-div">
-                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
+                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state"
+                           href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment
+                            in a new tab</a>
                     </div>
                 </div>
                 <div>
@@ -89,8 +91,10 @@
 
 
     {# Entire block is the schedule container to display session data #}
+
     <div class="schedule-container">
-        <!-- Timeline Header Labels -->
+
+        <!-- Timeline header labels -->
         <div class="schedule-row header">
             <div class="location-col">Location</div>
             <div class="timeline-col grid-header-timeline" data-total-hours="{{ sessionData.totalHours }}">
@@ -109,7 +113,13 @@
 
         <!-- Rows for Locations -->
         {% for row in sessionData.locations %}
-            <div class="schedule-row" data-row-height="{{ row.totalRowHeight }}">
+
+            {# Browser compatibility - ensure 'px' is appended for CSS variable parsing if the raw object value is a plain number #}
+            {% set rowHeight = row.totalRowHeight if 'px' in (row.totalRowHeight | string) else row.totalRowHeight ~ 'px' %}
+
+            <div class="schedule-row" data-row-height="{{ rowHeight }}">
+
+                {# Location name #}
                 <div class="location-col"><strong>{{ row.localName }}</strong></div>
 
                 <div class="timeline-col content-timeline">
@@ -121,32 +131,45 @@
                         {% endfor %}
                     </div>
 
-                    <!-- Booked Appointment Blocks -->
+                    <!-- Booked appointment cards -->
                     {% for event in row.events %}
+                        {# Browser compatibility - ensure 'px' to track offsets to maintain absolute top container boundaries #}
+                        {% set trackTop = event.trackOffset if 'px' in (event.trackOffset | string) else event.trackOffset ~ 'px' %}
+
+                        {# Browser compatibility - ensire left/width values have explicit percentage signs appended if not present in data #}
+                        {% set cardLeft = event.leftPct if '%' in (event.leftPct | string) else event.leftPct ~ '%' %}
+                        {% set cardWidth = event.widthPct if '%' in (event.widthPct | string) else event.widthPct ~ '%' %}
+
                         <div class="appointment-card"
-                             data-left="{{ event.leftPct }}"
-                             data-width="{{ event.widthPct }}"
-                             data-top="{{ event.trackOffset }}"
+                             data-left="{{ cardLeft }}"
+                             data-width="{{ cardWidth }}"
+                             data-top="{{ trackTop }}"
                              title="{{ event.subTypeDescription }}">
                             <span class="app-title">{{ event.subTypeDescription }}</span>
                             <span class="app-time">{{ event.startTime }} - {{ event.endTime }}</span>
                         </div>
                     {% endfor %}
 
-                    <!-- Thin Availability Indicator Lines (Green) -->
+                    <!-- Thin availability indicator lines (Green) -->
                     {% for slot in row.freeSlots %}
+                        {% set slotLeft = slot.leftPct if '%' in (slot.leftPct | string) else slot.leftPct ~ '%' %}
+                        {% set slotWidth = slot.widthPct if '%' in (slot.widthPct | string) else slot.widthPct ~ '%' %}
+
                         <div class="free-space-line"
-                             data-left="{{ slot.leftPct }}"
-                             data-width="{{ slot.widthPct }}">
+                             data-left="{{ slotLeft }}"
+                             data-width="{{ slotWidth }}">
                             <span class="tooltip">Available: {{ slot.startTime }} - {{ slot.endTime }}</span>
                         </div>
                     {% endfor %}
 
-                    <!-- Thin Occupied Indicator Lines (Red) -->
+                    <!-- Thin occupied indicator lines (Red) -->
                     {% for slot in row.bookedSlots %}
+                        {% set slotLeft = slot.leftPct if '%' in (slot.leftPct | string) else slot.leftPct ~ '%' %}
+                        {% set slotWidth = slot.widthPct if '%' in (slot.widthPct | string) else slot.widthPct ~ '%' %}
+
                         <div class="booked-space-line"
-                             data-left="{{ slot.leftPct }}"
-                             data-width="{{ slot.widthPct }}">
+                             data-left="{{ slotLeft }}"
+                             data-width="{{ slotWidth }}">
                             <span class="tooltip">Booked: {{ slot.startTime }} - {{ slot.endTime }}</span>
                         </div>
                     {% endfor %}
