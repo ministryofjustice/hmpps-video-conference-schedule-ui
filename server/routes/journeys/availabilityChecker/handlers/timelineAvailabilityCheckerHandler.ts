@@ -54,7 +54,7 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
         prison,
         date: weekDay,
         period,
-        appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments`,
+        appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments/create/start-group`,
         sessionData,
       })
     } else {
