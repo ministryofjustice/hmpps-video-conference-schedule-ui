@@ -331,7 +331,7 @@ export default class ScheduleService {
     const cancelledBy = bvlsAppointment?.updatedBy || appointment.cancelledBy
     if (cancelledBy) {
       const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user).catch(err => {
-        if (err.status !== 404) {
+        if (err.responseStatus !== 404) {
           throw err
         }
       })
@@ -347,7 +347,7 @@ export default class ScheduleService {
     const cancelledBy = officialVisit.updatedBy
     if (cancelledBy) {
       const cancelledByUser = await this.manageUsersApiClient.getUserByUsername(cancelledBy, user).catch(err => {
-        if (err.status !== 404) {
+        if (err.responseStatus !== 404) {
           throw err
         }
       })
