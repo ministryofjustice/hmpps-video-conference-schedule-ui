@@ -8,8 +8,8 @@ export { resetStubs }
 
 const DEFAULT_ROLES = ['ROLE_SOME_REQUIRED_ROLE', 'ROLE_PRISON']
 
-export const attemptHmppsAuthLogin = async (page: Page) => {
-  await page.goto('/')
+export const attemptHmppsAuthLogin = async (page: Page, pageUrl: string = '/') => {
+  await page.goto(pageUrl)
   page.locator('h1', { hasText: 'Sign in' })
   const url = await hmppsAuth.getSignInUrl()
   await page.goto(url)
@@ -18,6 +18,7 @@ export const attemptHmppsAuthLogin = async (page: Page) => {
 export const login = async (
   page: Page,
   { name, roles = DEFAULT_ROLES, active = true, authSource = 'nomis' }: UserToken & { active?: boolean } = {},
+  alternativeUrl: string = '/',
 ) => {
   await Promise.all([
     hmppsAuth.favicon(),
@@ -27,5 +28,5 @@ export const login = async (
     tokenVerification.stubVerifyToken(active),
     prisonApi.stubGetCaseLoads(),
   ])
-  await attemptHmppsAuthLogin(page)
+  await attemptHmppsAuthLogin(page, alternativeUrl)
 }

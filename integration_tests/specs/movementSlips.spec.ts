@@ -17,14 +17,12 @@ const today = format(new Date(), 'yyyy-MM-dd')
 test.describe('Movement slips', () => {
   test.beforeEach(async () => {
     await activitiesAndAppointmentsApi.stubIsAppointmentsRolledOut()
-    await activitiesAndAppointmentsApi.stubGetAppointmentCategories()
     await activitiesAndAppointmentsApi.stubGetAppointments()
     await bookAVideoLinkApi.stubGetPrison()
     await bookAVideoLinkApi.stubGetCourts()
     await bookAVideoLinkApi.stubGetProbationTeams()
     await bookAVideoLinkApi.stubGetVideoLinkBookings()
     await componentsApi.stubComponents()
-    await locationsInsidePrisonApi.stubGetAppointmentLocations()
     await locationsInsidePrisonApi.stubGetResidentialHierarchy()
     await manageUsersApi.stubUser()
     await officialVisitsApi.stubGetOfficialVisits()
@@ -36,8 +34,8 @@ test.describe('Movement slips', () => {
   })
 
   test('User can view movement slips ordered by cell location', async ({ page }) => {
-    await login(page, { name: 'A TestUser' })
-    await page.goto(`/movement-slips?date=${today}`)
+    await login(page, { name: 'A TestUser' }, `/movement-slips?date=${today}`)
+
     const movementSlipsPage = await MovementSlipsPage.verifyOnPage(page)
     await expect(movementSlipsPage.prisoner(1)).toHaveText('John Smith, G9566GQ. Location: MDI-1-1-001')
     await expect(movementSlipsPage.prisoner(2)).toHaveText('Damire Stoneheart, W4356WE. Location: MDI-3-4-001')
@@ -47,8 +45,7 @@ test.describe('Movement slips', () => {
 
   test('User can view movement slips with pick-up time 10 minutes before', async ({ page }) => {
     await bookAVideoLinkApi.stubGetPrison(10)
-    await login(page, { name: 'A TestUser' })
-    await page.goto(`/movement-slips?date=${today}`)
+    await login(page, { name: 'A TestUser' }, `/movement-slips?date=${today}`)
 
     const movementSlipsPage = await MovementSlipsPage.verifyOnPage(page)
     await expect(movementSlipsPage.slipHeader(1)).toHaveText(
@@ -96,8 +93,7 @@ test.describe('Movement slips', () => {
 
   test('User can view movement slips with pick-up time 20 minutes before', async ({ page }) => {
     await bookAVideoLinkApi.stubGetPrison(20)
-    await login(page, { name: 'A TestUser' })
-    await page.goto(`/movement-slips?date=${today}`)
+    await login(page, { name: 'A TestUser' }, `/movement-slips?date=${today}`)
 
     const movementSlipsPage = await MovementSlipsPage.verifyOnPage(page)
     await expect(movementSlipsPage.slipHeader(1)).toHaveText(
@@ -145,8 +141,7 @@ test.describe('Movement slips', () => {
 
   test('User can view movement slips with no pick-up time', async ({ page }) => {
     await bookAVideoLinkApi.stubGetPrisonNoPickupTime()
-    await login(page, { name: 'A TestUser' })
-    await page.goto(`/movement-slips?date=${today}`)
+    await login(page, { name: 'A TestUser' }, `/movement-slips?date=${today}`)
 
     const movementSlipsPage = await MovementSlipsPage.verifyOnPage(page)
     await expect(movementSlipsPage.slipHeader(1)).toHaveText(

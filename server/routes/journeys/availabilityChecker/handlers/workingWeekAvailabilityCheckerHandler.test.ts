@@ -311,7 +311,7 @@ describe('GET', () => {
 
         // Availability on 2026-07-27
         expect(existsByDataQa($, '1-booked-2026-07-27-8')).toBe(true)
-        expect(existsByDataQa($, '1-available-2026-07-27-09:00-09:30')).toBe(true)
+        expect(existsByDataQa($, '1-partial-2026-07-27-09:00-09:30')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-27-10')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-27-11')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-27-12')).toBe(true)
@@ -325,8 +325,8 @@ describe('GET', () => {
 
         // Availability on 2026-07-29
         expect(existsByDataQa($, '1-available-2026-07-29-8')).toBe(true)
-        expect(existsByDataQa($, '1-available-2026-07-29-09:15-10:00')).toBe(true)
-        expect(existsByDataQa($, '1-available-2026-07-29-10:40-11:00')).toBe(true)
+        expect(existsByDataQa($, '1-partial-2026-07-29-09:15-10:00')).toBe(true)
+        expect(existsByDataQa($, '1-partial-2026-07-29-10:40-11:00')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-29-11')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-29-12')).toBe(true)
 
@@ -342,8 +342,8 @@ describe('GET', () => {
         expect(existsByDataQa($, '1-booked-2026-07-31-9')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-31-10')).toBe(true)
         expect(existsByDataQa($, '1-booked-2026-07-31-11')).toBe(true)
-        expect(existsByDataQa($, '1-available-2026-07-31-12:00-12:15')).toBe(true)
-        expect(existsByDataQa($, '1-available-2026-07-31-12:30-13:00')).toBe(true)
+        expect(existsByDataQa($, '1-partial-2026-07-31-12:00-12:15')).toBe(true)
+        expect(existsByDataQa($, '1-partial-2026-07-31-12:30-13:00')).toBe(true)
 
         expect(roomAvailabilityService.getRoomAvailability).toHaveBeenCalledWith(
           'RSI',
