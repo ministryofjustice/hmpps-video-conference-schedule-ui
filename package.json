@@ -189,7 +189,6 @@
     "wiremock": "^3.13.2"
   },
   "overrides": {
-    "brace-expansion": "5.0.8",
     "minimatch@>3.0.0 <3.1.4": "^3.1.4",
     "js-yaml": "4.3.0",
     "@opentelemetry/core": "2.10.0"
