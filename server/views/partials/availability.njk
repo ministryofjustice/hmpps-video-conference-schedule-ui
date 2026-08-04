@@ -205,15 +205,16 @@
                     }
                 }) }}
             {% else %}
-                {% for startEnd in room.hourlySlots[index].freeSlots %}
-                    {{ govukTag({
-                        html: '<div>Available</div><div>' + startEnd.startTime + ' - ' + startEnd.endTime + '</div>',
-                        classes: 'govuk-tag--no-text-transform govuk-tag--spacing govuk-tag--orange',
-                        attributes: {
-                            'data-qa': room.id + '-available-' + room.date + '-' + startEnd.startTime + '-' + startEnd.endTime
-                        }
-                    }) }}
-                {% endfor %}
+                {% set partialAvailabilityHtml %}
+                    <div>Available</div>
+                    {% for startEnd in room.hourlySlots[index].freeSlots %}
+                        <div data-qa='{{ room.id }}-partial-{{ room.date }}-{{ startEnd.startTime }}-{{ startEnd.endTime }}'>{{ startEnd.startTime }} - {{ startEnd.endTime }}</div>
+                    {% endfor %}
+                {% endset %}
+                {{ govukTag({
+                    html: partialAvailabilityHtml,
+                    classes: 'govuk-tag--no-text-transform govuk-tag--spacing govuk-tag--orange'
+                }) }}
             {% endif %}
         {% endif %}
     {% endif %}

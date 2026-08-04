@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import type { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
+import { formatDate } from '../../server/utils/utils'
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -196,6 +197,121 @@ export default {
           name: 'Moorland (HMP)',
           enabled: true,
           pickUpTime: null,
+        },
+      },
+    }),
+  stubGetVideoLinkEvents: ({
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+  }: {
+    monday: Date
+    tuesday: Date
+    wednesday: Date
+    thursday: Date
+    friday: Date
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: '/book-a-video-link-api/video-events/prison/MDI/list-by-location',
+        bodyPatterns: [
+          {
+            equalToJson: {
+              startDate: formatDate(monday, 'yyyy-MM-dd'),
+              endDate: formatDate(friday, 'yyyy-MM-dd'),
+            },
+          },
+        ],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonCode: 'MDI',
+          startDate: formatDate(monday, 'yyyy-MM-dd'),
+          endDate: formatDate(friday, 'yyyy-MM-dd'),
+          locations: [
+            {
+              dpsLocationId: 'vvc-room-1',
+              localName: 'VCC Room 1',
+              capacity: 6,
+              events: [
+                {
+                  eventDate: formatDate(monday, 'yyyy-MM-dd'),
+                  startTime: '08:00',
+                  endTime: '09:00',
+                },
+                {
+                  eventDate: formatDate(monday, 'yyyy-MM-dd'),
+                  startTime: '10:00',
+                  endTime: '10:30',
+                },
+                {
+                  eventDate: formatDate(monday, 'yyyy-MM-dd'),
+                  startTime: '12:00',
+                  endTime: '12:15',
+                },
+                {
+                  eventDate: formatDate(monday, 'yyyy-MM-dd'),
+                  startTime: '12:30',
+                  endTime: '12:45',
+                },
+                {
+                  eventDate: formatDate(tuesday, 'yyyy-MM-dd'),
+                  startTime: '08:40',
+                  endTime: '09:00',
+                },
+                {
+                  eventDate: formatDate(wednesday, 'yyyy-MM-dd'),
+                  startTime: '08:00',
+                  endTime: '09:00',
+                },
+                {
+                  eventDate: formatDate(wednesday, 'yyyy-MM-dd'),
+                  startTime: '10:00',
+                  endTime: '11:00',
+                },
+                {
+                  eventDate: formatDate(wednesday, 'yyyy-MM-dd'),
+                  startTime: '12:00',
+                  endTime: '13:00',
+                },
+                {
+                  eventDate: formatDate(thursday, 'yyyy-MM-dd'),
+                  startTime: '11:30',
+                  endTime: '12:00',
+                },
+                {
+                  eventDate: formatDate(friday, 'yyyy-MM-dd'),
+                  startTime: '08:00',
+                  endTime: '09:00',
+                },
+                {
+                  eventDate: formatDate(friday, 'yyyy-MM-dd'),
+                  startTime: '09:00',
+                  endTime: '10:00',
+                },
+                {
+                  eventDate: formatDate(friday, 'yyyy-MM-dd'),
+                  startTime: '10:00',
+                  endTime: '11:00',
+                },
+                {
+                  eventDate: formatDate(friday, 'yyyy-MM-dd'),
+                  startTime: '11:00',
+                  endTime: '12:00',
+                },
+                {
+                  eventDate: formatDate(friday, 'yyyy-MM-dd'),
+                  startTime: '12:00',
+                  endTime: '13:00',
+                },
+              ],
+            },
+          ],
         },
       },
     }),
