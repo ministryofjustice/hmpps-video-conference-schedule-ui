@@ -14,8 +14,12 @@
   .govuk-table__header {
     @extend .govuk-table__header;
 
-    &--no-header {
+    &--no-border-top {
       border-top: none;
+    }
+
+    &--no-border-bottom {
+      border-bottom: none;
     }
   }
 }

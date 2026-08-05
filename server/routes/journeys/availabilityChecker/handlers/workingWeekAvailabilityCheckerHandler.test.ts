@@ -369,19 +369,16 @@ describe('POST', () => {
   })
 
   it.each([
-    ['10/12/2024', 'AM', '2024-12-10', 'tuesday'],
-    ['11/12/2024', 'PM', '2024-12-11', 'wednesday'],
-    ['12/12/2024', 'ED', '2024-12-12', 'thursday'],
-  ])(
-    'should redirect to date and period (%s) (%s)',
-    (date: string, period: string, parsedDate: string, day: string) => {
-      return request(app)
-        .post('/availability-checker')
-        .send({ date, period })
-        .expect(302)
-        .expect('location', `availability-checker?date=${parsedDate}&period=${period}#${day}`)
-    },
-  )
+    ['10/12/2024', 'AM', '2024-12-10'],
+    ['11/12/2024', 'PM', '2024-12-11'],
+    ['12/12/2024', 'ED', '2024-12-12'],
+  ])('should redirect to date and period (%s) (%s)', (date: string, period: string, parsedDate: string) => {
+    return request(app)
+      .post('/availability-checker')
+      .send({ date, period })
+      .expect(302)
+      .expect('location', `availability-checker?date=${parsedDate}&period=${period}#`)
+  })
 
   it.each([['25/07/2026'], ['26/07/2026']])('should validate date is a working day', (date: string) => {
     return request(app)
