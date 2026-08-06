@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { previousFriday, previousMonday, previousThursday, previousTuesday, previousWednesday } from 'date-fns'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import componentsApi from '../mockApis/componentsApi'
@@ -102,10 +102,17 @@ test.describe('Availability Checker', () => {
 
     await availabilityCheckerPage.selectDate(previousMonday(monday))
     await availabilityCheckerPage.selectSession(Session.AFTERNOON)
+
+    // Selecting Friday tab to ensure it stripped from the URL after posting/updating the page
+    await availabilityCheckerPage.selectWeekDayTab(friday)
+    await expect(page).toHaveURL('/availability-checker?date=2026-07-27&period=AM#friday')
+
     await availabilityCheckerPage.update()
 
     await availabilityCheckerPage.assertSessionSelected(Session.AFTERNOON)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
+
+    await expect(page).toHaveURL('/availability-checker?date=2026-07-20&period=PM#')
   })
 
   test('User can view previous week and next week on the availability checker', async ({ page }) => {

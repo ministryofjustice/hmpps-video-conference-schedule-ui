@@ -5,10 +5,7 @@ import { IsNotEmpty } from 'class-validator'
 import {
   formatDate,
   isMonday,
-  isThursday,
-  isTuesday,
   isValid,
-  isWednesday,
   isWeekend,
   nextFriday,
   nextMonday,
@@ -99,23 +96,10 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
       period,
     })
 
-    const weekDay = startOfDay(date)
+    // If a tab has been select prior to POST it is remembered; this makes sure it is overridden.
+    const overrideTabAnchorNavigation = '#'
 
-    let selectedDay
-
-    if (isMonday(weekDay)) {
-      selectedDay = '#monday'
-    } else if (isTuesday(weekDay)) {
-      selectedDay = '#tuesday'
-    } else if (isWednesday(weekDay)) {
-      selectedDay = '#wednesday'
-    } else if (isThursday(weekDay)) {
-      selectedDay = '#thursday'
-    } else {
-      selectedDay = '#friday'
-    }
-
-    return res.redirect(`availability-checker?${queryParams}${selectedDay}`)
+    return res.redirect(`availability-checker?${queryParams}${overrideTabAnchorNavigation}`)
   }
 
   private startAndEndOfWeek = (date: Date) => {
