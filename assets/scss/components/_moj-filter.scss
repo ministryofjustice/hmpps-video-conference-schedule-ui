@@ -1,0 +1,63 @@
+.moj-action-bar__filter {
+  &::after {
+    content: none;
+  }
+
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+.moj-filter {
+  &:focus {
+    box-shadow: none;
+  }
+
+  &__options-container {
+    display: flex;
+    gap: 30px;
+  }
+
+  &__option:last-child {
+    flex: 1;
+  }
+
+  .govuk-label {
+    white-space: nowrap;
+  }
+
+  &__add-another {
+    @extend .govuk-link;
+    margin-top: 10px;
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    color: #1d70b8;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .autocomplete__wrapper:has(input:disabled) {
+    display: flex;
+    align-items: center;
+
+    input {
+      cursor: default;
+    }
+
+    .autocomplete__wrapper--clear {
+      background-image: url('/assets/images/icon-tag-remove-cross.svg');
+      cursor: pointer;
+      content: "";
+      position: absolute;
+      right: 10px;
+      font-weight: bold;
+      height: 10px;
+      margin-left: 5px;
+      vertical-align: middle;
+      width: 10px;
+    }
+  }
+}

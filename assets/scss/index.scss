@@ -1,0 +1,14 @@
+$govuk-global-styles: true;
+$path: "/assets/images/";
+
+$moj-page-width: 1230px;
+$govuk-page-width: $moj-page-width;
+
+@import "govuk-frontend/dist/govuk/index";
+@import "@ministryofjustice/frontend/moj/all";
+@import '@ministryofjustice/frontend/moj/components/all';
+@import 'node_modules/accessible-autocomplete/dist/accessible-autocomplete.min';
+
+@import './components/all';
+@import './utilities/all';
+@import './overrides/local';
