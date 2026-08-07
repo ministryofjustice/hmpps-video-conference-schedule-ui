@@ -3,6 +3,7 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
+import fs from 'fs'
 import {
   convertToTitleCase,
   formatDate,
@@ -16,6 +17,7 @@ import {
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { FieldValidationError } from '../middleware/setUpFlash'
+import logger from '../../logger'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -37,6 +39,17 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     res.locals.session = req.session
     next()
   })
+
+  let assetManifest: Record<string, string> = {}
+
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(e, 'Could not read asset manifest file')
+    }
+  }
 
   // Cachebusting version string
   if (production) {
@@ -68,6 +81,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
   njkEnv.addFilter('filterFalsy', list => list.filter(Boolean))
