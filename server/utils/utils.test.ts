@@ -10,6 +10,7 @@ import {
   isValidUrl,
   isBeforeNow,
   removeMinutes,
+  isYearBoundaryDate,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -157,5 +158,17 @@ describe('isBeforeNow - (beware - string print shows UTC date/time, not BST)', (
     [undefined, addHours(dateToday, 1), false],
   ])("time [%s] isBeforeNow compared to '%s' expect %s", (inputTime, referenceDate: Date, expected) => {
     expect(isBeforeNow(inputTime, referenceDate)).toBe(expected)
+  })
+})
+
+describe('isYearBoundaryDate', () => {
+  it.each([
+    [null, false],
+    [new Date(2022, 0, 1), true],
+    [new Date(2023, 0, 2), false],
+    [new Date(2024, 11, 31), true],
+    [new Date(2025, 11, 30), false],
+  ])('isYearBoundaryDate(%s) %s', (date: Date, expected: boolean) => {
+    expect(isYearBoundaryDate(date)).toEqual(expected)
   })
 })

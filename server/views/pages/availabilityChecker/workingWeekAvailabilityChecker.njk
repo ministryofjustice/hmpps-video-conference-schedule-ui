@@ -8,7 +8,7 @@
 {% from "partials/availability.njk" import availability %}
 
 {% set hideBackLink = true %}
-{% set pageTitle = "Video link availability checker: " + prison.name %}
+{% set pageTitle = "Video room availability checker: " + prison.name %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -37,8 +37,9 @@
                             value: formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy')
                         }) }}
                     </div>
-                    <div class="govuk-grid-column-one-quarter">
+                    <div class="govuk-grid-column-one-half">
                         {{ govukRadios({
+                            classes: "govuk-radios--inline",
                             idPrefix: "period",
                             name: "period",
                             fieldset: {
@@ -64,8 +65,7 @@
                                     checked: formResponses.period == "ED" or period == "ED"
                                 }
                             ],
-                            errorMessage: validationErrors | findError("duration"),
-                            classes: "govuk-!-width-one-third"
+                            errorMessage: validationErrors | findError("duration")
                         }) }}
                     </div>
                     <div class="appointments-link-div">
@@ -95,44 +95,67 @@
                     text: 'Next week',
                     href: "/availability-checker?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
                 },
-                items: []
+                items: [
+                    {
+                        number: 'Current week',
+                        href: "/availability-checker?date=" + currentWeekStartDate | formatDate('yyyy-MM-dd') + "&period=" + period,
+                        attributes: {
+                          "data-qa": "current-week"
+                        }
+                    } if currentWeekStartDate
+                ]
             }) }}
             <div>
                 {{ govukTabs({
                     items: [
                         {
-                            label: monday | formatDate('iii d MMM'),
+                            label: formattedDate(monday),
                             id: "monday",
                             panel: {
                                 html: availability(period, mondayAvailability)
+                            },
+                            attributes: {
+                                "data-qa": "monday_tab"
                             }
                         },
                         {
-                            label: tuesday | formatDate('iii d MMM'),
+                            label: formattedDate(tuesday),
                             id: "tuesday",
                             panel: {
                                 html: availability(period, tuesdayAvailability)
+                            },
+                            attributes: {
+                                "data-qa": "tuesday_tab"
                             }
                         },
                         {
-                            label: wednesday | formatDate('iii d MMM'),
+                            label: formattedDate(wednesday),
                             id: "wednesday",
                             panel: {
                                 html: availability(period, wednesdayAvailability)
+                            },
+                            attributes: {
+                                "data-qa": "wednesday_tab"
                             }
                         },
                         {
-                            label: thursday | formatDate('iii d MMM'),
+                            label: formattedDate(thursday),
                             id: "thursday",
                             panel: {
                                 html: availability(period, thursdayAvailability)
+                            },
+                            attributes: {
+                                "data-qa": "thursday_tab"
                             }
                         },
                         {
-                            label: friday | formatDate('iii d MMM'),
+                            label: formattedDate(friday),
                             id: "friday",
                             panel: {
                                 html: availability(period, fridayAvailability)
+                            },
+                            attributes: {
+                                "data-qa": "friday_tab"
                             }
                         }
                     ]
@@ -141,3 +164,11 @@
         </div>
     </div>
 {% endblock %}
+
+{% macro formattedDate(date) %}
+    {% if date | isYearBoundaryDate %}
+        {{ date | formatDate('iii d MMM yyyy') }}
+    {% else %}
+        {{ date | formatDate('iii d MMM') }}
+    {% endif %}
+{% endmacro %}

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { load } from 'cheerio'
-import { startOfDay } from 'date-fns'
+import { addWeeks, isMonday, previousMonday, startOfDay, subWeeks } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import RoomAvailabilityService, { RoomAvailability } from '../../../../services/roomAvailabilityService'
@@ -9,6 +9,7 @@ import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/c
 import config from '../../../../config'
 import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/roomAvailabilityService')
@@ -304,7 +305,7 @@ describe('GET', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
         expect(getByDataQa($, 'appointments-link').attr('href')).toEqual(
           'http://localhost:3000/appointments/create/start-group',
         )
@@ -357,6 +358,84 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { period: 'AM', date: '2026-07-28' } }),
         })
+      })
+  })
+
+  const mondayOfCurrentWeek = isMonday(new Date()) ? new Date() : previousMonday(new Date())
+
+  it('should render current week navigation link when viewing previous week', () => {
+    const previousWeek = subWeeks(new Date(), 1)
+
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+
+    return request(app)
+      .get(`/availability-checker?period=AM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(existsByDataQa($, 'current-week')).toBe(true)
+        expect(getByDataQa($, 'current-week').attr('href')).toEqual(
+          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=AM`,
+        )
+      })
+  })
+
+  it('should render current week navigation link when viewing next week', () => {
+    const nextWeek = addWeeks(new Date(), 1)
+
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+
+    return request(app)
+      .get(`/availability-checker?period=AM&date=${formatDate(nextWeek, 'yyyy-MM-dd')}`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(existsByDataQa($, 'current-week')).toBe(true)
+        expect(getByDataQa($, 'current-week').attr('href')).toEqual(
+          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=AM`,
+        )
+      })
+  })
+
+  it('should not render current week navigation link when viewing current week', () => {
+    const today = new Date()
+
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+
+    return request(app)
+      .get(`/availability-checker?period=AM&date=${formatDate(today, 'yyyy-MM-dd')}`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(existsByDataQa($, 'current-week')).toBe(false)
+      })
+  })
+
+  it('should render boundary date tab labels inclusive of year', () => {
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+
+    return request(app)
+      .get(`/availability-checker?period=AM&date=2025-12-31`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = load(res.text)
+
+        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+
+        // boundary date tab labels are inclusive of year
+        expect(getByDataQa($, 'wednesday_tab').text().trim()).toEqual('Wed 31 Dec 2025')
+        expect(getByDataQa($, 'thursday_tab').text().trim()).toEqual('Thu 1 Jan 2026')
+
+        // non-boundary date tab labels are exclusive of year
+        expect(getByDataQa($, 'monday_tab').text().trim()).toEqual('Mon 29 Dec')
+        expect(getByDataQa($, 'tuesday_tab').text().trim()).toEqual('Tue 30 Dec')
+        expect(getByDataQa($, 'friday_tab').text().trim()).toEqual('Fri 2 Jan')
       })
   })
 })

@@ -1,4 +1,14 @@
-import { format, isBefore, isValid, parse, parseISO, startOfToday, subMinutes } from 'date-fns'
+import {
+  format,
+  getDayOfYear,
+  getDaysInYear,
+  isBefore,
+  isValid,
+  parse,
+  parseISO,
+  startOfToday,
+  subMinutes,
+} from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -109,4 +119,13 @@ export const isBeforeNow = (timeValue: string, referenceDate: Date = new Date())
   }
 
   return isBefore(dateWithTime, referenceDate)
+}
+
+// The first or last day of the year is considered a year boundary date
+export const isYearBoundaryDate = (date: Date | null): boolean => {
+  if (!date) return false
+
+  const day = getDayOfYear(date)
+
+  return day === 1 || day === getDaysInYear(date)
 }
