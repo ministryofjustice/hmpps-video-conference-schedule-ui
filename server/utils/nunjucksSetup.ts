@@ -10,6 +10,7 @@ import {
   initialiseName,
   isBeforeNow,
   isValidUrl,
+  isYearBoundaryDate,
   removeMinutes,
   toFullCourtLink,
   toFullCourtLinkPrint,
@@ -90,6 +91,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('removeMinutes', removeMinutes)
   njkEnv.addFilter('isValidUrl', isValidUrl)
   njkEnv.addFilter('isBeforeNow', isBeforeNow)
+  njkEnv.addFilter('isYearBoundaryDate', isYearBoundaryDate)
 
   njkEnv.addGlobal('now', () => new Date())
   njkEnv.addGlobal('dpsUrl', config.dpsUrl)

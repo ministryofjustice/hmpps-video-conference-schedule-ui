@@ -32,17 +32,20 @@ export default class AvailabilityCheckerPage extends AbstractPage {
 
   private readonly previousWeekLink: Locator
 
+  private readonly currentWeekLink: Locator
+
   private readonly nextWeekLink: Locator
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: 'Video link availability checker:  Moorland (HMP)' })
+    this.header = page.locator('h1', { hasText: 'Video room availability checker:  Moorland (HMP)' })
     this.date = page.getByLabel('Date')
     this.morningSession = page.locator('#period')
     this.afternoonSession = page.locator('#period-2')
     this.eveningSession = page.locator('#period-3')
     this.updateButton = page.getByRole('button', { name: 'Update' })
     this.previousWeekLink = page.getByRole('link', { name: 'Previous week' })
+    this.currentWeekLink = page.getByRole('link', { name: 'Current week' })
     this.nextWeekLink = page.getByRole('link', { name: 'Next week' })
   }
 
@@ -81,6 +84,10 @@ export default class AvailabilityCheckerPage extends AbstractPage {
 
   async previousWeek() {
     await this.previousWeekLink.click()
+  }
+
+  async currentWeek() {
+    await this.currentWeekLink.click()
   }
 
   async nextWeek() {

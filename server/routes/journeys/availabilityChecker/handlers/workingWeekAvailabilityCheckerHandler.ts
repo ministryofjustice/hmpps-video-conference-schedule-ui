@@ -3,10 +3,12 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty } from 'class-validator'
 import {
+  endOfDay,
   formatDate,
   isMonday,
   isValid,
   isWeekend,
+  isWithinInterval,
   nextFriday,
   nextMonday,
   nextThursday,
@@ -66,6 +68,12 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
       const dayFilter = (availability: RoomAvailability, day: Date) =>
         availability.date === formatDate(day, 'yyyy-MM-dd')
 
+      const currentWeek = this.startAndEndOfWeek(new Date())
+      const isCurrentWeek = isWithinInterval(weekDay, {
+        start: startOfDay(currentWeek.startDate),
+        end: endOfDay(currentWeek.endDate),
+      })
+
       res.render('pages/availabilityChecker/workingWeekAvailabilityChecker', {
         prison,
         date: weekDay,
@@ -83,6 +91,7 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
         fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, endDate)),
         previousWeek: previousMonday(startDate),
         nextWeek: nextMonday(endDate),
+        currentWeekStartDate: isCurrentWeek ? undefined : startOfDay(currentWeek.startDate),
       })
     } else {
       res.render('pages/error/404')

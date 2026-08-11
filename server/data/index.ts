@@ -10,7 +10,6 @@ import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
-import FrontendComponentApiClient from './frontendComponentApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import PrisonApiClient from './prisonApiClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
@@ -33,7 +32,6 @@ export const dataAccess = () => {
 
   return {
     applicationInfo,
-    frontendComponentApiClient: new FrontendComponentApiClient(hmppsAuthClient),
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
     activitiesAndAppointmentsApiClient: new ActivitiesAndAppointmentsApiClient(hmppsAuthClient),

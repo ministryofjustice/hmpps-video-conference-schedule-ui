@@ -1,18 +1,33 @@
 import { expect, test } from '@playwright/test'
-import { previousFriday, previousMonday, previousThursday, previousTuesday, previousWednesday } from 'date-fns'
+import {
+  isMonday,
+  nextFriday,
+  nextMonday,
+  nextThursday,
+  nextTuesday,
+  nextWednesday,
+  previousFriday,
+  previousMonday,
+  previousThursday,
+  previousTuesday,
+  previousWednesday,
+  subWeeks,
+} from 'date-fns'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import componentsApi from '../mockApis/componentsApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import { resetStubs } from '../mockApis/wiremock'
 import { login } from '../testUtils'
 import AvailabilityCheckerPage, { Session, WeekDay } from '../pages/availabilityCheckerPage'
+import { formatDate } from '../../server/utils/utils'
 
 test.describe('Availability Checker', () => {
-  const monday = new Date('2026-07-27')
-  const tuesday = new Date('2026-07-28')
-  const wednesday = new Date('2026-07-29')
-  const thursday = new Date('2026-07-30')
-  const friday = new Date('2026-07-31')
+  const today = new Date()
+  const monday = isMonday(today) ? today : previousMonday(today)
+  const tuesday = nextTuesday(monday)
+  const wednesday = nextWednesday(monday)
+  const thursday = nextThursday(monday)
+  const friday = nextFriday(monday)
 
   test.beforeEach(async () => {
     await bookAVideoLinkApi.stubGetPrison()
@@ -34,7 +49,7 @@ test.describe('Availability Checker', () => {
   })
 
   test('User can view the availability checker', async ({ page }) => {
-    await login(page, { name: 'A TestUser' }, '/availability-checker?date=2026-07-27')
+    await login(page, { name: 'A TestUser' }, `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}`)
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -47,7 +62,11 @@ test.describe('Availability Checker', () => {
   })
 
   test('User can view each tab on the availability checker', async ({ page }) => {
-    await login(page, { name: 'A TestUser' }, '/availability-checker?date=2026-07-27&period=AM')
+    await login(
+      page,
+      { name: 'A TestUser' },
+      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
+    )
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -87,7 +106,11 @@ test.describe('Availability Checker', () => {
   })
 
   test('User can change the date and session on the availability checker', async ({ page }) => {
-    await login(page, { name: 'A TestUser' }, '/availability-checker?date=2026-07-27&period=AM')
+    await login(
+      page,
+      { name: 'A TestUser' },
+      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
+    )
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -105,18 +128,24 @@ test.describe('Availability Checker', () => {
 
     // Selecting Friday tab to ensure it stripped from the URL after posting/updating the page
     await availabilityCheckerPage.selectWeekDayTab(friday)
-    await expect(page).toHaveURL('/availability-checker?date=2026-07-27&period=AM#friday')
+    await expect(page).toHaveURL(`/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM#friday`)
 
     await availabilityCheckerPage.update()
 
     await availabilityCheckerPage.assertSessionSelected(Session.AFTERNOON)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
 
-    await expect(page).toHaveURL('/availability-checker?date=2026-07-20&period=PM#')
+    await expect(page).toHaveURL(
+      `/availability-checker?date=${formatDate(subWeeks(monday, 1), 'yyyy-MM-dd')}&period=PM#`,
+    )
   })
 
-  test('User can view previous week and next week on the availability checker', async ({ page }) => {
-    await login(page, { name: 'A TestUser' }, '/availability-checker?date=2026-07-27&period=AM')
+  test('User can view previous, current and next week on the availability checker', async ({ page }) => {
+    await login(
+      page,
+      { name: 'A TestUser' },
+      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
+    )
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -148,7 +177,7 @@ test.describe('Availability Checker', () => {
       friday,
     })
 
-    await availabilityCheckerPage.nextWeek()
+    await availabilityCheckerPage.currentWeek()
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
     await availabilityCheckerPage.selectWeekDayTab(tuesday)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.TUESDAY)
@@ -157,6 +186,25 @@ test.describe('Availability Checker', () => {
     await availabilityCheckerPage.selectWeekDayTab(thursday)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.THURSDAY)
     await availabilityCheckerPage.selectWeekDayTab(friday)
+    await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.FRIDAY)
+
+    await bookAVideoLinkApi.stubGetVideoLinkEvents({
+      monday: nextMonday(monday),
+      tuesday: nextTuesday(tuesday),
+      wednesday: nextWednesday(wednesday),
+      thursday: nextThursday(thursday),
+      friday: nextFriday(friday),
+    })
+
+    await availabilityCheckerPage.nextWeek()
+    await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
+    await availabilityCheckerPage.selectWeekDayTab(nextTuesday(tuesday))
+    await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.TUESDAY)
+    await availabilityCheckerPage.selectWeekDayTab(nextWednesday(wednesday))
+    await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.WEDNESDAY)
+    await availabilityCheckerPage.selectWeekDayTab(nextThursday(thursday))
+    await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.THURSDAY)
+    await availabilityCheckerPage.selectWeekDayTab(nextFriday(friday))
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.FRIDAY)
   })
 })
