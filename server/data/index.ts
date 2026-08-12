@@ -21,7 +21,7 @@ import logger from '../../logger'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
+const applicationInsightsClient = buildAppInsightsClient(applicationInfo)
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -42,6 +42,7 @@ export const dataAccess = () => {
     prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
     locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(hmppsAuthClient),
     officialVisitsApiClient: new OfficialVisitsApiClient(hmppsAuthClient),
+    applicationInsightsClient,
   }
 }
 

@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
-import { startOfDay, isValid } from 'date-fns'
+import { startOfDay, isValid, formatDate } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
 import _ from 'lodash'
 import { Page } from '../../../../services/auditService'
@@ -8,6 +8,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import TelemetryService from '../../../../services/telemetryService'
 
 class Body {
   @Expose()
@@ -40,6 +41,7 @@ export default class DailyScheduleHandler implements PageHandler {
     private readonly referenceDataService: ReferenceDataService,
     private readonly prisonService: PrisonService,
     private readonly scheduleService: ScheduleService,
+    private readonly telemetryService: TelemetryService,
   ) {}
 
   GET = async (req: Request, res: Response) => {
@@ -68,6 +70,16 @@ export default class DailyScheduleHandler implements PageHandler {
           user,
         ),
       ])
+
+    const eventToRecord = {
+      prisonCode: prison.code,
+      date: formatDate(date, 'yyyy-MM-dd'),
+      status,
+      filtered: (!!filters).toString(),
+      username: user?.username,
+    }
+
+    this.telemetryService.trackEvent('DailySchedule_ViewDailySchedule', eventToRecord)
 
     return status === 'ACTIVE'
       ? res.render('pages/dailySchedule/dailySchedule', {

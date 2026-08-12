@@ -6,6 +6,7 @@ import AppointmentService from './appointmentService'
 import ReferenceDataService from './referenceDataService'
 import OfficialVisitsService from './officialVisitsService'
 import RoomAvailabilityService from './roomAvailabilityService'
+import TelemetryService from './telemetryService'
 
 export const services = () => {
   const {
@@ -20,6 +21,7 @@ export const services = () => {
     activitiesAndAppointmentsApiClient,
     locationsInsidePrisonApiClient,
     officialVisitsApiClient,
+    applicationInsightsClient,
   } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
@@ -46,6 +48,7 @@ export const services = () => {
   )
 
   const roomAvailabilityService = new RoomAvailabilityService(bookAVideoLinkApiClient)
+  const telemetryService = new TelemetryService(applicationInsightsClient)
 
   return {
     applicationInfo,
@@ -55,6 +58,7 @@ export const services = () => {
     scheduleService,
     appointmentService,
     roomAvailabilityService,
+    telemetryService,
   }
 }
 
