@@ -14,6 +14,7 @@ export default function Index({
   referenceDataService,
   prisonService,
   scheduleService,
+  telemetryService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -27,7 +28,7 @@ export default function Index({
     post(path, handler.POST, handler.BODY)
   }
 
-  getAndPost('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService))
+  getAndPost('/', new DailyScheduleHandler(referenceDataService, prisonService, scheduleService, telemetryService))
   get('/clear-filter', new ClearFilterHandler())
   get('/download-csv', new DownloadCsvHandler(scheduleService))
 

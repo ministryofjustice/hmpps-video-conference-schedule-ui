@@ -10,12 +10,15 @@ import config from '../../../../config'
 import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
+import TelemetryService from '../../../../services/telemetryService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/roomAvailabilityService')
+jest.mock('../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const roomAvailabilityService = new RoomAvailabilityService(null) as jest.Mocked<RoomAvailabilityService>
+const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
 
@@ -33,7 +36,7 @@ const risleyPrison: Prison = {
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, roomAvailabilityService },
+    services: { auditService, roomAvailabilityService, telemetryService },
     userSupplier: () => risleyUser,
     journeySessionSupplier: () => journeySession,
     prisonSupplier: () => risleyPrison,
@@ -358,6 +361,12 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { period: 'AM', date: '2026-07-28' } }),
         })
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewAvailabilityCheck', {
+          date: '2026-07-28',
+          period: 'AM',
+          prisonCode: 'RSI',
+          username: 'user1',
+        })
       })
   })
 
@@ -369,7 +378,7 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
+      .get(`/availability-checker?period=PM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -377,8 +386,14 @@ describe('GET', () => {
         expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
         expect(existsByDataQa($, 'current-week')).toBe(true)
         expect(getByDataQa($, 'current-week').attr('href')).toEqual(
-          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=AM`,
+          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=PM`,
         )
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewAvailabilityCheck', {
+          date: formatDate(previousWeek, 'yyyy-MM-dd'),
+          period: 'PM',
+          prisonCode: 'RSI',
+          username: 'user1',
+        })
       })
   })
 

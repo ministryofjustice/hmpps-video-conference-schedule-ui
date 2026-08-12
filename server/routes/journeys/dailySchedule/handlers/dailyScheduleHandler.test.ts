@@ -15,23 +15,27 @@ import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/ch
 import ReferenceDataService from '../../../../services/referenceDataService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 import { Location } from '../../../../@types/locationsInsidePrisonApi/types'
+import TelemetryService from '../../../../services/telemetryService'
+import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/scheduleService')
+jest.mock('../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const scheduleService = new ScheduleService(null, null, null, null, null, null, null) as jest.Mocked<ScheduleService>
+const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
 const filters = { wing: ['A'] }
 
 const appSetup = (journeySession = {}, prison = moorlandPrisonNoPickUpTime) => {
   app = appWithAllRoutes({
-    services: { auditService, referenceDataService, prisonService, scheduleService },
+    services: { auditService, referenceDataService, prisonService, scheduleService, telemetryService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
     prisonSupplier: () => prison,
@@ -71,6 +75,13 @@ describe('GET', () => {
         expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getCellsByWing).toHaveBeenLastCalledWith('MDI', user)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+          date: formatDate(new Date(), 'yyyy-MM-dd'),
+          filtered: 'true',
+          prisonCode: 'MDI',
+          status: 'ACTIVE',
+          username: 'user1',
+        })
       })
   })
 
@@ -94,6 +105,13 @@ describe('GET', () => {
 
         expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+          date: '2024-12-12',
+          filtered: 'true',
+          prisonCode: 'MDI',
+          status: 'ACTIVE',
+          username: 'user1',
+        })
       })
   })
 
@@ -194,6 +212,13 @@ describe('GET', () => {
           details: JSON.stringify({ query: { status: 'CANCELLED' } }),
         })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+          date: formatDate(new Date(), 'yyyy-MM-dd'),
+          filtered: 'true',
+          prisonCode: 'MDI',
+          status: 'CANCELLED',
+          username: 'user1',
+        })
       })
   })
 

@@ -25,6 +25,7 @@ import IsValidDate from '../../../validators/isValidDate'
 import RoomAvailabilityService, { RoomAvailability } from '../../../../services/roomAvailabilityService'
 import { Period } from '../../../../services/appointmentService'
 import IsWeekDay from '../../../validators/isWeekDay'
+import TelemetryService from '../../../../services/telemetryService'
 
 class Body {
   @Expose()
@@ -40,7 +41,10 @@ class Body {
 }
 
 export default class WorkingWeekAvailabilityCheckerHandler implements PageHandler {
-  constructor(private readonly roomAvailabilityService: RoomAvailabilityService) {}
+  constructor(
+    private readonly roomAvailabilityService: RoomAvailabilityService,
+    private readonly telemetryService: TelemetryService,
+  ) {}
 
   public PAGE_NAME = Page.WOKRING_WEEK_AVAILABILTY_CHECKER_PAGE
 
@@ -67,12 +71,20 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
 
       const dayFilter = (availability: RoomAvailability, day: Date) =>
         availability.date === formatDate(day, 'yyyy-MM-dd')
-
       const currentWeek = this.startAndEndOfWeek(new Date())
       const isCurrentWeek = isWithinInterval(weekDay, {
         start: startOfDay(currentWeek.startDate),
         end: endOfDay(currentWeek.endDate),
       })
+
+      const eventToRecord = {
+        prisonCode: prison.code,
+        date: formatDate(date, 'yyyy-MM-dd'),
+        period,
+        username: user?.username,
+      }
+
+      this.telemetryService.trackEvent('DailySchedule_ViewAvailabilityCheck', eventToRecord)
 
       res.render('pages/availabilityChecker/workingWeekAvailabilityChecker', {
         prison,
