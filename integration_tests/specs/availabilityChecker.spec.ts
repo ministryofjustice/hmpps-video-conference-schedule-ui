@@ -48,8 +48,8 @@ test.describe('Availability Checker', () => {
     await resetStubs()
   })
 
-  test('User can view the availability checker', async ({ page }) => {
-    await login(page, { name: 'A TestUser' }, `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}`)
+  test('User can view the room availability', async ({ page }) => {
+    await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}`)
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -61,12 +61,8 @@ test.describe('Availability Checker', () => {
     await availabilityCheckerPage.assertRoomPartiallyAvailable('vvc-room-1', monday, '12:45', '13:00')
   })
 
-  test('User can view each tab on the availability checker', async ({ page }) => {
-    await login(
-      page,
-      { name: 'A TestUser' },
-      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
-    )
+  test('User can view each tab on the room availability', async ({ page }) => {
+    await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -105,12 +101,8 @@ test.describe('Availability Checker', () => {
     await availabilityCheckerPage.assertRoomBooked('vvc-room-1', friday, 12)
   })
 
-  test('User can change the date and session on the availability checker', async ({ page }) => {
-    await login(
-      page,
-      { name: 'A TestUser' },
-      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
-    )
+  test('User can change the date and session on the room availability', async ({ page }) => {
+    await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
@@ -128,24 +120,18 @@ test.describe('Availability Checker', () => {
 
     // Selecting Friday tab to ensure it stripped from the URL after posting/updating the page
     await availabilityCheckerPage.selectWeekDayTab(friday)
-    await expect(page).toHaveURL(`/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM#friday`)
+    await expect(page).toHaveURL(`/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM#friday`)
 
     await availabilityCheckerPage.update()
 
     await availabilityCheckerPage.assertSessionSelected(Session.AFTERNOON)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
 
-    await expect(page).toHaveURL(
-      `/availability-checker?date=${formatDate(subWeeks(monday, 1), 'yyyy-MM-dd')}&period=PM#`,
-    )
+    await expect(page).toHaveURL(`/room-availability?date=${formatDate(subWeeks(monday, 1), 'yyyy-MM-dd')}&period=PM#`)
   })
 
-  test('User can view previous, current and next week on the availability checker', async ({ page }) => {
-    await login(
-      page,
-      { name: 'A TestUser' },
-      `/availability-checker?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`,
-    )
+  test('User can view previous, current and next week on the room availability', async ({ page }) => {
+    await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
     const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)

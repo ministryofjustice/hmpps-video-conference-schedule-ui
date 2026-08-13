@@ -34,6 +34,8 @@ const risleyPrison: Prison = {
   enabled: true,
 }
 
+const pageHeader = 'Video room availability: Risley (HMP)'
+
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, roomAvailabilityService, telemetryService },
@@ -303,12 +305,12 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue(morningRoomAvailability)
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=2026-07-28`)
+      .get(`/room-availability?period=AM&date=2026-07-28`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
         expect(getByDataQa($, 'appointments-link').attr('href')).toEqual(
           'http://localhost:3000/appointments/create/start-group',
         )
@@ -361,7 +363,7 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { period: 'AM', date: '2026-07-28' } }),
         })
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewAvailabilityCheck', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewRoomAvailability', {
           date: '2026-07-28',
           period: 'AM',
           prisonCode: 'RSI',
@@ -378,17 +380,17 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
     return request(app)
-      .get(`/availability-checker?period=PM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
+      .get(`/room-availability?period=PM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
         expect(existsByDataQa($, 'current-week')).toBe(true)
         expect(getByDataQa($, 'current-week').attr('href')).toEqual(
-          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=PM`,
+          `/room-availability?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=PM`,
         )
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewAvailabilityCheck', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewRoomAvailability', {
           date: formatDate(previousWeek, 'yyyy-MM-dd'),
           period: 'PM',
           prisonCode: 'RSI',
@@ -403,15 +405,15 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=${formatDate(nextWeek, 'yyyy-MM-dd')}`)
+      .get(`/room-availability?period=AM&date=${formatDate(nextWeek, 'yyyy-MM-dd')}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
         expect(existsByDataQa($, 'current-week')).toBe(true)
         expect(getByDataQa($, 'current-week').attr('href')).toEqual(
-          `/availability-checker?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=AM`,
+          `/room-availability?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=AM`,
         )
       })
   })
@@ -422,12 +424,12 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=${formatDate(today, 'yyyy-MM-dd')}`)
+      .get(`/room-availability?period=AM&date=${formatDate(today, 'yyyy-MM-dd')}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
         expect(existsByDataQa($, 'current-week')).toBe(false)
       })
   })
@@ -436,12 +438,12 @@ describe('GET', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=2025-12-31`)
+      .get(`/room-availability?period=AM&date=2025-12-31`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video room availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
 
         // boundary date tab labels are inclusive of year
         expect(getByDataQa($, 'wednesday_tab').text().trim()).toEqual('Wed 31 Dec 2025')
@@ -468,15 +470,15 @@ describe('POST', () => {
     ['12/12/2024', 'ED', '2024-12-12'],
   ])('should redirect to date and period (%s) (%s)', (date: string, period: string, parsedDate: string) => {
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date, period })
       .expect(302)
-      .expect('location', `availability-checker?date=${parsedDate}&period=${period}#`)
+      .expect('location', `room-availability?date=${parsedDate}&period=${period}#`)
   })
 
   it.each([['25/07/2026'], ['26/07/2026']])('should validate date is a working day', (date: string) => {
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date, period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -491,7 +493,7 @@ describe('POST', () => {
 
   it('should validate date provided', () => {
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -506,7 +508,7 @@ describe('POST', () => {
 
   it('should validate date is valid', () => {
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date: '31/02/2026', period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -521,7 +523,7 @@ describe('POST', () => {
 
   it('should validate session is provided', () => {
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date: '03/02/2026' })
       .expect(() => {
         expectErrorMessages([

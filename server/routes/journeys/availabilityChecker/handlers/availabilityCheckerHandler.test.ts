@@ -58,7 +58,7 @@ describe('GET', () => {
       config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
       return request(app)
-        .get(`/availability-checker?period=${period}&date=${date}`)
+        .get(`/room-availability?period=${period}&date=${date}`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = load(res.text)
@@ -91,7 +91,7 @@ describe('GET', () => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .get(`/availability-checker?period=AM&date=${weekendDate}`)
+      .get(`/room-availability?period=AM&date=${weekendDate}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -116,7 +116,7 @@ describe('GET', () => {
     config.featureToggles.availabilityCheckerPrisons = 'MDI'
 
     return request(app)
-      .get('/availability-checker')
+      .get('/room-availability')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -133,7 +133,7 @@ describe('GET', () => {
 
   it('should not render availability checker when no prison is enabled', () => {
     return request(app)
-      .get('/availability-checker')
+      .get('/room-availability')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = load(res.text)
@@ -162,17 +162,17 @@ describe('POST', () => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date, period })
       .expect(302)
-      .expect('location', `availability-checker?date=${parsedDate}&period=${period}`)
+      .expect('location', `room-availability?date=${parsedDate}&period=${period}`)
   })
 
   it.each([['25/07/2026'], ['26/07/2026']])('should validate date is a working day', (date: string) => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date, period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -189,7 +189,7 @@ describe('POST', () => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -206,7 +206,7 @@ describe('POST', () => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date: '31/02/2026', period: 'AM' })
       .expect(() => {
         expectErrorMessages([
@@ -223,7 +223,7 @@ describe('POST', () => {
     config.featureToggles.availabilityCheckerPrisons = 'RSI'
 
     return request(app)
-      .post('/availability-checker')
+      .post('/room-availability')
       .send({ date: '03/02/2026' })
       .expect(() => {
         expectErrorMessages([

@@ -38,7 +38,7 @@ export default class AvailabilityCheckerPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: 'Video room availability checker:  Moorland (HMP)' })
+    this.header = page.locator('h1', { hasText: 'Video room availability:  Moorland (HMP)' })
     this.date = page.getByLabel('Date')
     this.morningSession = page.locator('#period')
     this.afternoonSession = page.locator('#period-2')
