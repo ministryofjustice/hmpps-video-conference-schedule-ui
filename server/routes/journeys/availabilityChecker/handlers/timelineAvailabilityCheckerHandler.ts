@@ -70,6 +70,6 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
       period,
     })
 
-    return res.redirect(`availability-checker?${queryParams}`)
+    return res.redirect(`room-availability?${queryParams}`)
   }
 }

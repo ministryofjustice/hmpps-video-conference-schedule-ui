@@ -7,7 +7,7 @@ export default function routes(services: Services): Router {
   const router = Router()
 
   router.use('/', dailySchedule(services))
-  router.use('/availability-checker', availabilityChecker(services))
+  router.use('/room-availability', availabilityChecker(services))
 
   return router
 }

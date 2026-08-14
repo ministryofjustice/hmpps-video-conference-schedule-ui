@@ -8,7 +8,7 @@
 {% from "partials/availability.njk" import availability %}
 
 {% set hideBackLink = true %}
-{% set pageTitle = "Video room availability checker: " + prison.name %}
+{% set pageTitle = "Video room availability: " + prison.name %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -89,16 +89,16 @@
             {{ govukPagination({
                 previous: {
                     text: 'Previous week',
-                    href: "/availability-checker?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                    href: "/room-availability?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period
                 },
                 next: {
                     text: 'Next week',
-                    href: "/availability-checker?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                    href: "/room-availability?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
                 },
                 items: [
                     {
                         number: 'Current week',
-                        href: "/availability-checker?date=" + currentWeekStartDate | formatDate('yyyy-MM-dd') + "&period=" + period,
+                        href: "/room-availability?date=" + currentWeekStartDate | formatDate('yyyy-MM-dd') + "&period=" + period,
                         attributes: {
                           "data-qa": "current-week"
                         }

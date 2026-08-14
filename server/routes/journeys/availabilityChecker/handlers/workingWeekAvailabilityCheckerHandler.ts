@@ -60,21 +60,21 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
       const weekDay = isWeekend(date) ? nextMonday(date) : date
       const period: Period = <Period>req.query.period || 'AM'
-      const { startDate, endDate } = this.startAndEndOfWeek(weekDay)
+      const { monday, friday } = this.startAndEndOfWeek(weekDay)
       const roomAvailability = await this.roomAvailabilityService.getRoomAvailability(
         prison.code,
-        startDate,
-        endDate,
+        monday,
+        friday,
         period,
         user,
       )
 
       const dayFilter = (availability: RoomAvailability, day: Date) =>
         availability.date === formatDate(day, 'yyyy-MM-dd')
-      const currentWeek = this.startAndEndOfWeek(new Date())
+      const currentWorkingWeek = this.startAndEndOfWeek(new Date())
       const isCurrentWeek = isWithinInterval(weekDay, {
-        start: startOfDay(currentWeek.startDate),
-        end: endOfDay(currentWeek.endDate),
+        start: startOfDay(currentWorkingWeek.monday),
+        end: endOfDay(currentWorkingWeek.friday),
       })
 
       const eventToRecord = {
@@ -84,26 +84,26 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
         username: user?.username,
       }
 
-      this.telemetryService.trackEvent('DailySchedule_ViewAvailabilityCheck', eventToRecord)
+      this.telemetryService.trackEvent('DailySchedule_ViewRoomAvailability', eventToRecord)
 
       res.render('pages/availabilityChecker/workingWeekAvailabilityChecker', {
         prison,
         date: weekDay,
         period,
         appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments/create/start-group`,
-        monday: startDate,
-        tuesday: nextTuesday(startDate),
-        wednesday: nextWednesday(startDate),
-        thursday: nextThursday(startDate),
-        friday: endDate,
-        mondayAvailability: roomAvailability.filter(ra => dayFilter(ra, startDate)),
-        tuesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextTuesday(startDate))),
-        wednesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextWednesday(startDate))),
-        thursdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextThursday(startDate))),
-        fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, endDate)),
-        previousWeek: previousMonday(startDate),
-        nextWeek: nextMonday(endDate),
-        currentWeekStartDate: isCurrentWeek ? undefined : startOfDay(currentWeek.startDate),
+        monday,
+        tuesday: nextTuesday(monday),
+        wednesday: nextWednesday(monday),
+        thursday: nextThursday(monday),
+        friday,
+        mondayAvailability: roomAvailability.filter(ra => dayFilter(ra, monday)),
+        tuesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextTuesday(monday))),
+        wednesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextWednesday(monday))),
+        thursdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextThursday(monday))),
+        fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, friday)),
+        previousWeek: previousMonday(monday),
+        nextWeek: nextMonday(friday),
+        currentWeekStartDate: isCurrentWeek ? undefined : startOfDay(currentWorkingWeek.monday),
       })
     } else {
       res.render('pages/error/404')
@@ -120,20 +120,20 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
     // If a tab has been select prior to POST it is remembered; this makes sure it is overridden.
     const overrideTabAnchorNavigation = '#'
 
-    return res.redirect(`availability-checker?${queryParams}${overrideTabAnchorNavigation}`)
+    return res.redirect(`room-availability?${queryParams}${overrideTabAnchorNavigation}`)
   }
 
   private startAndEndOfWeek = (date: Date) => {
     if (isMonday(date)) {
       return {
-        startDate: date,
-        endDate: nextFriday(date),
+        monday: date,
+        friday: nextFriday(date),
       }
     }
 
     return {
-      startDate: previousMonday(date),
-      endDate: nextFriday(previousMonday(date)),
+      monday: previousMonday(date),
+      friday: nextFriday(previousMonday(date)),
     }
   }
 }
