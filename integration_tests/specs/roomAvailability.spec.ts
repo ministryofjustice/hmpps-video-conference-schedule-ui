@@ -18,10 +18,10 @@ import componentsApi from '../mockApis/componentsApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import { resetStubs } from '../mockApis/wiremock'
 import { login } from '../testUtils'
-import AvailabilityCheckerPage, { Session, WeekDay } from '../pages/availabilityCheckerPage'
+import RoomAvailabilityPage, { Session, WeekDay } from '../pages/roomAvailabilityPage'
 import { formatDate } from '../../server/utils/utils'
 
-test.describe('Availability Checker', () => {
+test.describe('Room Availability', () => {
   const today = new Date()
   const monday = isMonday(today) ? today : previousMonday(today)
   const tuesday = nextTuesday(monday)
@@ -51,7 +51,7 @@ test.describe('Availability Checker', () => {
   test('User can view the room availability', async ({ page }) => {
     await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}`)
 
-    const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
+    const availabilityCheckerPage = await RoomAvailabilityPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
     await availabilityCheckerPage.assertRoomBooked('vvc-room-1', monday, 8)
     await availabilityCheckerPage.assertRoomAvailable('vvc-room-1', monday, 9)
@@ -64,7 +64,7 @@ test.describe('Availability Checker', () => {
   test('User can view each tab on the room availability', async ({ page }) => {
     await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
-    const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
+    const availabilityCheckerPage = await RoomAvailabilityPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
     await availabilityCheckerPage.assertWeekDayTabSelected(WeekDay.MONDAY)
 
@@ -104,7 +104,7 @@ test.describe('Availability Checker', () => {
   test('User can change the date and session on the room availability', async ({ page }) => {
     await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
-    const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
+    const availabilityCheckerPage = await RoomAvailabilityPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
 
     await bookAVideoLinkApi.stubGetVideoLinkEvents({
@@ -133,7 +133,7 @@ test.describe('Availability Checker', () => {
   test('User can view previous, current and next week on the room availability', async ({ page }) => {
     await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}&period=AM`)
 
-    const availabilityCheckerPage = await AvailabilityCheckerPage.verifyOnPage(page)
+    const availabilityCheckerPage = await RoomAvailabilityPage.verifyOnPage(page)
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
 
     await bookAVideoLinkApi.stubGetVideoLinkEvents({

@@ -40,18 +40,18 @@ class Body {
   period: string
 }
 
-export default class WorkingWeekAvailabilityCheckerHandler implements PageHandler {
+export default class WeeklyAvailabilityHandler implements PageHandler {
   constructor(
     private readonly roomAvailabilityService: RoomAvailabilityService,
     private readonly telemetryService: TelemetryService,
   ) {}
 
-  public PAGE_NAME = Page.WOKRING_WEEK_AVAILABILTY_CHECKER_PAGE
+  public PAGE_NAME = Page.WORKING_WEEK_AVAILABILITY_PAGE
 
   public BODY = Body
 
   GET = async (req: Request, res: Response) => {
-    const enabledPrisons = config.featureToggles.availabilityCheckerPrisons?.split(',')
+    const enabledPrisons = config.featureToggles.roomAvailabilityEnabledPrisons?.split(',')
     const { user } = res.locals
 
     if (enabledPrisons && enabledPrisons.includes(user.activeCaseLoadId)) {
@@ -86,7 +86,7 @@ export default class WorkingWeekAvailabilityCheckerHandler implements PageHandle
 
       this.telemetryService.trackEvent('DailySchedule_ViewRoomAvailability', eventToRecord)
 
-      res.render('pages/availabilityChecker/workingWeekAvailabilityChecker', {
+      res.render('pages/roomAvailability/weeklyAvailability', {
         prison,
         date: weekDay,
         period,
