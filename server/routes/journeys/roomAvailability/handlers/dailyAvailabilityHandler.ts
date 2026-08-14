@@ -25,37 +25,37 @@ class Body {
   period: string
 }
 
-export default class TimelineAvailabilityCheckerHandler implements PageHandler {
+export default class DailyAvailabilityHandler implements PageHandler {
   constructor(private readonly roomAvailabilityService: RoomAvailabilityService) {}
 
-  public PAGE_NAME = Page.TIMELINE_AVAILABILTY_CHECKER_PAGE
+  public PAGE_NAME = Page.ROOM_AVAILABILITY_PAGE
 
   public BODY = Body
 
   GET = async (req: Request, res: Response) => {
+    const enabledPrisons = config.featureToggles.roomAvailabilityEnabledPrisons?.split(',')
     const { user } = res.locals
-    const enabledPrisons = config.featureToggles.availabilityCheckerPrisons?.split(',')
 
     if (enabledPrisons && enabledPrisons.includes(user.activeCaseLoadId)) {
       const prison = req.middleware!.prison!
-
-      // Use the query parameter date in preference or default to today if a weekday, or the next Monday
       const dateFromQueryParam = new Date(req.query.date?.toString())
       const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
       const weekDay = isWeekend(date) ? nextMonday(date) : date
 
-      // Default to the morning period if nothing is provided in the URL params
       const period: Period = <Period>req.query.period || 'AM'
 
-      // Get the session data to display in the template
-      const sessionData = await this.roomAvailabilityService.getTimelineAvailability(prison.code, weekDay, period, user)
-
-      res.render('pages/availabilityChecker/timelineAvailabilityChecker', {
+      res.render('pages/roomAvailability/dailyAvailability', {
         prison,
         date: weekDay,
         period,
         appointmentsLink: `${config.activitiesAndAppointmentsUrl}/appointments/create/start-group`,
-        sessionData,
+        roomAvailability: await this.roomAvailabilityService.getRoomAvailability(
+          prison.code,
+          weekDay,
+          weekDay,
+          period,
+          user,
+        ),
       })
     } else {
       res.render('pages/error/404')
@@ -64,7 +64,6 @@ export default class TimelineAvailabilityCheckerHandler implements PageHandler {
 
   POST = async (req: Request, res: Response) => {
     const { date, period } = req.body
-
     const queryParams = new URLSearchParams({
       date: formatDate(date, 'yyyy-MM-dd'),
       period,

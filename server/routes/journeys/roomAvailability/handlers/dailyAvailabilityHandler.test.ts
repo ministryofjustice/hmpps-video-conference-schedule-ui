@@ -30,6 +30,8 @@ const risleyPrison: Prison = {
   enabled: true,
 }
 
+const pageHeader = 'Check video room availability: Risley (HMP)'
+
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, roomAvailabilityService },
@@ -53,9 +55,9 @@ describe('GET', () => {
     ['PM', '2024-12-11', 'time-13'],
     ['ED', '2024-12-12', 'time-18'],
   ])(
-    'should render period (%s) and date (%s) for availability checker at Risley prison is enabled',
+    'should render period (%s) and date (%s) for daily availability at Risley prison is enabled',
     (period: string, date: string, time: string) => {
-      config.featureToggles.availabilityCheckerPrisons = 'RSI'
+      config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
       return request(app)
         .get(`/room-availability?period=${period}&date=${date}`)
@@ -63,7 +65,7 @@ describe('GET', () => {
         .expect(res => {
           const $ = load(res.text)
 
-          expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
+          expect(getPageHeader($)).toEqual(pageHeader)
           expect(existsByDataQa($, time)).toBe(true)
           expect(getByDataQa($, 'appointments-link').attr('href')).toEqual(
             'http://localhost:3000/appointments/create/start-group',
@@ -75,7 +77,7 @@ describe('GET', () => {
             period,
             risleyUser,
           )
-          expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
             details: JSON.stringify({ query: { period, date } }),
@@ -88,7 +90,7 @@ describe('GET', () => {
     ['2026-07-25', '2026-07-27'],
     ['2026-07-26', '2026-07-27'],
   ])('should render Monday if date falls at the weekend (%s), date (%s)', (weekendDate: string, date: string) => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .get(`/room-availability?period=AM&date=${weekendDate}`)
@@ -96,7 +98,7 @@ describe('GET', () => {
       .expect(res => {
         const $ = load(res.text)
 
-        expect(getPageHeader($)).toEqual('Video link availability checker: Risley (HMP)')
+        expect(getPageHeader($)).toEqual(pageHeader)
         expect(roomAvailabilityService.getRoomAvailability).toHaveBeenCalledWith(
           'RSI',
           startOfDay(date),
@@ -104,7 +106,7 @@ describe('GET', () => {
           'AM',
           risleyUser,
         )
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { period: 'AM', date: weekendDate } }),
@@ -112,8 +114,8 @@ describe('GET', () => {
       })
   })
 
-  it('should not render availability checker when Risley prison is not enabled', () => {
-    config.featureToggles.availabilityCheckerPrisons = 'MDI'
+  it('should not render daily availability when Risley prison is not enabled', () => {
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'MDI'
 
     return request(app)
       .get('/room-availability')
@@ -123,7 +125,7 @@ describe('GET', () => {
 
         expect(getPageHeader($)).toEqual('Page not found')
         expect(roomAvailabilityService.getRoomAvailability).not.toHaveBeenCalled()
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: JSON.stringify({ query: {} }),
@@ -131,7 +133,7 @@ describe('GET', () => {
       })
   })
 
-  it('should not render availability checker when no prison is enabled', () => {
+  it('should not render daily availability when no prison is enabled', () => {
     return request(app)
       .get('/room-availability')
       .expect('Content-Type', /html/)
@@ -140,7 +142,7 @@ describe('GET', () => {
 
         expect(getPageHeader($)).toEqual('Page not found')
         expect(roomAvailabilityService.getRoomAvailability).not.toHaveBeenCalled()
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.AVAILABILTY_CHECKER_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: JSON.stringify({ query: {} }),
@@ -159,7 +161,7 @@ describe('POST', () => {
     ['11/12/2024', 'PM', '2024-12-11'],
     ['12/12/2024', 'ED', '2024-12-12'],
   ])('should redirect to date and period (%s) (%s)', (date: string, period: string, parsedDate: string) => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .post('/room-availability')
@@ -169,7 +171,7 @@ describe('POST', () => {
   })
 
   it.each([['25/07/2026'], ['26/07/2026']])('should validate date is a working day', (date: string) => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .post('/room-availability')
@@ -186,7 +188,7 @@ describe('POST', () => {
   })
 
   it('should validate date provided', () => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .post('/room-availability')
@@ -203,7 +205,7 @@ describe('POST', () => {
   })
 
   it('should validate date is valid', () => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .post('/room-availability')
@@ -220,7 +222,7 @@ describe('POST', () => {
   })
 
   it('should validate session is provided', () => {
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     return request(app)
       .post('/room-availability')

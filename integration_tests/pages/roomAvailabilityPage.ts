@@ -17,7 +17,7 @@ export enum Session {
   EVENING = 'Evening',
 }
 
-export default class AvailabilityCheckerPage extends AbstractPage {
+export default class RoomAvailabilityPage extends AbstractPage {
   private readonly header: Locator
 
   private readonly date: Locator
@@ -38,7 +38,7 @@ export default class AvailabilityCheckerPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: 'Video room availability:  Moorland (HMP)' })
+    this.header = page.locator('h1', { hasText: 'Check video room availability:  Moorland (HMP)' })
     this.date = page.getByLabel('Date')
     this.morningSession = page.locator('#period')
     this.afternoonSession = page.locator('#period-2')
@@ -49,8 +49,8 @@ export default class AvailabilityCheckerPage extends AbstractPage {
     this.nextWeekLink = page.getByRole('link', { name: 'Next week' })
   }
 
-  static async verifyOnPage(page: Page): Promise<AvailabilityCheckerPage> {
-    const availabilityCheckerPage = new AvailabilityCheckerPage(page)
+  static async verifyOnPage(page: Page): Promise<RoomAvailabilityPage> {
+    const availabilityCheckerPage = new RoomAvailabilityPage(page)
     await expect(availabilityCheckerPage.header).toBeVisible()
     await availabilityCheckerPage.verifyNoAccessViolationsOnPage()
     return availabilityCheckerPage

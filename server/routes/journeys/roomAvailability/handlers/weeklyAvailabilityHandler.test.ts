@@ -34,7 +34,7 @@ const risleyPrison: Prison = {
   enabled: true,
 }
 
-const pageHeader = 'Video room availability: Risley (HMP)'
+const pageHeader = 'Check video room availability: Risley (HMP)'
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
@@ -51,8 +51,8 @@ afterEach(() => {
 
 describe('GET', () => {
   beforeEach(() => {
-    config.featureToggles.workingWeekAvailabilityChecker = true
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.workingWeekAvailability = true
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
 
@@ -301,7 +301,7 @@ describe('GET', () => {
     },
   ] as unknown as RoomAvailability[]
 
-  it('should render tabbed weekly availability checker at Risley prison', () => {
+  it('should render tabbed weekly room availability at Risley prison', () => {
     roomAvailabilityService.getRoomAvailability.mockResolvedValue(morningRoomAvailability)
 
     return request(app)
@@ -358,7 +358,7 @@ describe('GET', () => {
           'AM',
           risleyUser,
         )
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.WOKRING_WEEK_AVAILABILTY_CHECKER_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.WORKING_WEEK_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
           details: JSON.stringify({ query: { period: 'AM', date: '2026-07-28' } }),
@@ -459,8 +459,8 @@ describe('GET', () => {
 
 describe('POST', () => {
   beforeEach(() => {
-    config.featureToggles.workingWeekAvailabilityChecker = true
-    config.featureToggles.availabilityCheckerPrisons = 'RSI'
+    config.featureToggles.workingWeekAvailability = true
+    config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
     appSetup()
   })
 

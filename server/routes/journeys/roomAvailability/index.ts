@@ -2,11 +2,11 @@ import { RequestHandler, Router } from 'express'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import type { Services } from '../../../services'
-import AvailabilityCheckerHandler from './handlers/availabilityCheckerHandler'
+import DailyAvailabilityHandler from './handlers/dailyAvailabilityHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import config from '../../../config'
-import WorkingWeekAvailabilityCheckerHandler from './handlers/workingWeekAvailabilityCheckerHandler'
-import TimelineAvailabilityCheckerHandler from './handlers/timelineAvailabilityCheckerHandler'
+import WeeklyAvailabilityHandler from './handlers/weeklyAvailabilityHandler'
+import TimelineAvailabilityHandler from './handlers/timelineAvailabilityHandler'
 
 export default function Index({ auditService, roomAvailabilityService, telemetryService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -21,12 +21,12 @@ export default function Index({ auditService, roomAvailabilityService, telemetry
   }
 
   // Several choices of implementation - in preference order
-  if (config.featureToggles.timelineAvailabilityChecker) {
-    getAndPost('/', new TimelineAvailabilityCheckerHandler(roomAvailabilityService))
-  } else if (config.featureToggles.workingWeekAvailabilityChecker) {
-    getAndPost('/', new WorkingWeekAvailabilityCheckerHandler(roomAvailabilityService, telemetryService))
+  if (config.featureToggles.timelineAvailability) {
+    getAndPost('/', new TimelineAvailabilityHandler(roomAvailabilityService))
+  } else if (config.featureToggles.workingWeekAvailability) {
+    getAndPost('/', new WeeklyAvailabilityHandler(roomAvailabilityService, telemetryService))
   } else {
-    getAndPost('/', new AvailabilityCheckerHandler(roomAvailabilityService))
+    getAndPost('/', new DailyAvailabilityHandler(roomAvailabilityService))
   }
 
   return router
