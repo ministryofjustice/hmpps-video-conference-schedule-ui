@@ -48,4 +48,14 @@ export default class HomePage extends AbstractPage {
     await homePage.verifyNoAccessViolationsOnPage()
     return homePage
   }
+
+  async assertRoomAvailabilityFeedbackBannerIsVisible() {
+    await expect(this.page.locator('.technical-updates-banner')).toBeVisible()
+  }
+
+  async assertRoomAvailabilityFeedbackUrl(expected: string) {
+    const actual = await this.page.locator(`a[data-qa='room-availability-feedback-url']`).getAttribute('href')
+
+    expect(actual).toEqual(expected)
+  }
 }

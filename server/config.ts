@@ -192,6 +192,7 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),
+  roomAvailabilityFeedbackUrl: get('ROOM_AVAILABILITY_FEEDBACK_URL', '#'),
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',

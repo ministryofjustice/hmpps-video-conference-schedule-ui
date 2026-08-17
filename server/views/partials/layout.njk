@@ -1,4 +1,5 @@
 {% extends "govuk/template.njk" %}
+{% from "./newFeaturesBanner.njk" import newFeaturesBanner %}
 
 {% set mainClasses = 'govuk-main-wrapper--l' %}
 
@@ -14,6 +15,13 @@
 {% block header %}
   {{ feComponents.header | safe }}
   {% block meta %}{% endblock %}
+
+  {% if roomAvailabilityFeedbackBanner %}
+    {{ newFeaturesBanner({
+      heading: 'Help us improve video appointment scheduling.',
+      html: 'Share your experience today by <a data-qa="room-availability-feedback-url" href="' + roomAvailabilityFeedbackUrl + '" class="govuk-link govuk-link--inverse" rel="noopener noreferrer" target="_blank">completing this short form</a>.'
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block beforeContent %}

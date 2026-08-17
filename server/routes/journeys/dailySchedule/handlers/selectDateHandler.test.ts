@@ -5,6 +5,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { existsByDataQa } from '../../../testutils/cheerio'
 
 jest.mock('../../../../services/auditService')
 
@@ -37,6 +38,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
+        expect(existsByDataQa($, 'room-availability-feedback-url')).toBe(true)
         expect(heading).toContain('Select the date you want to view a daily schedule for')
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_DATE_PAGE, {
           who: user.username,

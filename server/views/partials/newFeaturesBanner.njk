@@ -1,0 +1,11 @@
+{% macro newFeaturesBanner(params) %}
+    <div class="govuk-grid-row technical-updates-banner" id="technical-updates-banner">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-width-container govuk-body technical-updates-container">
+                <div class="technical-updates-content">
+                    <strong class="technical-updates-whats-new">{{ params.heading }}</strong> <span>{{ params.html | safe }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
