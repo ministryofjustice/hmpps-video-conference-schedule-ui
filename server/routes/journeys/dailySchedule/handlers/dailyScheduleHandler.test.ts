@@ -59,6 +59,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
+        expect(existsByDataQa($, 'room-availability-feedback-url')).toBe(true)
         expect(heading).toContain('Video link daily schedule: Moorland (HMP)')
         expect(existsByDataQa($, 'warning-text')).toBe(false)
         expect(existsByDataQa($, 'print-all-movement-slips')).toBe(true)
@@ -139,6 +140,7 @@ describe('GET', () => {
             isFutureDay: true,
             isPastDay: false,
             _locals: expect.any(Object),
+            roomAvailabilityFeedbackBanner: true,
           },
           expect.anything(),
         )
@@ -169,6 +171,7 @@ describe('GET', () => {
             isFutureDay: false,
             isPastDay: true,
             _locals: expect.any(Object),
+            roomAvailabilityFeedbackBanner: true,
           },
           expect.anything(),
         )
@@ -204,6 +207,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
+        expect(existsByDataQa($, 'room-availability-feedback-url')).toBe(true)
         expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
         expect(existsByClass($, 'govuk-warning-text')).toBe(false)
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {

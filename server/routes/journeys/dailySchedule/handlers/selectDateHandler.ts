@@ -21,7 +21,8 @@ export default class SelectDateHandler implements PageHandler {
 
   public BODY = Body
 
-  GET = async (req: Request, res: Response) => res.render('pages/dailySchedule/selectDate', { date: req.query.date })
+  GET = async (req: Request, res: Response) =>
+    res.render('pages/dailySchedule/selectDate', { date: req.query.date, roomAvailabilityFeedbackBanner: true })
 
   POST = async (req: Request, res: Response) => {
     const { date } = req.body
