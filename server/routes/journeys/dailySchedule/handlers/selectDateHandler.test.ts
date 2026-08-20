@@ -38,7 +38,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(existsByDataQa($, 'room-availability-feedback-url')).toBe(true)
+        expect(existsByDataQa($, 'pre-launch-room-availability-feedback-url')).toBe(true)
         expect(heading).toContain('Select the date you want to view a daily schedule for')
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_DATE_PAGE, {
           who: user.username,

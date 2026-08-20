@@ -9,6 +9,7 @@ import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TelemetryService from '../../../../services/telemetryService'
+import config from '../../../../config'
 
 class Body {
   @Expose()
@@ -81,6 +82,10 @@ export default class DailyScheduleHandler implements PageHandler {
 
     this.telemetryService.trackEvent('DailySchedule_ViewDailySchedule', eventToRecord)
 
+    const enabledPrisons: string[] = config.featureToggles.roomAvailabilityEnabledPrisons?.split(',') ?? []
+    const showDailySchedulePostLaunchBanner = enabledPrisons.includes(user.activeCaseLoadId)
+    const showDailySchedulePreLaunchBanner = !showDailySchedulePostLaunchBanner
+
     return status === 'ACTIVE'
       ? res.render('pages/dailySchedule/dailySchedule', {
           prison,
@@ -93,14 +98,16 @@ export default class DailyScheduleHandler implements PageHandler {
           courtsAndProbationTeams,
           wings,
           appointmentsRolledOut,
-          roomAvailabilityFeedbackBanner: true,
+          showDailySchedulePreLaunchBanner,
+          showDailySchedulePostLaunchBanner,
         })
       : res.render('pages/dailySchedule/cancelledAppointments', {
           prison,
           appointmentsRolledOut,
           schedule,
           date,
-          roomAvailabilityFeedbackBanner: true,
+          showDailySchedulePreLaunchBanner,
+          showDailySchedulePostLaunchBanner,
         })
   }
 

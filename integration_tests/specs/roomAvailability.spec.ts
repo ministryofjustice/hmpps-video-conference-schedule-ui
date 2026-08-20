@@ -52,6 +52,7 @@ test.describe('Room Availability', () => {
     await login(page, { name: 'A TestUser' }, `/room-availability?date=${formatDate(monday, 'yyyy-MM-dd')}`)
 
     const availabilityCheckerPage = await RoomAvailabilityPage.verifyOnPage(page)
+    await availabilityCheckerPage.assertBannerIsVisible('This is a new feature', 'https://www.google.com')
     await availabilityCheckerPage.assertSessionSelected(Session.MORNING)
     await availabilityCheckerPage.assertRoomBooked('vvc-room-1', monday, 8)
     await availabilityCheckerPage.assertRoomAvailable('vvc-room-1', monday, 9)

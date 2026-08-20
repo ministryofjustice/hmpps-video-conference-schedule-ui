@@ -49,13 +49,18 @@ export default class HomePage extends AbstractPage {
     return homePage
   }
 
-  async assertRoomAvailabilityFeedbackBannerIsVisible() {
+  async assertDailScheduleBannerIsVisible() {
     await expect(this.page.locator('.technical-updates-banner')).toBeVisible()
   }
 
-  async assertRoomAvailabilityFeedbackUrl(expected: string) {
-    const actual = await this.page.locator(`a[data-qa='room-availability-feedback-url']`).getAttribute('href')
+  async assertBannerIsVisible(expectedText: string, expectedUrl: string) {
+    const bannerElement = this.page.locator('.technical-updates-banner')
 
-    expect(actual).toEqual(expected)
+    await expect(bannerElement).toBeVisible()
+    await expect(bannerElement).toContainText(expectedText)
+
+    const actualUrl = await this.page.locator(`a[data-qa='daily-schedule-banner-url']`).getAttribute('href')
+
+    expect(actualUrl).toEqual(expectedUrl)
   }
 }

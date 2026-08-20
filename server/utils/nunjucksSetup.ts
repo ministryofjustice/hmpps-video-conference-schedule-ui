@@ -31,8 +31,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.dpsUrl = config.dpsUrl
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-  app.locals.feedbackUrl = config.feedbackUrl
-  app.locals.roomAvailabilityFeedbackUrl = config.roomAvailabilityFeedbackUrl
+  app.locals.preLaunchRoomAvailabilityFeedbackUrl = config.preLaunchRoomAvailabilityFeedbackUrl
+  app.locals.postLaunchRoomAvailabilityFeedbackUrl = config.postLaunchRoomAvailabilityFeedbackUrl
   app.locals.applicationInsightsConnectionString = config.applicationInsightsConnectionString
   app.locals.applicationInsightsApplicationName = applicationInfo.applicationName
   app.locals.buildNumber = config.buildNumber

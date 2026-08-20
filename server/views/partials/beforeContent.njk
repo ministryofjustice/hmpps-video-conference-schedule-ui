@@ -1,16 +1,4 @@
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-
-{{ govukPhaseBanner({
-  attributes: {
-    role: "complementary"
-  },
-  tag: {
-    text: "BETA"
-  },
-  classes: 'govuk-!-display-none-print',
-  html: 'This is a new service. <a href="' + feedbackUrl + '" class="govuk-link govuk-link--no-visited-state" rel="noopener noreferrer" target="_blank">Give feedback</a> to help us improve it'
-}) }}
 
 {% if backLinkHref %}
   <nav>

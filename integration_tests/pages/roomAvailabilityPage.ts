@@ -149,4 +149,15 @@ export default class RoomAvailabilityPage extends AbstractPage {
   }
 
   private getByDataQa = (dataQa: string) => this.page.locator(`[data-qa='${dataQa}']`)
+
+  async assertBannerIsVisible(expectedText: string, expectedUrl: string) {
+    const bannerElement = this.page.locator('.technical-updates-banner')
+
+    await expect(bannerElement).toBeVisible()
+    await expect(bannerElement).toContainText(expectedText)
+
+    const actualUrl = await this.page.locator(`a[data-qa='room-availability-banner-feedback-url']`).getAttribute('href')
+
+    expect(actualUrl).toEqual(expectedUrl)
+  }
 }

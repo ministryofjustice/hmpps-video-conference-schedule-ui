@@ -16,10 +16,24 @@
   {{ feComponents.header | safe }}
   {% block meta %}{% endblock %}
 
-  {% if roomAvailabilityFeedbackBanner %}
+  {% if showDailySchedulePreLaunchBanner %}
     {{ newFeaturesBanner({
       heading: 'Help us improve video appointment scheduling.',
-      html: 'Share your experience today by <a data-qa="room-availability-feedback-url" href="' + roomAvailabilityFeedbackUrl + '" class="govuk-link govuk-link--inverse" rel="noopener noreferrer" target="_blank">completing this short form</a>.'
+      html: 'Share your experience today by <a data-qa="pre-launch-room-availability-feedback-url" href="' + preLaunchRoomAvailabilityFeedbackUrl + '" class="govuk-link govuk-link--inverse" rel="noopener noreferrer" target="_blank">completing this short form</a>.'
+    }) }}
+  {% endif %}
+
+  {% if showDailySchedulePostLaunchBanner %}
+    {{ newFeaturesBanner({
+      heading: 'New video room availability feature has launched.',
+      html: 'Explore <a data-qa="daily-schedule-banner-url" href="/room-availability" class="govuk-link govuk-link--inverse" rel="noopener noreferrer" target="_blank">here</a> to learn more.'
+    }) }}
+  {% endif %}
+
+  {% if showRoomAvailabilityLaunchBanner %}
+    {{ newFeaturesBanner({
+      heading: 'This is a new feature.',
+      html: 'Give <a data-qa="room-availability-banner-feedback-url" href="' + postLaunchRoomAvailabilityFeedbackUrl + '" class="govuk-link govuk-link--inverse" rel="noopener noreferrer" target="_blank">feedback</a> to help us improve it'
     }) }}
   {% endif %}
 {% endblock %}
