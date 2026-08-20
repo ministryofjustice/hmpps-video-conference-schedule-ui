@@ -104,6 +104,7 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
         previousWeek: previousMonday(monday),
         nextWeek: nextMonday(friday),
         currentWeekStartDate: isCurrentWeek ? undefined : startOfDay(currentWorkingWeek.monday),
+        showRoomAvailabilityLaunchBanner: true,
       })
     } else {
       res.render('pages/error/404')

@@ -42,8 +42,7 @@ test.describe('Daily schedule', () => {
     await expect(homePage.prisonerStats).toHaveText('4')
     await expect(homePage.cancelledAppointmentStats).toHaveText('3')
     await expect(homePage.missingVideoLinkStats).toHaveText('1')
-    await homePage.assertRoomAvailabilityFeedbackBannerIsVisible()
-    await homePage.assertRoomAvailabilityFeedbackUrl('https://www.google.com')
+    await homePage.assertBannerIsVisible('New video room availability feature has launched', '/room-availability')
     await homePage.showFiltersButton.click()
     await homePage.selectCheckbox('Video Link - Court Hearing')
     await homePage.selectCheckbox('Morning (AM)')
@@ -65,7 +64,7 @@ test.describe('Daily schedule', () => {
   test('User can view daily schedule cancelled appointments', async ({ page }) => {
     await login(page, { name: 'A TestUser' })
     const homePage = await HomePage.verifyOnPage(page)
-    await homePage.assertRoomAvailabilityFeedbackBannerIsVisible()
+    await homePage.assertDailScheduleBannerIsVisible()
     await homePage.viewCancellationsLink.first().click()
     const cancellationsPage = await CancellationsPage.verifyOnPage(page)
     await expect(cancellationsPage.cancelledAppointmentStats).toHaveText('3')

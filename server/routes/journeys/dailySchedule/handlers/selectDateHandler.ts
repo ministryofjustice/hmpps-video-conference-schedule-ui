@@ -7,6 +7,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import IsValidDate from '../../../validators/isValidDate'
 import { parseDatePickerDate } from '../../../../utils/utils'
+import config from '../../../../config'
 
 class Body {
   @Expose()
@@ -21,8 +22,18 @@ export default class SelectDateHandler implements PageHandler {
 
   public BODY = Body
 
-  GET = async (req: Request, res: Response) =>
-    res.render('pages/dailySchedule/selectDate', { date: req.query.date, roomAvailabilityFeedbackBanner: true })
+  GET = async (req: Request, res: Response) => {
+    const { user } = res.locals
+    const enabledPrisons: string[] = config.featureToggles.roomAvailabilityEnabledPrisons?.split(',') ?? []
+    const showDailySchedulePostLaunchBanner = enabledPrisons.includes(user.activeCaseLoadId)
+    const showDailySchedulePreLaunchBanner = !showDailySchedulePostLaunchBanner
+
+    res.render('pages/dailySchedule/selectDate', {
+      date: req.query.date,
+      showDailySchedulePreLaunchBanner,
+      showDailySchedulePostLaunchBanner,
+    })
+  }
 
   POST = async (req: Request, res: Response) => {
     const { date } = req.body

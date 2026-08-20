@@ -191,8 +191,8 @@ export default {
   officialVisitsUrl: get('OFFICIAL_VISITS_URL', 'http://localhost:3000', requiredInProduction),
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  feedbackUrl: get('FEEDBACK_URL', '#'),
-  roomAvailabilityFeedbackUrl: get('ROOM_AVAILABILITY_FEEDBACK_URL', '#'),
+  preLaunchRoomAvailabilityFeedbackUrl: get('ROOM_AVAILABILITY_FEEDBACK_URL', '#'),
+  postLaunchRoomAvailabilityFeedbackUrl: get('POST_LAUNCH_ROOM_AVAILABILITY_FEEDBACK_URL', '#'),
   applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
   featureToggles: {
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
