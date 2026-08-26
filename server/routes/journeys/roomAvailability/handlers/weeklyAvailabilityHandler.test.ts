@@ -315,6 +315,10 @@ describe('GET', () => {
           'http://localhost:3000/appointments/create/start-group',
         )
 
+        // Check back link is shown
+        const backLinkText = $('nav a.govuk-back-link').text().trim()
+        expect(backLinkText).toEqual('Back to all appointments tasks')
+
         // Availability on 2026-07-27
         expect(existsByDataQa($, '1-booked-2026-07-27-8')).toBe(true)
         expect(existsByDataQa($, '1-partial-2026-07-27-09:00-09:30')).toBe(true)
