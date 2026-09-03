@@ -57,6 +57,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        Alerts: item.prisoner.alerts.join(', '),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
@@ -80,6 +81,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        Alerts: item.prisoner.alerts.join(', '),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )

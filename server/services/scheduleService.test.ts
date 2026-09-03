@@ -380,7 +380,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -406,7 +406,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -431,7 +431,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -456,7 +456,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                hasAlerts: true,
+                alerts: ['XCU'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -480,7 +480,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -509,7 +509,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                hasAlerts: true,
+                alerts: ['XCU'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -535,7 +535,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -562,7 +562,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -612,7 +612,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                hasAlerts: true,
+                alerts: ['XCU'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -636,7 +636,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -663,7 +663,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -701,7 +701,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -727,7 +727,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -752,7 +752,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -777,7 +777,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -804,7 +804,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -831,7 +831,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -883,7 +883,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -909,7 +909,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -934,7 +934,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -963,7 +963,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -1009,7 +1009,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -1035,7 +1035,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -1060,7 +1060,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -1088,7 +1088,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                hasAlerts: true,
+                alerts: ['XCU'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -1117,7 +1117,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -1160,7 +1160,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                hasAlerts: true,
+                alerts: ['XCU'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -1186,7 +1186,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'A-001',
                 firstName: 'Joe',
-                hasAlerts: false,
+                alerts: [],
                 inPrison: true,
                 lastName: 'Bloggs',
                 prisonerNumber: 'ABC123',
@@ -2040,10 +2040,10 @@ describe('Schedule service', () => {
         prisoner: {
           cellLocation: 'A-001',
           firstName: 'Joe',
-          hasAlerts: false,
           inPrison: true,
           lastName: 'Bloggs',
           prisonerNumber: 'ABC123',
+          alerts: [],
         },
         probationOfficerName: undefined,
         startTime: '10:00',

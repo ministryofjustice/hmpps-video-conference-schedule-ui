@@ -42,6 +42,8 @@ test.describe('Daily schedule', () => {
     await expect(homePage.prisonerStats).toHaveText('4')
     await expect(homePage.cancelledAppointmentStats).toHaveText('3')
     await expect(homePage.missingVideoLinkStats).toHaveText('1')
+    await homePage.assertAlertsTagIsVisibleForPrisoner('G9566GQ')
+    await homePage.assertAlertsTagIsVisibleForPrisoner('Z5461FA')
     await homePage.assertBannerIsVisible('New video room availability feature has launched', '/room-availability')
     await homePage.showFiltersButton.click()
     await homePage.selectCheckbox('Video Link - Court Hearing')

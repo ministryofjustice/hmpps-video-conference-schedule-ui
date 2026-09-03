@@ -327,7 +327,7 @@ describe('GET - with pick-up times present', () => {
             prisoner: {
               cellLocation: 'A-1-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'ABC123',
@@ -354,7 +354,7 @@ describe('GET - with pick-up times present', () => {
             prisoner: {
               cellLocation: 'A-1-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'ABC123',

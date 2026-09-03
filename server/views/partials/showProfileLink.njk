@@ -11,7 +11,7 @@
                    data-track-click-event="Daily-Schedule-View-Prisoner-Profile"
                    data-track-event-properties="{{
                        {
-                           hasAlerts: params.hasAlerts
+                           hasAlerts: params.alerts.length > 0
                        } | dump
                    }}"
                 >
@@ -22,10 +22,13 @@
                 {{ name | safe }}
             {% endif %}
         </div>
-        {% if params.hasAlerts %}
+        {% if params.alerts.length > 0 %}
             {{ govukTag({
                 text: "Alerts",
-                classes: "govuk-tag--alerts"
+                classes: "govuk-tag--alerts",
+                attributes: {
+                    "data-qa": "alerts-" + params.prisonerNumber
+                }
             }) }}
         {% endif %}
         <div class="govuk-body-s govuk-!-margin-0">{{ params.prisonerNumber }}</div>

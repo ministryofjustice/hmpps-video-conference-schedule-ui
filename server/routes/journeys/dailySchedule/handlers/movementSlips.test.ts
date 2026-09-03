@@ -56,7 +56,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'A-1-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'ABC123',
@@ -84,7 +84,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'A-1-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'ABC123',
@@ -112,7 +112,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'A-1-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'ABC123',
@@ -174,7 +174,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'P-1-001',
               firstName: 'Fred',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Flintrock',
               prisonerNumber: 'FRE123',
@@ -228,7 +228,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'W-001',
               firstName: 'Wilma',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Flintrock',
               prisonerNumber: 'WIL123',
@@ -283,7 +283,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'W-002',
               firstName: 'Barney',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Rabble',
               prisonerNumber: 'BAR123',
@@ -338,7 +338,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'X-001',
               firstName: 'Betty',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Rabble',
               prisonerNumber: 'BET123',
@@ -393,7 +393,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'D-055',
               firstName: 'Don',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Key',
               prisonerNumber: 'DON123',
@@ -456,7 +456,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'A-001',
               firstName: 'Joe',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Bloggs',
               prisonerNumber: 'JOE123',
@@ -511,7 +511,7 @@ describe('GET', () => {
             prisoner: {
               cellLocation: 'D-055',
               firstName: 'Don',
-              hasAlerts: false,
+              alerts: [],
               inPrison: true,
               lastName: 'Key',
               prisonerNumber: 'DON123',

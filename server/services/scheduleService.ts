@@ -43,7 +43,7 @@ export type ScheduleItem = {
     lastName: string
     cellLocation: string
     inPrison: boolean
-    hasAlerts: boolean
+    alerts: string[]
   }
   status: 'ACTIVE' | 'CANCELLED'
   startTime: string
@@ -288,7 +288,7 @@ export default class ScheduleService {
       lastName: prisoner.lastName,
       cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
       inPrison: prisoner.prisonId === user.activeCaseLoadId,
-      hasAlerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).length > 0,
+      alerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).map(a => a.alertCode),
     }
   }
 
@@ -301,7 +301,7 @@ export default class ScheduleService {
       lastName: prisoner.lastName,
       cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
       inPrison: prisoner.prisonId === user.activeCaseLoadId,
-      hasAlerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).length > 0,
+      alerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).map(a => a.alertCode),
     }
   }
 

@@ -29,26 +29,26 @@ const appSetup = (journeySession = {}, prisonSupplier = moorlandPrisonPickUpTime
 }
 
 const expectedCsvNoPickupTimes =
-  'Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
-  '\nSmith John,ABC123,A-1-001,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
-  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
-  '\nDoe John,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
-  '\nDoe Jane,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
-  '\nBat Man,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
-  '\nFlintrock Fred,BC5000,B-1-5000,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,' +
-  '\nLawless Lucy,ZZ5000,X-1-4000,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,"Probation meeting staff notes with special characters, "" \' À"' +
-  '\nKey Don,ZZ6000,F-1-5000,18:00,19:00,Official Visit - Video,,F Wing,,,,,'
+  'Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Alerts,Staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"X, Y, Z",' +
+  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,,Court hearing staff notes' +
+  '\nDoe John,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,,' +
+  '\nDoe Jane,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,,' +
+  '\nBat Man,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,,' +
+  '\nFlintrock Fred,BC5000,B-1-5000,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,,' +
+  '\nLawless Lucy,ZZ5000,X-1-4000,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,,"Probation meeting staff notes with special characters, "" \' À"' +
+  '\nKey Don,ZZ6000,F-1-5000,18:00,19:00,Official Visit - Video,,F Wing,,,,,,'
 
 const expectedCsvWithPickupTimes =
-  'Prisoner name,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
-  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
-  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
-  '\nDoe John,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
-  '\nDoe Jane,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
-  '\nBat Man,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
-  '\nFlintrock Fred,BC5000,B-1-5000,15:30,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,' +
-  '\nLawless Lucy,ZZ5000,X-1-4000,15:30,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,"Probation meeting staff notes with special characters, "" \' À"' +
-  '\nKey Don,ZZ6000,F-1-5000,17:30,18:00,19:00,Official Visit - Video,,F Wing,,,,,'
+  'Prisoner name,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Alerts,Staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"X, Y, Z",' +
+  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,,Court hearing staff notes' +
+  '\nDoe John,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,,' +
+  '\nDoe Jane,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,,' +
+  '\nBat Man,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,,' +
+  '\nFlintrock Fred,BC5000,B-1-5000,15:30,16:00,17:00,Court Hearing,,Z Wing Video Link,,,,,,' +
+  '\nLawless Lucy,ZZ5000,X-1-4000,15:30,16:00,17:00,Probation Meeting,,G Wing Video Link,,,,Probation Officer Name,,"Probation meeting staff notes with special characters, "" \' À"' +
+  '\nKey Don,ZZ6000,F-1-5000,17:30,18:00,19:00,Official Visit - Video,,F Wing,,,,,,'
 
 beforeEach(() => {
   scheduleService.getSchedule.mockResolvedValue({
@@ -56,7 +56,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLB',
-          prisoner: { firstName: 'John', lastName: 'Smith', prisonerNumber: 'ABC123', cellLocation: 'A-1-001' },
+          prisoner: {
+            firstName: 'John',
+            lastName: 'Smith',
+            prisonerNumber: 'ABC123',
+            cellLocation: 'A-1-001',
+            alerts: ['X', 'Y', 'Z'],
+          },
           startTime: '10:45',
           endTime: '11:00',
           appointmentTypeDescription: 'Court Hearing',
@@ -68,7 +74,13 @@ beforeEach(() => {
         },
         {
           appointmentTypeCode: 'VLB',
-          prisoner: { firstName: 'John', lastName: 'Smith', prisonerNumber: 'ABC123', cellLocation: 'A-1-001' },
+          prisoner: {
+            firstName: 'John',
+            lastName: 'Smith',
+            prisonerNumber: 'ABC123',
+            cellLocation: 'A-1-001',
+            alerts: [],
+          },
           startTime: '11:00',
           endTime: '12:00',
           appointmentTypeDescription: 'Court Hearing',
@@ -83,7 +95,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLB',
-          prisoner: { firstName: 'John', lastName: 'Doe', prisonerNumber: 'DEF123', cellLocation: 'B-1-001' },
+          prisoner: {
+            firstName: 'John',
+            lastName: 'Doe',
+            prisonerNumber: 'DEF123',
+            cellLocation: 'B-1-001',
+            alerts: [],
+          },
           startTime: '11:00',
           endTime: '12:00',
           appointmentTypeDescription: 'Court Hearing',
@@ -96,7 +114,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLB',
-          prisoner: { firstName: 'Jane', lastName: 'Doe', prisonerNumber: 'HIJ123', cellLocation: 'C-1-001' },
+          prisoner: {
+            firstName: 'Jane',
+            lastName: 'Doe',
+            prisonerNumber: 'HIJ123',
+            cellLocation: 'C-1-001',
+            alerts: [],
+          },
           startTime: '11:00',
           endTime: '12:00',
           appointmentTypeDescription: 'Court Hearing',
@@ -108,7 +132,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLPM',
-          prisoner: { firstName: 'Man', lastName: 'Bat', prisonerNumber: 'RR9100', cellLocation: 'R-1-9000' },
+          prisoner: {
+            firstName: 'Man',
+            lastName: 'Bat',
+            prisonerNumber: 'RR9100',
+            cellLocation: 'R-1-9000',
+            alerts: [],
+          },
           startTime: '13:00',
           endTime: '13:30',
           appointmentTypeDescription: 'Probation Meeting',
@@ -121,7 +151,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLB',
-          prisoner: { firstName: 'Fred', lastName: 'Flintrock', prisonerNumber: 'BC5000', cellLocation: 'B-1-5000' },
+          prisoner: {
+            firstName: 'Fred',
+            lastName: 'Flintrock',
+            prisonerNumber: 'BC5000',
+            cellLocation: 'B-1-5000',
+            alerts: [],
+          },
           startTime: '16:00',
           endTime: '17:00',
           appointmentTypeDescription: 'Court Hearing',
@@ -133,7 +169,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLPM',
-          prisoner: { firstName: 'Lucy', lastName: 'Lawless', prisonerNumber: 'ZZ5000', cellLocation: 'X-1-4000' },
+          prisoner: {
+            firstName: 'Lucy',
+            lastName: 'Lawless',
+            prisonerNumber: 'ZZ5000',
+            cellLocation: 'X-1-4000',
+            alerts: [],
+          },
           startTime: '16:00',
           endTime: '17:00',
           appointmentTypeDescription: 'Probation Meeting',
@@ -147,7 +189,13 @@ beforeEach(() => {
       [
         {
           appointmentTypeCode: 'VLOV',
-          prisoner: { firstName: 'Don', lastName: 'Key', prisonerNumber: 'ZZ6000', cellLocation: 'F-1-5000' },
+          prisoner: {
+            firstName: 'Don',
+            lastName: 'Key',
+            prisonerNumber: 'ZZ6000',
+            cellLocation: 'F-1-5000',
+            alerts: [],
+          },
           startTime: '18:00',
           endTime: '19:00',
           appointmentTypeDescription: 'Official Visit - Video',
