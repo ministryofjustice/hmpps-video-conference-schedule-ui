@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { isValid, startOfDay } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import ScheduleService, { DailySchedule, ScheduleItem } from '../../../../services/scheduleService'
+import ScheduleService, { DailySchedule, RELEVANT_ALERTS, ScheduleItem } from '../../../../services/scheduleService'
 import { convertToTitleCase, formatDate, removeMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'
 import { OFFICIAL_VISIT_TYPE } from '../../../../services/referenceDataService'
 
@@ -57,6 +57,7 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
@@ -80,9 +81,14 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
+        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
+  }
+
+  private getAlertDescriptions(alertCodes: string[]) {
+    return alertCodes.map(code => Object.keys(RELEVANT_ALERTS)[Object.values(RELEVANT_ALERTS).indexOf(code)]).join(', ')
   }
 
   private courtLinkFor = (item: ScheduleItem) => {

@@ -63,4 +63,8 @@ export default class HomePage extends AbstractPage {
 
     expect(actualUrl).toEqual(expectedUrl)
   }
+
+  async assertAlertsTagIsVisibleForPrisoner(prisonerNumber: string) {
+    expect(this.page.locator(`strong[data-qa='alerts-${prisonerNumber}']`)).toBeDefined()
+  }
 }
