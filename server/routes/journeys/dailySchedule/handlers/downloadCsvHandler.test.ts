@@ -8,7 +8,7 @@ import {
   user,
 } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
+import ScheduleService, { DailySchedule, RELEVANT_ALERTS } from '../../../../services/scheduleService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/scheduleService')
@@ -30,8 +30,8 @@ const appSetup = (journeySession = {}, prisonSupplier = moorlandPrisonPickUpTime
 
 const expectedCsvNoPickupTimes =
   'Prisoner name,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Alerts,Staff notes' +
-  '\nSmith John,ABC123,A-1-001,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"X, Y, Z",' +
-  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,,Court hearing staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"ACCT_OPEN, PEEP",' +
+  '\nSmith John,ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"ACCT_OPEN, PEEP",Court hearing staff notes' +
   '\nDoe John,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,,' +
   '\nDoe Jane,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,,' +
   '\nBat Man,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,,' +
@@ -41,8 +41,8 @@ const expectedCsvNoPickupTimes =
 
 const expectedCsvWithPickupTimes =
   'Prisoner name,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Alerts,Staff notes' +
-  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"X, Y, Z",' +
-  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,,Court hearing staff notes' +
+  '\nSmith John,ABC123,A-1-001,10:15,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"ACCT_OPEN, PEEP",' +
+  '\nSmith John,ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,"ACCT_OPEN, PEEP",Court hearing staff notes' +
   '\nDoe John,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,,' +
   '\nDoe Jane,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,,' +
   '\nBat Man,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,,' +
@@ -61,11 +61,11 @@ beforeEach(() => {
             lastName: 'Smith',
             prisonerNumber: 'ABC123',
             cellLocation: 'A-1-001',
-            alerts: ['X', 'Y', 'Z'],
+            alerts: [RELEVANT_ALERTS.ACCT_OPEN.valueOf(), RELEVANT_ALERTS.PEEP.valueOf()],
           },
           startTime: '10:45',
           endTime: '11:00',
-          appointmentTypeDescription: 'Court Hearing',
+          appointmentTypeDescription: 'Pre Hearing',
           appointmentLocationDescription: 'A Wing Video Link',
           lastUpdatedOrCreated: '2024-12-10T00:00:00Z',
           videoLink: 'http://video.url',
@@ -79,7 +79,7 @@ beforeEach(() => {
             lastName: 'Smith',
             prisonerNumber: 'ABC123',
             cellLocation: 'A-1-001',
-            alerts: [],
+            alerts: [RELEVANT_ALERTS.ACCT_OPEN.valueOf(), RELEVANT_ALERTS.PEEP.valueOf()],
           },
           startTime: '11:00',
           endTime: '12:00',

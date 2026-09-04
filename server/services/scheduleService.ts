@@ -26,7 +26,7 @@ import OfficialVisitsService from './officialVisitsService'
 import config from '../config'
 import { OfficialVisit } from '../@types/officialVisitsApi/types'
 
-const RELEVANT_ALERTS = {
+export const RELEVANT_ALERTS = {
   ACCT_OPEN: 'HA',
   PEEP: 'PEEP',
   ESCAPE_LIST: 'XEL',
