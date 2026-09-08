@@ -288,7 +288,7 @@ export default class ScheduleService {
       lastName: prisoner.lastName,
       cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
       inPrison: prisoner.prisonId === user.activeCaseLoadId,
-      alerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).map(a => a.alertCode),
+      alerts: this.getActiveRelevantAlertCodes(prisoner),
     }
   }
 
@@ -301,8 +301,14 @@ export default class ScheduleService {
       lastName: prisoner.lastName,
       cellLocation: prisoner.prisonId === user.activeCaseLoadId ? prisoner.cellLocation : 'Out of prison',
       inPrison: prisoner.prisonId === user.activeCaseLoadId,
-      alerts: prisoner.alerts.filter(a => Object.values(RELEVANT_ALERTS).includes(a.alertCode)).map(a => a.alertCode),
+      alerts: this.getActiveRelevantAlertCodes(prisoner),
     }
+  }
+
+  private getActiveRelevantAlertCodes(prisoner: Prisoner) {
+    return prisoner.alerts
+      .filter(a => a.active && Object.values(RELEVANT_ALERTS).includes(a.alertCode))
+      .map(a => a.alertCode)
   }
 
   private getAppointmentType(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {
