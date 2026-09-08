@@ -327,7 +327,7 @@ describe('Schedule service', () => {
         lastName: 'Bloggs',
         prisonId: 'MDI',
         cellLocation: 'A-001',
-        alerts: [],
+        alerts: [{ alertCode: 'XCU', active: false }],
       },
       {
         prisonerNumber: 'ZXY321',
@@ -335,7 +335,7 @@ describe('Schedule service', () => {
         lastName: 'Smith',
         prisonId: 'PVI',
         cellLocation: 'B-001',
-        alerts: [{ alertCode: 'XCU' }],
+        alerts: [{ alertCode: 'XCU', active: true }],
       },
     ] as Prisoner[]
 

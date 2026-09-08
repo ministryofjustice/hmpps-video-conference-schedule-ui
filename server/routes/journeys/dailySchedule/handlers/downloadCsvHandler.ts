@@ -44,6 +44,7 @@ export default class DownloadCsvHandler implements PageHandler {
     return schedule.appointmentGroups.flatMap(group =>
       group.map(item => ({
         'Prisoner name': convertToTitleCase(`${item.prisoner.lastName} ${item.prisoner.firstName}`),
+        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Prison number': item.prisoner.prisonerNumber,
         'Cell number': item.prisoner.cellLocation,
         'Appointment start time': item.startTime,
@@ -57,7 +58,6 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
-        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
@@ -67,6 +67,7 @@ export default class DownloadCsvHandler implements PageHandler {
     return schedule.appointmentGroups.flatMap(group =>
       group.map((item, index) => ({
         'Prisoner name': convertToTitleCase(`${item.prisoner.lastName} ${item.prisoner.firstName}`),
+        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Prison number': item.prisoner.prisonerNumber,
         'Cell number': item.prisoner.cellLocation,
         'Pick-up time': index === 0 ? removeMinutes(item.startTime, pickUpTime) : '',
@@ -81,7 +82,6 @@ export default class DownloadCsvHandler implements PageHandler {
           ? formatDate(item.lastUpdatedOrCreated, "d MMMM yyyy 'at' HH:mm")
           : '',
         'Probation officer name': this.probationOfficerNameOrUndefined(item) || '',
-        Alerts: this.getAlertDescriptions(item.prisoner.alerts),
         'Staff notes': this.includeStaffNotesIfNotOfficialVisit(item),
       })),
     )
