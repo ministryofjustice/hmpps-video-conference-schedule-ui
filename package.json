@@ -44,7 +44,7 @@
     "bunyan-format": "^0.2.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
     "csrf-sync": "^4.2.1",
@@ -125,6 +125,7 @@
   },
   "overrides": {
     "minimatch@>3.0.0 <3.1.4": "^3.1.4",
+    "moment": "2.31.0",
     "@opentelemetry/core": "2.10.0"
   }
 }
