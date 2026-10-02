@@ -82,6 +82,9 @@ describe('GET', () => {
           prisonCode: 'MDI',
           status: 'ACTIVE',
           username: 'user1',
+          userId: 'id',
+          userUuid: '00000000-0000-0000-0000-000000000000',
+          activeCaseLoadId: 'MDI',
         })
       })
   })
@@ -112,6 +115,9 @@ describe('GET', () => {
           prisonCode: 'MDI',
           status: 'ACTIVE',
           username: 'user1',
+          userId: 'id',
+          userUuid: '00000000-0000-0000-0000-000000000000',
+          activeCaseLoadId: 'MDI',
         })
       })
   })
@@ -224,6 +230,9 @@ describe('GET', () => {
           prisonCode: 'MDI',
           status: 'CANCELLED',
           username: 'user1',
+          userId: 'id',
+          userUuid: '00000000-0000-0000-0000-000000000000',
+          activeCaseLoadId: 'MDI',
         })
       })
   })

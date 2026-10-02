@@ -32,6 +32,7 @@ const testAppInfo: ApplicationInfo = {
 export const user: Express.User = {
   name: 'FIRST LAST',
   userId: 'id',
+  userUuid: '00000000-0000-0000-0000-000000000000',
   token: 'token',
   username: 'user1',
   displayName: 'First Last',

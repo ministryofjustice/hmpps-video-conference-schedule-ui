@@ -82,6 +82,9 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
         date: formatDate(date, 'yyyy-MM-dd'),
         period,
         username: user?.username,
+        userId: user?.userId,
+        userUuid: user?.userUuid,
+        activeCaseLoadId: user?.activeCaseLoadId,
       }
 
       this.telemetryService.trackEvent('DailySchedule_ViewRoomAvailability', eventToRecord)
