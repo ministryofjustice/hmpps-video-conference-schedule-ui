@@ -372,6 +372,8 @@ describe('GET', () => {
           period: 'AM',
           prisonCode: 'RSI',
           username: 'user1',
+          userId: 'id',
+          userUuid: '00000000-0000-0000-0000-000000000000',
         })
       })
   })
@@ -399,6 +401,8 @@ describe('GET', () => {
           period: 'PM',
           prisonCode: 'RSI',
           username: 'user1',
+          userId: 'id',
+          userUuid: '00000000-0000-0000-0000-000000000000',
         })
       })
   })

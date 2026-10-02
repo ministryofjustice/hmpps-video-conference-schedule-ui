@@ -39,6 +39,7 @@ export declare global {
   namespace Express {
     interface User extends Partial<HmppsUser> {
       username: string
+      userUuid?: string
       token: string
       authSource: string
       activeCaseLoad?: CaseLoad | undefined

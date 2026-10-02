@@ -78,6 +78,8 @@ export default class DailyScheduleHandler implements PageHandler {
       status,
       filtered: (!!filters).toString(),
       username: user?.username,
+      userId: user?.userId,
+      userUuid: user?.userUuid,
     }
 
     this.telemetryService.trackEvent('DailySchedule_ViewDailySchedule', eventToRecord)
