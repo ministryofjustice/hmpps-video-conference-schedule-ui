@@ -84,7 +84,6 @@ describe('GET', () => {
           username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
-          activeCaseLoadId: 'MDI',
         })
       })
   })
@@ -117,7 +116,6 @@ describe('GET', () => {
           username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
-          activeCaseLoadId: 'MDI',
         })
       })
   })
@@ -232,7 +230,6 @@ describe('GET', () => {
           username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
-          activeCaseLoadId: 'MDI',
         })
       })
   })
