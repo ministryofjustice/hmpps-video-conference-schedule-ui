@@ -110,11 +110,10 @@
         </div>
     </div>
 
-    {% if prison.pickUpTime and schedule.appointmentsListed > 0 %}
-        {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
+    {% if not isPastDay %}
         <div class="govuk-grid-row govuk-!-margin-top-4 govuk-!-display-none-print">
-            <div class="hmpps-show-hide-links">
-                <button class="govuk-!-font-size-16 hmpps-show-hide-link-button" data-qa="show-all-pick-up-times">Show all pick-up times</button>
+            <div class="govuk-grid-column-full govuk-!-display-none-print">
+                {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
             </div>
         </div>
     {% endif %}
@@ -209,12 +208,17 @@
 
             {% if not noAppointmentsForDay %}
                 <div class="hmpps-action-bar govuk-!-display-none-print">
-                    {% if not isPastDay %}
-                        <div class="hmpps-last-updated">
+                    <div class="hmpps-last-updated">
+                        {% if not isPastDay %}
                             <span>Last updated {{ now() | formatDate('HH:mm') }}</span>
-                            {{ govukButton({ classes: 'govuk-button--secondary hmpps-refresh', text: "Refresh schedule" }) }}
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                        {% if prison.pickUpTime %}
+                            {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
+                            <div class="hmpps-show-hide-links">
+                                <button class="hmpps-show-hide-link-button" data-qa="show-all-pick-up-times">Show all pick-up times</button>
+                            </div>
+                        {% endif %}
+                    </div>
                     <div class="hmpps-print-and-export">
                         <button class="hmpps-print-and-export--export"
                                 data-track-click-event="Daily-Schedule-CSV-Export"
