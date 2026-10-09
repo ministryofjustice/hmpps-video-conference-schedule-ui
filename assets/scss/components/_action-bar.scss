@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-block: 1px;
 
   .hmpps-last-updated {
     @extend .govuk-button-group;
@@ -9,13 +10,9 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-
-    button {
-      font-size: 1rem;
-      margin: 5px 0 !important;
-    }
   }
 
+  .hmpps-show-hide-links,
   .hmpps-print-and-export {
     @extend .govuk-button-group;
     margin: 0 0 0 auto;
@@ -42,6 +39,10 @@
         text-decoration: none;
         box-decoration-break: clone;
         border-color: transparent;
+      }
+
+      &.hmpps-show-hide-link-button {
+        background: url("/assets/images/icon-down-chevron.png") no-repeat 10px 50%;
       }
 
       &.hmpps-print-and-export--export {
