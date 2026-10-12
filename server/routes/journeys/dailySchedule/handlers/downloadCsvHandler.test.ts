@@ -1,3 +1,4 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { formatDate, startOfDay, startOfToday } from 'date-fns'
@@ -7,10 +8,10 @@ import {
   moorlandPrisonPickUpTime30,
   user,
 } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import ScheduleService, { DailySchedule, RELEVANT_ALERTS } from '../../../../services/scheduleService'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/scheduleService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
@@ -231,7 +232,7 @@ describe('GET - with no pick-up times', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
 
         expect(res.text).toEqual(expectedCsvNoPickupTimes)
@@ -249,7 +250,7 @@ describe('GET - with no pick-up times', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { date: '2024-12-12' } }),
+          details: { query: { date: '2024-12-12' } },
         })
 
         const date = new Date('2024-12-12')
@@ -285,7 +286,7 @@ describe('GET - with no pick-up times', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { status: 'CANCELLED' } }),
+          details: { query: { status: 'CANCELLED' } },
         })
 
         expect(res.text).toEqual(expectedCsvNoPickupTimes)
@@ -325,7 +326,7 @@ describe('GET - with pickup times', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
 
         expect(res.text).toEqual(expectedCsvWithPickupTimes)

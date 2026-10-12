@@ -1,3 +1,4 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import express, { Express, RequestHandler } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
@@ -7,7 +8,6 @@ import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
-import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import { Journey } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
@@ -15,7 +15,7 @@ import setUpFlash from '../../middleware/setUpFlash'
 import { Prison } from '../../@types/bookAVideoLinkApi/types'
 import AppointmentService from '../../services/appointmentService'
 
-jest.mock('../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../services/appointmentService')
 
 export const journeyId = () => '9211b69b-826f-4f48-a43f-8af59dddf39f'

@@ -1,15 +1,15 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { startOfToday } from 'date-fns'
 import { load } from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService from '../../../../services/auditService'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import { getByClass, getByDataQa } from '../../../testutils/cheerio'
 import { formatDate } from '../../../../utils/utils'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/scheduleService')
 

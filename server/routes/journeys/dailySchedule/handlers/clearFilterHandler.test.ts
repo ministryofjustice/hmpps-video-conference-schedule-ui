@@ -1,10 +1,10 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService from '../../../../services/auditService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 

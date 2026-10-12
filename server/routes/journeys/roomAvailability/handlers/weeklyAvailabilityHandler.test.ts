@@ -1,9 +1,10 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { load } from 'cheerio'
 import { addWeeks, isMonday, previousMonday, startOfDay, subWeeks } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import RoomAvailabilityService, { RoomAvailability } from '../../../../services/roomAvailabilityService'
 import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import config from '../../../../config'
@@ -12,7 +13,7 @@ import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import TelemetryService from '../../../../services/telemetryService'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/roomAvailabilityService')
 jest.mock('../../../../services/telemetryService')
 
@@ -365,7 +366,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.WORKING_WEEK_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { period: 'AM', date: '2026-07-28' } }),
+          details: { query: { period: 'AM', date: '2026-07-28' } },
         })
         expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewRoomAvailability', {
           date: '2026-07-28',

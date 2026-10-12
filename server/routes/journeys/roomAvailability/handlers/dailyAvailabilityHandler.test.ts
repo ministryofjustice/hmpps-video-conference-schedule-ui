@@ -1,16 +1,17 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { load } from 'cheerio'
 import { startOfDay } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import RoomAvailabilityService from '../../../../services/roomAvailabilityService'
 import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import config from '../../../../config'
 import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/roomAvailabilityService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
@@ -80,7 +81,7 @@ describe('GET', () => {
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
-            details: JSON.stringify({ query: { period, date } }),
+            details: { query: { period, date } },
           })
         })
     },
@@ -109,7 +110,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { period: 'AM', date: weekendDate } }),
+          details: { query: { period: 'AM', date: weekendDate } },
         })
       })
   })
@@ -128,7 +129,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
       })
   })
@@ -145,7 +146,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.ROOM_AVAILABILITY_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
       })
   })

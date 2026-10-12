@@ -8,7 +8,6 @@ import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureApp
 import applicationInfoSupplier from '../applicationInfo'
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
-import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import PrisonApiClient from './prisonApiClient'
@@ -32,7 +31,6 @@ export const dataAccess = () => {
 
   return {
     applicationInfo,
-    hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
     activitiesAndAppointmentsApiClient: new ActivitiesAndAppointmentsApiClient(hmppsAuthClient),
     bookAVideoLinkApiClient: new BookAVideoLinkApiClient(hmppsAuthClient),
