@@ -17,7 +17,7 @@ import {
   previousMonday,
   startOfDay,
 } from 'date-fns'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import config from '../../../../config'
 import { parseDatePickerDate } from '../../../../utils/utils'

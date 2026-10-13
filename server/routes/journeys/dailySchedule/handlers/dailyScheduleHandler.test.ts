@@ -1,3 +1,4 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
@@ -8,7 +9,7 @@ import {
   moorlandPrisonPickUpTime30,
   user,
 } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import PrisonService from '../../../../services/prisonService'
 import ScheduleService from '../../../../services/scheduleService'
 import { existsByClass, existsByDataQa, getByClass } from '../../../testutils/cheerio'
@@ -18,7 +19,7 @@ import { Location } from '../../../../@types/locationsInsidePrisonApi/types'
 import TelemetryService from '../../../../services/telemetryService'
 import { formatDate } from '../../../../utils/utils'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/scheduleService')
@@ -67,7 +68,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
 
         expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
@@ -103,7 +104,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { date: '2024-12-12' } }),
+          details: { query: { date: '2024-12-12' } },
         })
 
         expect(existsByDataQa($, 'warning-text')).toBe(true)
@@ -131,7 +132,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { date: '2050-01-01' } }),
+          details: { query: { date: '2050-01-01' } },
         })
 
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
@@ -163,7 +164,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { date: '2024-01-01' } }),
+          details: { query: { date: '2024-01-01' } },
         })
 
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
@@ -219,7 +220,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { status: 'CANCELLED' } }),
+          details: { query: { status: 'CANCELLED' } },
         })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
         expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
@@ -392,7 +393,7 @@ describe('GET - with pick-up times present', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DAILY_SCHEDULE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: { date: '2024-12-12' } }),
+          details: { query: { date: '2024-12-12' } },
         })
 
         const pickUps = getByClass($, 'show-hide-details')

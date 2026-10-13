@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 
 export default class ClearFilterHandler implements PageHandler {
   public PAGE_NAME = Page.CLEAR_FILTER

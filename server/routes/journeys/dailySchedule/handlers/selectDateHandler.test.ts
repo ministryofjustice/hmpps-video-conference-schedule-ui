@@ -1,13 +1,14 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 import { existsByDataQa } from '../../../testutils/cheerio'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
@@ -43,7 +44,7 @@ describe('GET', () => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_DATE_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
-          details: JSON.stringify({ query: {} }),
+          details: { query: {} },
         })
       })
   })

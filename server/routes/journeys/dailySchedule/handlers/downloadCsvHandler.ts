@@ -1,7 +1,7 @@
 import * as converter from 'json-2-csv'
 import { Request, Response } from 'express'
 import { isValid, startOfDay } from 'date-fns'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ScheduleService, { DailySchedule, RELEVANT_ALERTS, ScheduleItem } from '../../../../services/scheduleService'
 import { convertToTitleCase, formatDate, removeMinutes, toFullCourtLinkPrint } from '../../../../utils/utils'

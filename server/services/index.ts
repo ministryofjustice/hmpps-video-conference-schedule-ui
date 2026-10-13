@@ -1,5 +1,5 @@
+import { AuditServiceFactory } from '@ministryofjustice/hmpps-audit-client'
 import { dataAccess } from '../data'
-import AuditService from './auditService'
 import PrisonService from './prisonService'
 import ScheduleService from './scheduleService'
 import AppointmentService from './appointmentService'
@@ -7,12 +7,13 @@ import ReferenceDataService from './referenceDataService'
 import OfficialVisitsService from './officialVisitsService'
 import RoomAvailabilityService from './roomAvailabilityService'
 import TelemetryService from './telemetryService'
+import logger from '../../logger'
+import config from '../config'
 
 export const services = () => {
   const {
     applicationInfo,
     manageUsersApiClient,
-    hmppsAuditClient,
     prisonRegisterApiClient,
     prisonApiClient,
     nomisMappingApiClient,
@@ -24,7 +25,7 @@ export const services = () => {
     applicationInsightsClient,
   } = dataAccess()
 
-  const auditService = new AuditService(hmppsAuditClient)
+  const auditService = AuditServiceFactory.createInstance(config.sqs.audit, logger)
   const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
   const appointmentService = new AppointmentService(
     prisonApiClient,
