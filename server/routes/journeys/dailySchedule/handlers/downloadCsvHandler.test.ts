@@ -9,7 +9,7 @@ import {
   user,
 } from '../../../testutils/appSetup'
 import Page from '../../../enumerator/page'
-import ScheduleService, { DailySchedule, RELEVANT_ALERTS } from '../../../../services/scheduleService'
+import ScheduleService, { DailySchedule } from '../../../../services/scheduleService'
 
 jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/scheduleService')
@@ -31,8 +31,8 @@ const appSetup = (journeySession = {}, prisonSupplier = moorlandPrisonPickUpTime
 
 const expectedCsvNoPickupTimes =
   'Prisoner name,Alerts,Prison number,Cell number,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
-  '\nSmith John,"ACCT_OPEN, PEEP",ABC123,A-1-001,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
-  '\nSmith John,"ACCT_OPEN, PEEP",ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
+  '\nSmith John,"ACCT_OPEN, PEEP, ESCAPE_LIST, CONTROLLED_UNLOCK, STAFF_ASSAULTER, RISK_TO_FEMALES, RISK_TO_KNOWN_ADULT_CUSTODY",ABC123,A-1-001,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
+  '\nSmith John,"ACCT_OPEN, PEEP, ESCAPE_LIST, CONTROLLED_UNLOCK, STAFF_ASSAULTER, RISK_TO_FEMALES, RISK_TO_KNOWN_ADULT_CUSTODY",ABC123,A-1-001,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
   '\nDoe John,,DEF123,B-1-001,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
   '\nDoe Jane,,HIJ123,C-1-001,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
   '\nBat Man,,RR9100,R-1-9000,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
@@ -42,8 +42,8 @@ const expectedCsvNoPickupTimes =
 
 const expectedCsvWithPickupTimes =
   'Prisoner name,Alerts,Prison number,Cell number,Pick-up time,Appointment start time,Appointment end time,Appointment type,Appointment subtype,Room location,Court or probation team,Video link,Last updated,Probation officer name,Staff notes' +
-  '\nSmith John,"ACCT_OPEN, PEEP",ABC123,A-1-001,10:15,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
-  '\nSmith John,"ACCT_OPEN, PEEP",ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
+  '\nSmith John,"ACCT_OPEN, PEEP, ESCAPE_LIST, CONTROLLED_UNLOCK, STAFF_ASSAULTER, RISK_TO_FEMALES, RISK_TO_KNOWN_ADULT_CUSTODY",ABC123,A-1-001,10:15,10:45,11:00,Pre Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,' +
+  '\nSmith John,"ACCT_OPEN, PEEP, ESCAPE_LIST, CONTROLLED_UNLOCK, STAFF_ASSAULTER, RISK_TO_FEMALES, RISK_TO_KNOWN_ADULT_CUSTODY",ABC123,A-1-001,,11:00,12:00,Court Hearing,,A Wing Video Link,,http://video.url,10 December 2024 at 00:00,,Court hearing staff notes' +
   '\nDoe John,,DEF123,B-1-001,10:30,11:00,12:00,Court Hearing,,B Wing Video Link,,HMCTS 54321,10 December 2024 at 00:00,,' +
   '\nDoe Jane,,HIJ123,C-1-001,10:30,11:00,12:00,Court Hearing,,C Wing Video Link,,,10 December 2024 at 00:00,,' +
   '\nBat Man,,RR9100,R-1-9000,12:30,13:00,13:30,Probation Meeting,,X Wing Video Link,,,,Not yet known,' +
@@ -62,7 +62,7 @@ beforeEach(() => {
             lastName: 'Smith',
             prisonerNumber: 'ABC123',
             cellLocation: 'A-1-001',
-            alerts: [RELEVANT_ALERTS.ACCT_OPEN.valueOf(), RELEVANT_ALERTS.PEEP.valueOf()],
+            alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS', 'V46'],
           },
           startTime: '10:45',
           endTime: '11:00',
@@ -80,7 +80,7 @@ beforeEach(() => {
             lastName: 'Smith',
             prisonerNumber: 'ABC123',
             cellLocation: 'A-1-001',
-            alerts: [RELEVANT_ALERTS.ACCT_OPEN.valueOf(), RELEVANT_ALERTS.PEEP.valueOf()],
+            alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
           },
           startTime: '11:00',
           endTime: '12:00',

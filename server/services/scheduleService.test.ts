@@ -335,7 +335,16 @@ describe('Schedule service', () => {
         lastName: 'Smith',
         prisonId: 'PVI',
         cellLocation: 'B-001',
-        alerts: [{ alertCode: 'XCU', active: true }],
+        alerts: [
+          { alertCode: 'HA', active: true },
+          { alertCode: 'PEEP', active: true },
+          { alertCode: 'XEL', active: true },
+          { alertCode: 'XCU', active: true },
+          { alertCode: 'XSA', active: true },
+          { alertCode: 'XRF', active: true },
+          { alertCode: 'RKS', active: true },
+          { alertCode: 'NOT_RELEVANT', active: true },
+        ],
       },
     ] as Prisoner[]
 
@@ -456,7 +465,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                alerts: ['XCU'],
+                alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -509,7 +518,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                alerts: ['XCU'],
+                alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -612,7 +621,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                alerts: ['XCU'],
+                alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -1088,7 +1097,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                alerts: ['XCU'],
+                alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',
@@ -1160,7 +1169,7 @@ describe('Schedule service', () => {
               prisoner: {
                 cellLocation: 'Out of prison',
                 firstName: 'John',
-                alerts: ['XCU'],
+                alerts: ['HA', 'PEEP', 'XEL', 'XCU', 'XSA', 'XRF', 'RKS'],
                 inPrison: false,
                 lastName: 'Smith',
                 prisonerNumber: 'ZXY321',

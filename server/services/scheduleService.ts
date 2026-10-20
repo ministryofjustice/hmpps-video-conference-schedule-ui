@@ -26,13 +26,14 @@ import OfficialVisitsService from './officialVisitsService'
 import config from '../config'
 import { OfficialVisit } from '../@types/officialVisitsApi/types'
 
-export const RELEVANT_ALERTS = {
-  ACCT_OPEN: 'HA',
-  PEEP: 'PEEP',
-  ESCAPE_LIST: 'XEL',
-  CONTROLLED_UNLOCK: 'XCU',
-  STAFF_ASSAULTER: 'XSA',
-  RISK_TO_FEMALES: 'XRF',
+export const RELEVANT_ALERTS: Record<string, { description: string }> = {
+  HA: { description: 'ACCT_OPEN' },
+  PEEP: { description: 'PEEP' },
+  XEL: { description: 'ESCAPE_LIST' },
+  XCU: { description: 'CONTROLLED_UNLOCK' },
+  XSA: { description: 'STAFF_ASSAULTER' },
+  XRF: { description: 'RISK_TO_FEMALES' },
+  RKS: { description: 'RISK_TO_KNOWN_ADULT_CUSTODY' },
 }
 
 export type ScheduleItem = {
@@ -306,9 +307,7 @@ export default class ScheduleService {
   }
 
   private getActiveRelevantAlertCodes(prisoner: Prisoner) {
-    return prisoner.alerts
-      .filter(a => a.active && Object.values(RELEVANT_ALERTS).includes(a.alertCode))
-      .map(a => a.alertCode)
+    return prisoner.alerts.filter(a => a.active && RELEVANT_ALERTS[a.alertCode]).map(a => a.alertCode)
   }
 
   private getAppointmentType(bvlsAppointment: BvlsAppointment, scheduledAppointment: Appointment) {

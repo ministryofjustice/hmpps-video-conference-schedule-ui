@@ -88,7 +88,10 @@ export default class DownloadCsvHandler implements PageHandler {
   }
 
   private getAlertDescriptions(alertCodes: string[]) {
-    return alertCodes.map(code => Object.keys(RELEVANT_ALERTS)[Object.values(RELEVANT_ALERTS).indexOf(code)]).join(', ')
+    return alertCodes
+      .map(alertCode => RELEVANT_ALERTS[alertCode]?.description)
+      .filter(description => description !== undefined)
+      .join(', ')
   }
 
   private courtLinkFor = (item: ScheduleItem) => {
