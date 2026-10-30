@@ -1,11 +1,12 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsNotEmpty } from 'class-validator'
+import { IsIn, IsNotEmpty, IsOptional } from 'class-validator'
 import {
   endOfDay,
   formatDate,
   isMonday,
+  isSameDay,
   isValid,
   isWeekend,
   isWithinInterval,
@@ -27,7 +28,17 @@ import { Period } from '../../../../services/appointmentService'
 import IsWeekDay from '../../../validators/isWeekDay'
 import TelemetryService from '../../../../services/telemetryService'
 
+type Tab = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI'
+
 class Body {
+  @Expose()
+  @Transform(({ value }) => parseDatePickerDate(value))
+  @IsOptional()
+  @IsValidDate({ message: 'Enter a valid date' })
+  @IsNotEmpty({ message: 'Enter a date' })
+  @IsWeekDay({ message: 'Select a working day' })
+  originalDate: Date | null
+
   @Expose()
   @Transform(({ value }) => parseDatePickerDate(value))
   @IsValidDate({ message: 'Enter a valid date' })
@@ -38,6 +49,12 @@ class Body {
   @Expose()
   @IsNotEmpty({ message: 'Select a session' })
   period: string
+
+  @Expose()
+  @Transform(({ value }) => value || null)
+  @IsOptional()
+  @IsIn(['MON', 'TUE', 'WED', 'THU', 'FRI'])
+  tab: Tab | null
 }
 
 export default class WeeklyAvailabilityHandler implements PageHandler {
@@ -114,16 +131,41 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
   }
 
   POST = async (req: Request, res: Response) => {
-    const { date, period } = req.body
+    const { originalDate, date, period, tab } = req.body as Body
     const queryParams = new URLSearchParams({
       date: formatDate(date, 'yyyy-MM-dd'),
       period,
     })
 
+    if (originalDate && tab) {
+      queryParams.set('tab', this.getOutputTab(originalDate, date, tab))
+    }
+
     // If a tab has been select prior to POST it is remembered; this makes sure it is overridden.
     const overrideTabAnchorNavigation = '#'
 
     return res.redirect(`room-availability?${queryParams}${overrideTabAnchorNavigation}`)
+  }
+
+  private getOutputTab = (originalDate: Date, date: Date, tab: Tab): Tab => {
+    if (isSameDay(originalDate, date)) {
+      return tab
+    }
+
+    switch (date.getDay()) {
+      case 1:
+        return 'MON'
+      case 2:
+        return 'TUE'
+      case 3:
+        return 'WED'
+      case 4:
+        return 'THU'
+      case 5:
+        return 'FRI'
+      default:
+        return tab
+    }
   }
 
   private startAndEndOfWeek = (date: Date) => {

@@ -23,6 +23,8 @@
         <div class="govuk-grid-column-full">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <input data-module="hmpps-hash" type="hidden" name="tab" />
+                <input type="hidden" name="originalDate" value="{{ formResponses.date or date | formatDate('dd/MM/yyyy') or now() | formatDate('dd/MM/yyyy') }}" />
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-quarter">
                         {{ mojDatePicker({
@@ -108,7 +110,7 @@
                     } if currentWeekStartDate
                 ]
             }) }}
-            <div>
+            <div data-module="hmpps-tabs">
                 {{ govukTabs({
                     items: [
                         {

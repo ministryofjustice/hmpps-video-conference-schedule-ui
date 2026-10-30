@@ -6,7 +6,36 @@ import { ShowHideLinkButton } from './show-hide-link-button'
 import MojFilter from './moj-filter'
 import { initSchedule } from './timeline-init'
 
+function HmppsTabs($tabsElement) {
+  const tab = new URLSearchParams(location.search).get('tab')
+
+  if (tab) {
+    const value = { MON: 'monday', TUE: 'tuesday', WED: 'wednesday', THU: 'thursday', FRI: 'friday' }[tab]
+    const url = new URL(location.href)
+    url.searchParams.delete('tab')
+    history.replaceState(null, '', url.toString())
+    setTimeout(() => $tabsElement.querySelector(`#tab_${value}`)?.click(), 0)
+  }
+}
+
+function HmppsHash($hashInputElement) {
+  addEventListener('hashchange', () => {
+    const value = { '#monday': 'MON', '#tuesday': 'TUE', '#wednesday': 'WED', '#thursday': 'THU', '#friday': 'FRI' }[location.hash]
+    $hashInputElement.value = value ?? ''
+  })
+}
+
 function initAll() {
+  var $tabsElements = document.querySelectorAll(`[data-module="hmpps-tabs"]`)
+  nodeListForEach($tabsElements, function ($tabsElement) {
+    new HmppsTabs($tabsElement)
+  })
+
+  var $hashInputElements = document.querySelectorAll(`input[data-module="hmpps-hash"]`)
+  nodeListForEach($hashInputElements, function ($hashInputElement) {
+    new HmppsHash($hashInputElement)
+  })
+
   var $autoCompleteElements = document.getElementsByName('autocompleteElements')
   nodeListForEach($autoCompleteElements, function ($autoCompleteElement) {
     new AutoComplete($autoCompleteElement)
