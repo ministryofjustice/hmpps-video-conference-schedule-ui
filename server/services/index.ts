@@ -15,8 +15,6 @@ export const services = () => {
     applicationInfo,
     manageUsersApiClient,
     prisonRegisterApiClient,
-    prisonApiClient,
-    nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
     activitiesAndAppointmentsApiClient,
@@ -26,12 +24,8 @@ export const services = () => {
   } = dataAccess()
 
   const auditService = AuditServiceFactory.createInstance(config.sqs.audit, logger)
-  const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
-  const appointmentService = new AppointmentService(
-    prisonApiClient,
-    activitiesAndAppointmentsApiClient,
-    bookAVideoLinkApiClient,
-  )
+  const prisonService = new PrisonService(prisonRegisterApiClient)
+  const appointmentService = new AppointmentService(activitiesAndAppointmentsApiClient, bookAVideoLinkApiClient)
   const referenceDataService = new ReferenceDataService(
     locationsInsidePrisonApiClient,
     activitiesAndAppointmentsApiClient,
@@ -41,7 +35,6 @@ export const services = () => {
   const scheduleService = new ScheduleService(
     appointmentService,
     referenceDataService,
-    nomisMappingApiClient,
     bookAVideoLinkApiClient,
     prisonerSearchApiClient,
     manageUsersApiClient,

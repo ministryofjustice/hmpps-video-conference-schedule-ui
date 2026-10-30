@@ -11,8 +11,8 @@
 
 {% set isToday = (date | formatDate('yyyy-MM-dd')) == (now() | formatDate('yyyy-MM-dd'))  %}
 {% if isToday %}
-    {% set backLinkText = "Back to all appointments tasks" if appointmentsRolledOut else "Back to prisoner whereabouts" %}
-    {% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') if appointmentsRolledOut else (dpsUrl + '/manage-prisoner-whereabouts') %}
+    {% set backLinkText = "Back to all appointments tasks" %}
+    {% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') %}
 {% else %}
     {% set backLinkText = "Back to today's schedule" %}
     {% set backLinkHref = '/clear-filter?all=true' %}
@@ -396,4 +396,3 @@
         {%  endif %}
     </div>
 {% endmacro %}
-

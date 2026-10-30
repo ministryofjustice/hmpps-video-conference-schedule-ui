@@ -17,11 +17,9 @@ import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
 import { parseDate } from '../utils/utils'
-import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { ScheduleFilters } from '../routes/journeys/dailySchedule/journey'
 import ReferenceDataService, { CellsByWing, OFFICIAL_VISIT_TYPE } from './referenceDataService'
-import { LocationMapping } from '../@types/nomisMappingApi/types'
 import OfficialVisitsService from './officialVisitsService'
 import config from '../config'
 import { OfficialVisit } from '../@types/officialVisitsApi/types'
@@ -82,7 +80,6 @@ export default class ScheduleService {
   constructor(
     private readonly appointmentService: AppointmentService,
     private readonly referenceDataService: ReferenceDataService,
-    private readonly nomisMappingApiClient: NomisMappingApiClient,
     private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
     private readonly prisonerSearchApiClient: PrisonerSearchApiClient,
     private readonly manageUsersApiClient: ManageUsersApiClient,
@@ -115,21 +112,11 @@ export default class ScheduleService {
       this.referenceDataService.getCellsByWing(prisonId, user),
     ])
 
-    const nomisLocationIds = scheduledAppointments.map(a => a.locationId).filter(Boolean)
-
-    // Only call the NOMIS mapping API if we have some NOMIS locations IDs to map.
-    const nomisLocationIdMappings =
-      nomisLocationIds.length === 0
-        ? ([] as LocationMapping[])
-        : await this.nomisMappingApiClient.getLocationMappingsByNomisIds(nomisLocationIds, user)
-
     const scheduleItems = await Promise.all(
       scheduledAppointments
         .map(appointment => ({
           ...appointment,
-          dpsLocationId:
-            appointment.dpsLocationId ||
-            nomisLocationIdMappings.find(m => m.nomisLocationId === appointment.locationId)?.dpsLocationId,
+          dpsLocationId: appointment.dpsLocationId,
         }))
         .map(appointment => this.createScheduleItem(appointment, bvlsAppointments, prisoners, user))
         .concat(officialVisits.map(ov => this.createScheduleItemFromOfficialVisit(ov, prisoners, user))),

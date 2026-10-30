@@ -27,8 +27,8 @@ jest.mock('../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
-const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-const scheduleService = new ScheduleService(null, null, null, null, null, null, null) as jest.Mocked<ScheduleService>
+const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
+const scheduleService = new ScheduleService(null, null, null, null, null, null) as jest.Mocked<ScheduleService>
 const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
@@ -71,7 +71,6 @@ describe('GET', () => {
           details: { query: {} },
         })
 
-        expect(prisonService.isAppointmentsRolledOutAt).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getVideoEventTypes).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getVideoLocations).toHaveBeenLastCalledWith('MDI', user)
         expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
@@ -205,8 +204,6 @@ describe('GET', () => {
   })
 
   it('should render index page for cancelled appointments', () => {
-    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
-
     return request(app)
       .get('/?status=CANCELLED')
       .expect('Content-Type', /html/)
@@ -235,22 +232,6 @@ describe('GET', () => {
       })
   })
 
-  it('should show warning text for the cancelled appointments page when the prison is not rolled out for A&A', () => {
-    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(false)
-
-    return request(app)
-      .get('/?status=CANCELLED')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const heading = $('h1').text().trim()
-        const warningText = getByClass($, 'govuk-warning-text').text().trim()
-
-        expect(heading).toContain('Cancelled video appointments: Moorland (HMP)')
-        expect(warningText).toContain('Only court hearings and probation meetings are shown.')
-      })
-  })
-
   it('should render index page for active appointments if status is invalid', () => {
     return request(app)
       .get('/?status=NONSENSE')
@@ -263,38 +244,6 @@ describe('GET', () => {
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
       })
   })
-
-  it('should render back link to A&A if prison is rolled out for A&A', () => {
-    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
-
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const heading = $('h1').text().trim()
-        const backLinkText = $('.govuk-back-link').text().trim()
-
-        expect(heading).toEqual('Video link daily schedule: Moorland (HMP)')
-        expect(backLinkText).toEqual('Back to all appointments tasks')
-      })
-  })
-
-  it('should render back link to Whereabouts if prison is not rolled out for A&A', () => {
-    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(false)
-
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const heading = $('h1').text().trim()
-        const backLinkText = $('.govuk-back-link').text().trim()
-
-        expect(heading).toEqual('Video link daily schedule: Moorland (HMP)')
-        expect(backLinkText).toEqual('Back to prisoner whereabouts')
-      })
-  })
 })
 
 describe('GET - with pick-up times present', () => {
@@ -303,7 +252,6 @@ describe('GET - with pick-up times present', () => {
   })
 
   it('should render page with pick-up times toggled on', () => {
-    prisonService.isAppointmentsRolledOutAt.mockResolvedValue(true)
     referenceDataService.getAppointmentCategories.mockResolvedValue([
       { code: 'VLB', description: 'Video link - court hearing' },
     ])

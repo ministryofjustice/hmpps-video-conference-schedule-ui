@@ -12,7 +12,7 @@ jest.mock('./tokenStore/inMemoryTokenStore')
 
 const user = createUser([])
 
-describe('prisonApiClient', () => {
+describe('officialVisitsApiClient', () => {
   let fakeOfficialVisitsApiClient: nock.Scope
   let mockAuthenticationClient: jest.Mocked<AuthenticationClient>
   let officialVisitsApiClient: OfficialVisitsApiClient

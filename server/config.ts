@@ -139,15 +139,6 @@ export default {
       },
       agent: new AgentConfig(Number(get('LOCATIONS_INSIDE_PRISON_API_TIMEOUT_RESPONSE', 30000))),
     },
-    nomisMappingApi: {
-      url: get('NOMIS_MAPPING_API_URL', 'http://localhost:8086', requiredInProduction),
-      healthPath: '/health/ping',
-      timeout: {
-        response: Number(get('NOMIS_MAPPING_API_TIMEOUT_RESPONSE', 30000)),
-        deadline: Number(get('NOMIS_MAPPING_API_TIMEOUT_DEADLINE', 30000)),
-      },
-      agent: new AgentConfig(Number(get('NOMIS_MAPPING_API_TIMEOUT_RESPONSE', 30000))),
-    },
     prisonApi: {
       url: get('PRISON_API_URL', 'http://localhost:8087', requiredInProduction),
       healthPath: '/health/ping',
