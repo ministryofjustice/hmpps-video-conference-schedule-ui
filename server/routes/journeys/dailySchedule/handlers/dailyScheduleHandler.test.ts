@@ -28,7 +28,7 @@ jest.mock('../../../../services/telemetryService')
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-const scheduleService = new ScheduleService(null, null, null, null, null, null, null) as jest.Mocked<ScheduleService>
+const scheduleService = new ScheduleService(null, null, null, null, null, null) as jest.Mocked<ScheduleService>
 const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express

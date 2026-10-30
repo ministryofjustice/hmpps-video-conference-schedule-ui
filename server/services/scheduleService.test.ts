@@ -7,8 +7,6 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { BvlsAppointment } from '../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../@types/prisonerSearchApi/types'
-import { LocationMapping } from '../@types/nomisMappingApi/types'
-import NomisMappingApiClient from '../data/nomisMappingApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User } from '../@types/manageUsersApi/types'
 import ReferenceDataService, { CellsByWing } from './referenceDataService'
@@ -18,7 +16,6 @@ import config from '../config'
 
 jest.mock('../services/appointmentService')
 jest.mock('../services/referenceDataService')
-jest.mock('../data/nomisMappingApiClient')
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerSearchApiClient')
 jest.mock('../data/manageUsersApiClient')
@@ -29,7 +26,6 @@ const user = createUser([])
 describe('Schedule service', () => {
   let appointmentService: jest.Mocked<AppointmentService>
   let referenceDataService: jest.Mocked<ReferenceDataService>
-  let nomisMappingApiClient: jest.Mocked<NomisMappingApiClient>
   let bookAVideoLinkApiClient: jest.Mocked<BookAVideoLinkApiClient>
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
@@ -43,9 +39,8 @@ describe('Schedule service', () => {
   let officialVisits: OfficialVisit[]
 
   beforeEach(() => {
-    appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
+    appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
     referenceDataService = new ReferenceDataService(null, null, null) as jest.Mocked<ReferenceDataService>
-    nomisMappingApiClient = new NomisMappingApiClient(null) as jest.Mocked<NomisMappingApiClient>
     bookAVideoLinkApiClient = new BookAVideoLinkApiClient(null) as jest.Mocked<BookAVideoLinkApiClient>
     prisonerSearchApiClient = new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
     manageUsersApiClient = new ManageUsersApiClient(null) as jest.Mocked<ManageUsersApiClient>
@@ -53,7 +48,6 @@ describe('Schedule service', () => {
     scheduleService = new ScheduleService(
       appointmentService,
       referenceDataService,
-      nomisMappingApiClient,
       bookAVideoLinkApiClient,
       prisonerSearchApiClient,
       manageUsersApiClient,
@@ -67,7 +61,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '07:45',
         endTime: '08:00',
-        locationId: 1,
+        dpsLocationId: 'abc-123',
         locationDescription: 'ROOM 1',
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -81,7 +75,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '08:00',
         endTime: '09:00',
-        locationId: 1,
+        dpsLocationId: 'abc-123',
         locationDescription: 'ROOM 1',
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -95,7 +89,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '09:00',
         endTime: '09:15',
-        locationId: 1,
+        dpsLocationId: 'abc-123',
         locationDescription: 'ROOM 1',
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -109,7 +103,7 @@ describe('Schedule service', () => {
         offenderNo: 'ZXY321',
         startTime: '08:30',
         endTime: '09:00',
-        locationId: 2,
+        dpsLocationId: 'asd-987',
         locationDescription: 'ROOM 2',
         appointmentTypeCode: 'VLOO',
         appointmentTypeDescription: 'Video Link - Official Other',
@@ -123,7 +117,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '08:30',
         endTime: '09:00',
-        locationId: 2,
+        dpsLocationId: 'asd-987',
         locationDescription: 'ROOM 2',
         appointmentTypeCode: 'VLOO',
         appointmentTypeDescription: 'Video Link - Official Other',
@@ -139,7 +133,7 @@ describe('Schedule service', () => {
         offenderNo: 'ZXY321',
         startTime: '11:00',
         endTime: '12:00',
-        locationId: 3,
+        dpsLocationId: 'zyx-321',
         locationDescription: 'ROOM 3',
         appointmentTypeCode: 'VLPM',
         appointmentTypeDescription: 'Video Link - Probation',
@@ -168,7 +162,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '16:30',
         endTime: '17:30',
-        locationId: 2,
+        dpsLocationId: 'asd-987',
         locationDescription: 'ROOM 2',
         appointmentTypeCode: 'VLLA',
         appointmentTypeDescription: 'Video Link - Legal Appointment',
@@ -198,7 +192,7 @@ describe('Schedule service', () => {
         offenderNo: 'ABC123',
         startTime: '19:00',
         endTime: '20:00',
-        locationId: 1,
+        dpsLocationId: 'abc-123',
         locationDescription: 'ROOM 1',
         appointmentTypeCode: 'VLB',
         appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -350,11 +344,6 @@ describe('Schedule service', () => {
 
     referenceDataService.getCellsByWing.mockResolvedValue([{ fullLocationPath: 'A', cells: ['A-001'] }] as CellsByWing)
     prisonerSearchApiClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
-    nomisMappingApiClient.getLocationMappingsByNomisIds.mockResolvedValue([
-      { nomisLocationId: 1, dpsLocationId: 'abc-123' },
-      { nomisLocationId: 2, dpsLocationId: 'asd-987' },
-      { nomisLocationId: 3, dpsLocationId: 'zyx-321' },
-    ] as LocationMapping[])
     manageUsersApiClient.getUserByUsername.mockImplementation(
       async username =>
         ({
@@ -595,7 +584,6 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(1)
     })
 
     it('filters the daily schedule by appointment type', async () => {
@@ -1220,34 +1208,9 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123', 'ZXY321'], user)
-      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(1)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenCalledTimes(2)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(1, 'jbloggs', user)
       expect(manageUsersApiClient.getUserByUsername).toHaveBeenNthCalledWith(2, 'jsmith', user)
-    })
-
-    it('should bypass NOMIS mapping API for appointments with DPS location ID', async () => {
-      appointments = [
-        {
-          id: 1,
-          date: formatDate(startOfToday(), 'yyyy-MM-dd'),
-          offenderNo: 'ABC123',
-          startTime: '07:45',
-          endTime: '08:00',
-          dpsLocationId: '123456',
-          locationDescription: 'ROOM 1',
-          appointmentTypeDescription: 'Video Link - Court Hearing',
-          status: 'ACTIVE',
-          viewAppointmentLink: 'http://localhost:3000/appointment-details/1',
-          createdTime: new Date().toISOString(),
-        },
-      ]
-
-      appointmentService.getVideoLinkAppointments.mockResolvedValue(appointments)
-      bookAVideoLinkApiClient.getVideoLinkAppointments.mockResolvedValue(bvlsAppointments)
-
-      await scheduleService.getSchedule('MDI', new Date(), undefined, 'ACTIVE', user)
-      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
     })
 
     describe('tags', () => {
@@ -1267,7 +1230,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1295,7 +1258,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1322,7 +1285,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1349,7 +1312,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1376,7 +1339,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1403,7 +1366,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1430,7 +1393,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1458,7 +1421,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1486,7 +1449,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1514,7 +1477,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1542,7 +1505,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1568,7 +1531,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '07:45',
             endTime: '08:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeCode: 'VLB',
             appointmentTypeDescription: 'Video Link - Pre Court Hearing',
@@ -1582,7 +1545,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '08:00',
             endTime: '09:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeCode: 'VLB',
             appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -1596,7 +1559,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '09:00',
             endTime: '09:15',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeCode: 'VLB',
             appointmentTypeDescription: 'Video Link - Post Court Hearing',
@@ -1678,7 +1641,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '08:00',
             endTime: '09:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeCode: 'VLB',
             appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -1722,7 +1685,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '08:00',
             endTime: '09:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1766,7 +1729,7 @@ describe('Schedule service', () => {
             offenderNo: 'ABC123',
             startTime: '08:00',
             endTime: '09:00',
-            locationId: 1,
+            dpsLocationId: 'abc-123',
             locationDescription: 'ROOM 1',
             appointmentTypeDescription: 'Video Link - Court Hearing',
             status: 'ACTIVE',
@@ -1811,7 +1774,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '07:45',
           endTime: '08:00',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Pre Court Hearing',
@@ -1825,7 +1788,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '08:00',
           endTime: '09:00',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -1839,7 +1802,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '09:00',
           endTime: '09:15',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Post Court Hearing',
@@ -1921,7 +1884,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '07:45',
           endTime: '08:00',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Pre Court Hearing',
@@ -1935,7 +1898,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '08:00',
           endTime: '09:00',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Court Hearing',
@@ -1949,7 +1912,7 @@ describe('Schedule service', () => {
           offenderNo: 'ABC123',
           startTime: '09:00',
           endTime: '09:15',
-          locationId: 1,
+          dpsLocationId: 'abc-123',
           locationDescription: 'ROOM 1',
           appointmentTypeCode: 'VLB',
           appointmentTypeDescription: 'Video Link - Post Court Hearing',
@@ -2088,7 +2051,6 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123'], user)
-      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
     })
 
     it('builds a daily schedule with official visit with link with view permissions', async () => {
@@ -2109,7 +2071,6 @@ describe('Schedule service', () => {
       expect(appointmentService.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, undefined, user)
       expect(bookAVideoLinkApiClient.getVideoLinkAppointments).toHaveBeenLastCalledWith('MDI', date, user)
       expect(prisonerSearchApiClient.getByPrisonerNumbers).toHaveBeenLastCalledWith(['ABC123'], user)
-      expect(nomisMappingApiClient.getLocationMappingsByNomisIds).toHaveBeenCalledTimes(0)
     })
   })
 })

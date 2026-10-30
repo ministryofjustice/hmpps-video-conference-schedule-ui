@@ -10,9 +10,7 @@ import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
-import PrisonApiClient from './prisonApiClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
-import NomisMappingApiClient from './nomisMappingApiClient'
 import ActivitiesAndAppointmentsApiClient from './activitiesAndAppointmentsApiClient'
 import LocationsInsidePrisonApiClient from './locationsInsidePrisonApiClient'
 import OfficialVisitsApiClient from './officialVisitsApiClient'
@@ -34,8 +32,6 @@ export const dataAccess = () => {
     manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
     activitiesAndAppointmentsApiClient: new ActivitiesAndAppointmentsApiClient(hmppsAuthClient),
     bookAVideoLinkApiClient: new BookAVideoLinkApiClient(hmppsAuthClient),
-    nomisMappingApiClient: new NomisMappingApiClient(hmppsAuthClient),
-    prisonApiClient: new PrisonApiClient(hmppsAuthClient),
     prisonRegisterApiClient: new PrisonRegisterApiClient(hmppsAuthClient),
     prisonerSearchApiClient: new PrisonerSearchApiClient(hmppsAuthClient),
     locationsInsidePrisonApiClient: new LocationsInsidePrisonApiClient(hmppsAuthClient),
