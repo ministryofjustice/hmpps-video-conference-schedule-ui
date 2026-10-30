@@ -131,8 +131,6 @@ describe('Appointment service', () => {
 
   describe('getVideoLinkAppointments', () => {
     it('Retrieves appointments for a date and filters by VLBs for prison', async () => {
-      appointmentsApiClient.isAppointmentsRolledOutAt.mockResolvedValue(true)
-
       const result = await appointmentService.getVideoLinkAppointments(
         'MDI',
         new Date('2024-12-12'),

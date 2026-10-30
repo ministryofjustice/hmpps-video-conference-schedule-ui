@@ -24,7 +24,7 @@ export const services = () => {
   } = dataAccess()
 
   const auditService = AuditServiceFactory.createInstance(config.sqs.audit, logger)
-  const prisonService = new PrisonService(prisonRegisterApiClient, activitiesAndAppointmentsApiClient)
+  const prisonService = new PrisonService(prisonRegisterApiClient)
   const appointmentService = new AppointmentService(activitiesAndAppointmentsApiClient, bookAVideoLinkApiClient)
   const referenceDataService = new ReferenceDataService(
     locationsInsidePrisonApiClient,
