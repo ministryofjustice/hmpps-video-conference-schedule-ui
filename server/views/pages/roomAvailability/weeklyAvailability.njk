@@ -53,16 +53,19 @@
                             },
                             items: [
                                 {
+                                    id: "period-am",
                                     value: "AM",
                                     text: "Morning",
                                     checked: formResponses.period == "AM" or period == "AM"
                                 },
                                 {
+                                    id: "period-pm",
                                     value: "PM",
                                     text: "Afternoon",
                                     checked: formResponses.period == "PM" or period == "PM"
                                 },
                                 {
+                                    id: "period-ed",
                                     value: "ED",
                                     text: "Evening",
                                     checked: formResponses.period == "ED" or period == "ED"
@@ -77,6 +80,7 @@
                 </div>
                 <div>
                     {{ govukButton({
+                        id: "update-availability",
                         html: "Update",
                         preventDoubleClick: true,
                         type: "submit"
@@ -92,17 +96,26 @@
             {{ govukPagination({
                 previous: {
                     text: 'Previous week',
-                    href: "/room-availability?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                    href: "/room-availability?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period,
+                    attributes: {
+                        "id": "previous-week",
+                        "data-qa": "previous-week"
+                    }
                 },
                 next: {
                     text: 'Next week',
-                    href: "/room-availability?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period
+                    href: "/room-availability?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period,
+                    attributes: {
+                        "id": "next-week",
+                        "data-qa": "next-week"
+                    }
                 },
                 items: [
                     {
                         number: 'Current week',
                         href: "/room-availability?date=" + currentWeekStartDate | formatDate('yyyy-MM-dd') + "&period=" + period,
                         attributes: {
+                          "id": "current-week",
                           "data-qa": "current-week"
                         }
                     } if currentWeekStartDate
