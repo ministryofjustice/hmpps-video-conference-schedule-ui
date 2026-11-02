@@ -17,18 +17,6 @@ export default {
         jsonBody: { status: httpStatus === 200 ? 'UP' : 'DOWN' },
       },
     }),
-  stubIsAppointmentsRolledOut: (): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/activities-and-appointments-api/rollout/MDI',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { prisonLive: true },
-      },
-    }),
   stubGetAppointments: (): SuperAgentRequest =>
     stubFor({
       request: {

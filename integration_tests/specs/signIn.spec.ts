@@ -13,7 +13,6 @@ import manageUsersApi from '../mockApis/manageUsersApi'
 
 test.describe('SignIn', () => {
   test.beforeEach(async () => {
-    await activitiesAndAppointmentsApi.stubIsAppointmentsRolledOut()
     await activitiesAndAppointmentsApi.stubGetAppointmentCategories()
     await activitiesAndAppointmentsApi.stubGetAppointments()
     await bookAVideoLinkApi.stubGetPrison()
