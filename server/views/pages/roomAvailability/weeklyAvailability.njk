@@ -75,7 +75,7 @@
                         }) }}
                     </div>
                     <div class="appointments-link-div">
-                        <a data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
+                        <a id="book-appointment-link" data-qa="appointments-link" class="govuk-link govuk-link--no-visited-state" href="{{ appointmentsLink }}" rel="noreferrer noopener" target="_blank">Book an appointment in a new tab</a>
                     </div>
                 </div>
                 <div>
@@ -131,7 +131,8 @@
                                 html: availability(period, mondayAvailability)
                             },
                             attributes: {
-                                "data-qa": "monday_tab"
+                                "data-qa": "monday_tab",
+                                "data-custom-id": "monday-tab"
                             }
                         },
                         {
@@ -141,7 +142,8 @@
                                 html: availability(period, tuesdayAvailability)
                             },
                             attributes: {
-                                "data-qa": "tuesday_tab"
+                                "data-qa": "tuesday_tab",
+                                "data-custom-id": "tuesday-tab"
                             }
                         },
                         {
@@ -151,7 +153,8 @@
                                 html: availability(period, wednesdayAvailability)
                             },
                             attributes: {
-                                "data-qa": "wednesday_tab"
+                                "data-qa": "wednesday_tab",
+                                "data-custom-id": "wednesday-tab"
                             }
                         },
                         {
@@ -161,7 +164,8 @@
                                 html: availability(period, thursdayAvailability)
                             },
                             attributes: {
-                                "data-qa": "thursday_tab"
+                                "data-qa": "thursday_tab",
+                                "data-custom-id": "thursday-tab"
                             }
                         },
                         {
@@ -171,7 +175,8 @@
                                 html: availability(period, fridayAvailability)
                             },
                             attributes: {
-                                "data-qa": "friday_tab"
+                                "data-qa": "friday_tab",
+                                "data-custom-id": "friday-tab"
                             }
                         }
                     ]
