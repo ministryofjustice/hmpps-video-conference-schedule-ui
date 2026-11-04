@@ -25,7 +25,13 @@ if (window.applicationInsightsConnectionString) {
   appInsights.addTelemetryInitializer(function (envelope) {
     envelope.tags['ai.cloud.role'] = window.applicationInsightsApplicationName
     envelope.tags['ai.application.ver'] = window.buildNumber
+
+    if (envelope && (envelope.baseType === 'EventData' || envelope.baseType === 'PageviewData')) {
+      envelope.baseData.properties = envelope.baseData.properties || {}
+      envelope.baseData.properties.activeCaseLoadId = window.activeCaseLoadId
+    }
   })
+
   appInsights.setAuthenticatedUserContext(window.authenticatedUser)
   appInsights.trackPageView()
 }

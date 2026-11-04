@@ -55,6 +55,7 @@
     window.applicationInsightsApplicationName = "{{ applicationInsightsApplicationName }}"
     window.buildNumber = "{{ buildNumber }}"
     window.authenticatedUser = "{{ user.userUuid }}"
+    window.activeCaseLoadId = "{{ user.activeCaseLoadId }}"
   </script>
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
 {% endblock %}

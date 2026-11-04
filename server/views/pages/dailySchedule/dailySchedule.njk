@@ -215,16 +215,16 @@
                         {% if prison.pickUpTime %}
                             {# This is a component with javascript to toggle matching govuk-details to show/hide pick-up times on the page #}
                             <div class="hmpps-show-hide-links">
-                                <button class="hmpps-show-hide-link-button" data-qa="show-all-pick-up-times">Show all pick-up times</button>
+                                <button id="show-hide-all-pick-up-times-link" class="hmpps-show-hide-link-button" data-qa="show-all-pick-up-times">Show all pick-up times</button>
                             </div>
                         {% endif %}
                     </div>
                     <div class="hmpps-print-and-export">
-                        <button id="export-daily-schedule" class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
-                        <button id="print-daily-schedule" class="hmpps-print-and-export--print">Print schedule</button>
+                        <button id="export-daily-schedule-link" class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                        <button id="print-daily-schedule-link" class="hmpps-print-and-export--print">Print schedule</button>
 
                         {% if not isPastDay%}
-                            <a class="movement-slip--print" href="/movement-slips?date={{ date | formatDate('yyyy-MM-dd') }}" rel="noreferrer noopener" target="_blank" data-qa='print-all-movement-slips' aria-label="Print all movement slips">
+                            <a id="print-all-movement-slips-link" class="movement-slip--print" href="/movement-slips?date={{ date | formatDate('yyyy-MM-dd') }}" rel="noreferrer noopener" target="_blank" data-qa='print-all-movement-slips' aria-label="Print all movement slips">
                               Print all movement slips<span class="govuk-visually-hidden">(opens in new tab)</span>
                             </a>
                         {% endif %}
