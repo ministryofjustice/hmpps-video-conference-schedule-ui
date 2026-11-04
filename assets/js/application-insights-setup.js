@@ -7,6 +7,7 @@ if (window.applicationInsightsConnectionString) {
     autoCapture: true,
     dataTags: {
       useDefaultContentNameOrId: true,
+      customDataPrefix: 'data-custom-',
     },
   }
 
