@@ -98,7 +98,7 @@
                     text: 'Previous week',
                     href: "/room-availability?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period,
                     attributes: {
-                        "id": "previous-week",
+                        "data-custom-id": "previous-week",
                         "data-qa": "previous-week"
                     }
                 },
@@ -106,7 +106,7 @@
                     text: 'Next week',
                     href: "/room-availability?date=" + nextWeek | formatDate('yyyy-MM-dd') + "&period=" + period,
                     attributes: {
-                        "id": "next-week",
+                        "data-custom-id": "next-week",
                         "data-qa": "next-week"
                     }
                 },
@@ -115,7 +115,7 @@
                         number: 'Current week',
                         href: "/room-availability?date=" + currentWeekStartDate | formatDate('yyyy-MM-dd') + "&period=" + period,
                         attributes: {
-                          "id": "current-week",
+                          "data-custom-id": "current-week",
                           "data-qa": "current-week"
                         }
                     } if currentWeekStartDate
