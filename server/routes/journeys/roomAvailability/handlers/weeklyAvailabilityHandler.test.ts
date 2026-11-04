@@ -368,11 +368,10 @@ describe('GET', () => {
           correlationId: expect.any(String),
           details: { query: { period: 'AM', date: '2026-07-28' } },
         })
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewRoomAvailability', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('get-weekly-room-availability-page', {
           date: '2026-07-28',
           period: 'AM',
           prisonCode: 'RSI',
-          username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
         })
@@ -397,11 +396,10 @@ describe('GET', () => {
         expect(getByDataQa($, 'current-week').attr('href')).toEqual(
           `/room-availability?date=${formatDate(mondayOfCurrentWeek, 'yyyy-MM-dd')}&period=PM`,
         )
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewRoomAvailability', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('get-weekly-room-availability-page', {
           date: formatDate(previousWeek, 'yyyy-MM-dd'),
           period: 'PM',
           prisonCode: 'RSI',
-          username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
         })

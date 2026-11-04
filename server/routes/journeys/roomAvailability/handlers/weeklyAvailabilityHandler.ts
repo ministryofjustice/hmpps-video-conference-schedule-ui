@@ -81,12 +81,11 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
         prisonCode: prison.code,
         date: formatDate(date, 'yyyy-MM-dd'),
         period,
-        username: user?.username,
         userId: user?.userId,
         userUuid: user?.userUuid,
       }
 
-      this.telemetryService.trackEvent('DailySchedule_ViewRoomAvailability', eventToRecord)
+      this.telemetryService.trackEvent('get-weekly-room-availability-page', eventToRecord)
 
       res.render('pages/roomAvailability/weeklyAvailability', {
         prison,
