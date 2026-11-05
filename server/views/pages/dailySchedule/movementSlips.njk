@@ -18,6 +18,7 @@
 
             <div class="govuk-button-group hmpps-print-and-export--print govuk-!-display-none-print">
                 {{ govukButton({
+                    id: "print-movement-slips",
                     text: "Print movement slips" if movementSlips.length > 1 else "Print movement slip",
                     classes: "govuk-button--blue js-print no-js-hidden",
                     preventDoubleClick: true

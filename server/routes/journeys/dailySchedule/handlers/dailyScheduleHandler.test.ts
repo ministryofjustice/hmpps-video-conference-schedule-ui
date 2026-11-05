@@ -76,12 +76,11 @@ describe('GET', () => {
         expect(referenceDataService.getCourtsAndProbationTeams).toHaveBeenLastCalledWith(user)
         expect(referenceDataService.getCellsByWing).toHaveBeenLastCalledWith('MDI', user)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('get-daily-schedule-page', {
           date: formatDate(new Date(), 'yyyy-MM-dd'),
           filtered: 'true',
           prisonCode: 'MDI',
           status: 'ACTIVE',
-          username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
         })
@@ -108,12 +107,11 @@ describe('GET', () => {
 
         expect(existsByDataQa($, 'warning-text')).toBe(true)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfDay(date), filters, 'ACTIVE', user)
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('get-daily-schedule-page', {
           date: '2024-12-12',
           filtered: 'true',
           prisonCode: 'MDI',
           status: 'ACTIVE',
-          username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
         })
@@ -220,12 +218,11 @@ describe('GET', () => {
           details: { query: { status: 'CANCELLED' } },
         })
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'CANCELLED', user)
-        expect(telemetryService.trackEvent).toHaveBeenCalledWith('DailySchedule_ViewDailySchedule', {
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('get-daily-schedule-page', {
           date: formatDate(new Date(), 'yyyy-MM-dd'),
           filtered: 'true',
           prisonCode: 'MDI',
           status: 'CANCELLED',
-          username: 'user1',
           userId: 'id',
           userUuid: '00000000-0000-0000-0000-000000000000',
         })

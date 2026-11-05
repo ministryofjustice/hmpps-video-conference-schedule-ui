@@ -75,12 +75,11 @@ export default class DailyScheduleHandler implements PageHandler {
       date: formatDate(date, 'yyyy-MM-dd'),
       status,
       filtered: (!!filters).toString(),
-      username: user?.username,
       userId: user?.userId,
       userUuid: user?.userUuid,
     }
 
-    this.telemetryService.trackEvent('DailySchedule_ViewDailySchedule', eventToRecord)
+    this.telemetryService.trackEvent('get-daily-schedule-page', eventToRecord)
 
     const enabledPrisons: string[] = config.featureToggles.roomAvailabilityEnabledPrisons?.split(',') ?? []
     const showDailySchedulePostLaunchBanner = enabledPrisons.includes(user.activeCaseLoadId)
