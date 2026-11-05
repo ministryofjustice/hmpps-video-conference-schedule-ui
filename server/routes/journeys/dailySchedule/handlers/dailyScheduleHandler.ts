@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { startOfDay, isValid, formatDate } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'

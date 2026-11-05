@@ -224,10 +224,7 @@ describe('GET - with no pick-up times', () => {
     return request(app)
       .get('/download-csv')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect(
-        'Content-Disposition',
-        `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
-      )
+      .expect('Content-Disposition', `attachment; filename=daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv`)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
@@ -245,7 +242,7 @@ describe('GET - with no pick-up times', () => {
     return request(app)
       .get('/download-csv?date=2024-12-12')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect('Content-Disposition', `attachment; filename="daily-schedule-2024-12-12.csv"`)
+      .expect('Content-Disposition', `attachment; filename=daily-schedule-2024-12-12.csv`)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
@@ -264,10 +261,7 @@ describe('GET - with no pick-up times', () => {
     return request(app)
       .get('/download-csv?date=nonsense')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect(
-        'Content-Disposition',
-        `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
-      )
+      .expect('Content-Disposition', `attachment; filename=daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv`)
       .expect(res => {
         expect(res.text).toEqual(expectedCsvNoPickupTimes)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
@@ -280,7 +274,7 @@ describe('GET - with no pick-up times', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
-        `attachment; filename="daily-schedule-cancelled-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
+        `attachment; filename=daily-schedule-cancelled-${formatDate(new Date(), 'yyyy-MM-dd')}.csv`,
       )
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
@@ -298,10 +292,7 @@ describe('GET - with no pick-up times', () => {
     return request(app)
       .get('/download-csv?status=NONSENSE')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect(
-        'Content-Disposition',
-        `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
-      )
+      .expect('Content-Disposition', `attachment; filename=daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv`)
       .expect(res => {
         expect(res.text).toEqual(expectedCsvNoPickupTimes)
         expect(scheduleService.getSchedule).toHaveBeenLastCalledWith('MDI', startOfToday(), filters, 'ACTIVE', user)
@@ -318,10 +309,7 @@ describe('GET - with pickup times', () => {
     return request(app)
       .get('/download-csv')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect(
-        'Content-Disposition',
-        `attachment; filename="daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv"`,
-      )
+      .expect('Content-Disposition', `attachment; filename=daily-schedule-${formatDate(new Date(), 'yyyy-MM-dd')}.csv`)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_DAILY_SCHEDULE, {
           who: user.username,
