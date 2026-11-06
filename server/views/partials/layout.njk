@@ -13,7 +13,10 @@
 {% block pageTitle %}{{ "Error: " if validationErrors.length > 0 else "" }}{{ (pageTitle + " | ") if pageTitle else ""}}{{ applicationName + " | MoJ" }}{% endblock %}
 
 {% block header %}
-  {{ feComponents.header | safe }}
+  <div data-do-not-track="donottrack">
+    {{ feComponents.header | safe }}
+  </div>
+
   {% block meta %}{% endblock %}
 
   {% if showDailySchedulePreLaunchBanner %}

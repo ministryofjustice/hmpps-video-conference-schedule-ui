@@ -8,6 +8,7 @@ if (window.applicationInsightsConnectionString) {
     dataTags: {
       useDefaultContentNameOrId: true,
       customDataPrefix: 'data-custom-',
+      dntDataTag: 'data-do-not-track',
     },
   }
 
@@ -28,7 +29,7 @@ if (window.applicationInsightsConnectionString) {
 
     if (envelope && (envelope.baseType === 'EventData' || envelope.baseType === 'PageviewData')) {
       envelope.baseData.properties = envelope.baseData.properties || {}
-      envelope.baseData.properties.activeCaseLoadId = window.activeCaseLoadId
+      envelope.baseData.properties.prisonCode = window.activeCaseLoadId
     }
   })
 
