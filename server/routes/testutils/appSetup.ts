@@ -120,7 +120,7 @@ export function appWithAllRoutes({
   prisonSupplier?: () => Prison
 }): Express {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
-  const appointmentService = new AppointmentService(null, null, null) as jest.Mocked<AppointmentService>
+  const appointmentService = new AppointmentService(null, null) as jest.Mocked<AppointmentService>
 
   auditService.logPageView.mockResolvedValue(null)
   appointmentService.getPrison.mockResolvedValue(prisonSupplier())

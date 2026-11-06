@@ -64,20 +64,6 @@ describe('activitiesAndAppointmentsApiClient', () => {
     })
   })
 
-  describe('isAppointmentsRolledOutAt', () => {
-    it('should return a boolean', async () => {
-      const response = { prisonLive: true }
-
-      fakeActivitiesAndAppointmentsApiClient
-        .get('/rollout/MDI')
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, response)
-
-      const output = await activitiesAndAppointmentsApiClient.isAppointmentsRolledOutAt('MDI', user)
-      expect(output).toEqual(true)
-    })
-  })
-
   describe('getAppointmentCategories', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }

@@ -16,7 +16,6 @@ const today = format(new Date(), 'yyyy-MM-dd')
 
 test.describe('Daily schedule', () => {
   test.beforeEach(async () => {
-    await activitiesAndAppointmentsApi.stubIsAppointmentsRolledOut()
     await activitiesAndAppointmentsApi.stubGetAppointmentCategories()
     await activitiesAndAppointmentsApi.stubGetAppointments()
     await bookAVideoLinkApi.stubGetPrison()
