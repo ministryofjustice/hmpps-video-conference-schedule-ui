@@ -8,7 +8,7 @@ if (window.applicationInsightsConnectionString) {
     dataTags: {
       useDefaultContentNameOrId: true,
       customDataPrefix: 'data-custom-',
-      dntDataTag: 'data-do-not-track',
+      dntDataTag: 'do-not-track',
     },
   }
 
