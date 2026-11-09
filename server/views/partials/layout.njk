@@ -13,9 +13,7 @@
 {% block pageTitle %}{{ "Error: " if validationErrors.length > 0 else "" }}{{ (pageTitle + " | ") if pageTitle else ""}}{{ applicationName + " | MoJ" }}{% endblock %}
 
 {% block header %}
-  <div data-do-not-track="donottrack">
-    {{ feComponents.header | safe }}
-  </div>
+  {{ feComponents.header | safe }}
 
   {% block meta %}{% endblock %}
 

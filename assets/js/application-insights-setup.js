@@ -10,6 +10,9 @@ if (window.applicationInsightsConnectionString) {
       customDataPrefix: 'data-custom-',
       dntDataTag: 'do-not-track',
     },
+    callback: event => {
+      console.log('Clicked element name:', event.contentName)
+    },
   }
 
   const init = new ApplicationInsights({
