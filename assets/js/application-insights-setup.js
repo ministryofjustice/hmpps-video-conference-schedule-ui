@@ -10,8 +10,17 @@ if (window.applicationInsightsConnectionString) {
       customDataPrefix: 'data-custom-',
       dntDataTag: 'do-not-track',
     },
-    callback: event => {
-      console.log('Clicked element name:', event.contentName)
+    callback: {
+      contentName: element => {
+        const attribute = element.getAttribute('data-qa')
+
+        // Override the account menu link details from being captured
+        if (attribute && attribute.startsWith('cdps-header-user')) {
+          return 'account-menu'
+        }
+
+        return element.innerText
+      },
     },
   }
 
