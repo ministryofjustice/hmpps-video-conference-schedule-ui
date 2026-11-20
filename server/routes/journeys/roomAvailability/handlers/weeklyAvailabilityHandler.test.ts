@@ -55,8 +55,7 @@ describe('GET', () => {
     config.featureToggles.workingWeekAvailability = true
     config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
-    roomAvailabilityService.getPrintViewRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({ roomAvailability: [], roomBookings: [] })
 
     appSetup()
   })
@@ -304,7 +303,10 @@ describe('GET', () => {
   ] as unknown as RoomAvailability[]
 
   it('should render tabbed weekly room availability at Risley prison', () => {
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue(morningRoomAvailability)
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({
+      roomAvailability: morningRoomAvailability,
+      roomBookings: [],
+    })
 
     return request(app)
       .get(`/room-availability?period=AM&date=2026-07-28`)
@@ -384,7 +386,7 @@ describe('GET', () => {
   it('should render current week navigation link when viewing previous week', () => {
     const previousWeek = subWeeks(new Date(), 1)
 
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({ roomAvailability: [], roomBookings: [] })
 
     return request(app)
       .get(`/room-availability?period=PM&date=${formatDate(previousWeek, 'yyyy-MM-dd')}`)
@@ -410,7 +412,7 @@ describe('GET', () => {
   it('should render current week navigation link when viewing next week', () => {
     const nextWeek = addWeeks(new Date(), 1)
 
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({ roomAvailability: [], roomBookings: [] })
 
     return request(app)
       .get(`/room-availability?period=AM&date=${formatDate(nextWeek, 'yyyy-MM-dd')}`)
@@ -429,7 +431,7 @@ describe('GET', () => {
   it('should not render current week navigation link when viewing current week', () => {
     const today = new Date()
 
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({ roomAvailability: [], roomBookings: [] })
 
     return request(app)
       .get(`/room-availability?period=AM&date=${formatDate(today, 'yyyy-MM-dd')}`)
@@ -443,7 +445,7 @@ describe('GET', () => {
   })
 
   it('should render boundary date tab labels inclusive of year', () => {
-    roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getRoomAvailability.mockResolvedValue({ roomAvailability: [], roomBookings: [] })
 
     return request(app)
       .get(`/room-availability?period=AM&date=2025-12-31`)
