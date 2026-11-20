@@ -193,5 +193,6 @@ export default {
     roomAvailabilityEnabledPrisons: get('FEATURE_AVAILABILITY_CHECKER_PRISONS', null),
     workingWeekAvailability: get('FEATURE_WORKING_WEEK_AVAILABILITY_CHECKER', false) === 'true',
     timelineAvailability: get('FEATURE_TIMELINE_AVAILABILITY_CHECKER', false) === 'true',
+    printViewAvailability: get('FEATURE_PRINT_VIEW_AVAILABILITY_CHECKER', false) === 'true',
   },
 }

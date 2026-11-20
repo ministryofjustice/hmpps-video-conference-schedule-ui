@@ -60,6 +60,18 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
       const weekDay = isWeekend(date) ? nextMonday(date) : date
       const period: Period = <Period>req.query.period || 'AM'
       const { monday, friday } = this.startAndEndOfWeek(weekDay)
+
+      // Print view data - only if feature switch is on - otherwise empty
+      const roomAvailabilityPrint = config.featureToggles.printViewAvailability ?
+        await this.roomAvailabilityService.getPrintViewRoomAvailability(
+          prison.code,
+          monday,
+          friday,
+          user,
+        )
+        : []
+
+      // Screen view data
       const roomAvailability = await this.roomAvailabilityService.getRoomAvailability(
         prison.code,
         monday,
@@ -70,7 +82,9 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
 
       const dayFilter = (availability: RoomAvailability, day: Date) =>
         availability.date === formatDate(day, 'yyyy-MM-dd')
+
       const currentWorkingWeek = this.startAndEndOfWeek(new Date())
+
       const isCurrentWeek = isWithinInterval(weekDay, {
         start: startOfDay(currentWorkingWeek.monday),
         end: endOfDay(currentWorkingWeek.friday),
@@ -96,11 +110,21 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
         wednesday: nextWednesday(monday),
         thursday: nextThursday(monday),
         friday,
+
+        // Screen view of room availability for each day this week
         mondayAvailability: roomAvailability.filter(ra => dayFilter(ra, monday)),
         tuesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextTuesday(monday))),
         wednesdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextWednesday(monday))),
         thursdayAvailability: roomAvailability.filter(ra => dayFilter(ra, nextThursday(monday))),
         fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, friday)),
+
+        // Print view of room availability for each day this week
+        mondayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, monday)),
+        tuesdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextTuesday(monday))),
+        wednesdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextWednesday(monday))),
+        thursdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextThursday(monday))),
+        fridayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, friday)),
+
         previousWeek: previousMonday(monday),
         nextWeek: nextMonday(friday),
         currentWeekStartDate: isCurrentWeek ? undefined : startOfDay(currentWorkingWeek.monday),

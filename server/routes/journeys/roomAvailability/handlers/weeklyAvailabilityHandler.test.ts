@@ -56,6 +56,7 @@ describe('GET', () => {
     config.featureToggles.roomAvailabilityEnabledPrisons = 'RSI'
 
     roomAvailabilityService.getRoomAvailability.mockResolvedValue([])
+    roomAvailabilityService.getPrintViewRoomAvailability.mockResolvedValue([])
 
     appSetup()
   })
