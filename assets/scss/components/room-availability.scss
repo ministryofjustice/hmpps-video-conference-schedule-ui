@@ -28,3 +28,86 @@
   text-align: right;
   margin-right: 10px;
 }
+
+.booked {
+  // From design. Is called tint-50 in current GDS. govuk-color('tint-50').
+  background-color: #858686;
+  // This makes the color in our GDS.
+  background-color: govuk-tint(govuk-colour('black'), 50%);
+  print-color-adjust: exact;
+}
+
+@page {
+  size: 21cm 29.7cm;
+  size: 11.69in 8.27in;
+}
+
+.app-print-availability__table {
+  height: fit-content;
+}
+
+.app-print-availability__corner-header {
+  border-right: 1px solid #767676;
+}
+
+.app-print-availability__col-header {
+  border-right: 1px solid #cecece;
+
+  &:nth-child(2n of &) {
+    border-right-color: #767676;
+  }
+}
+
+.app-print-availability__row-header {
+  border-right: 1px solid #767676;
+}
+
+.app-print-availability__cell {
+  border-right: 1px solid #cecece;
+  padding: 1px;
+
+  &:nth-child(4n of &) {
+    border-right-color: #767676;
+  }
+}
+
+.app-print-availability__booked {
+  background-color: govuk-tint(govuk-colour('black'), 50%);
+  print-color-adjust: exact;
+  height: 100%;
+}
+
+.app-print-availability__key {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  print-color-adjust: exact;
+
+  &--available {
+    background-color: transparent;
+    border: 1px solid #939292;
+  }
+
+  &--booked {
+    background-color: govuk-tint(govuk-colour('black'), 50%);
+    border: 1px solid govuk-tint(govuk-colour('black'), 50%);
+  }
+}
+
+@media print {
+  %app-\!-display-contents-print {
+    display: contents !important;
+  }
+}
+
+.app-print-availability__tabs {
+  .govuk-tabs__list {
+    @extend .govuk-\!-display-none-print;
+  }
+
+  .govuk-tabs__panel {
+    &:not(&--hidden) {
+      @extend %app-\!-display-contents-print;
+    }
+  }
+}

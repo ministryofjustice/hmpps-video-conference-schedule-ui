@@ -1,0 +1,74 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% macro printAvailability(rooms) %}
+    <div class="print-only">
+        {% set head = [] %}
+        {% set head = (head.push({ text: 'Rooms', classes: 'app-print-availability__corner-header' }), head) %}
+        {% for slot in rooms[0].hourlySlots %}
+            {% set head = (head.push({ text: slot.hour, colspan: 4, classes: 'app-print-availability__col-header' }), head) %}
+        {% endfor %}
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">Video room availability: Risley (HMP)</h1>
+                <hr class="govuk-section-break govuk-section-break--visible">
+                <p class="govuk-body">Each column represents 15 minutes. Times are labelled every 30 minutes. Please note, availability may have changed since this document was printed.</p>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <p class="govuk-body govuk-!-text-align-right">Printed at 11:36 on Friday 30 October 2026</p>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h2 class="govuk-heading-m">Friday 30 October 2026.</h2>
+            </div>
+            <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+                <p class="govuk-body">
+                    Key:
+                    <span class="app-print-availability__key app-print-availability__key--booked"></span>
+                    Booked
+                    <span class="app-print-availability__key app-print-availability__key--available"></span>
+                    Available
+                </p>
+            </div>
+        </div>
+
+        {% set rows = [] %}
+        {% for room in rooms %}
+            {% set row = [] %}
+            {% set row = (row.push({ text: room.description, classes: 'app-print-availability__row-header' }), row) %}
+            {% for booking in room.hourlySlots %}
+                {% if booking.bookedSlots.length %}
+                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
+                {% else %}
+                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
+                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
+                {% endif %}
+            {% endfor %}
+            {% set rows = (rows.push(row), rows) %}
+        {% endfor %}
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                {{ govukTable({
+                    head: head,
+                    firstCellIsHeader: true,
+                    rows: rows,
+                    classes: 'app-print-availability__table'
+                }) }}
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body"><span class="govuk-!-font-weight-bold">10</span> rooms listed</p>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

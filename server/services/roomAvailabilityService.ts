@@ -9,7 +9,7 @@ export type RoomAvailability = {
   id: string
   description: string
   date: string
-  hourlySlots: [HourlySlot]
+  hourlySlots: HourlySlot[]
 }
 
 export type HourlySlot = {

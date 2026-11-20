@@ -7,6 +7,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "partials/availability.njk" import availability %}
+{% from "partials/printAvailability.njk" import printAvailability %}
 
 {% set backLinkText = "Back to all appointments tasks" %}
 {% set backLinkHref = (activitiesAndAppointmentsUrl + '/appointments') %}
@@ -14,12 +15,12 @@
 {% set pageTitle = "Check video room availability: " + prison.name %}
 
 {% block content %}
-    <div class="govuk-grid-row">
+    <div class="govuk-!-display-none-print govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
-    <div class="govuk-grid-row">
+    <div class="govuk-!-display-none-print govuk-grid-row">
         <div class="govuk-grid-column-full">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -91,9 +92,10 @@
     </div>
     <div class="govuk-grid-row govuk-!-margin-top-3">
         <div class="govuk-grid-column-full">
-            <div class="govuk-heading-s">Date and time availability</div>
-            <p class="govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
+            <div class="govuk-!-display-none-print govuk-heading-s">Date and time availability</div>
+            <p class="govuk-!-display-none-print govuk-body-m">Last updated {{ now() | formatDate('HH:mm') }}</p>
             {{ govukPagination({
+                classes: 'govuk-!-display-none-print',
                 previous: {
                     text: 'Previous week',
                     href: "/room-availability?date=" + previousWeek | formatDate('yyyy-MM-dd') + "&period=" + period,
@@ -123,12 +125,13 @@
             }) }}
             <div>
                 {{ govukTabs({
+                    classes: 'app-print-availability__tabs',
                     items: [
                         {
                             label: formattedDate(monday),
                             id: "monday",
                             panel: {
-                                html: availability(period, mondayAvailability)
+                                html: availability(period, mondayAvailability) + printAvailability(mondayPrintAvailability)
                             },
                             attributes: {
                                 "data-qa": "monday_tab",
@@ -139,7 +142,7 @@
                             label: formattedDate(tuesday),
                             id: "tuesday",
                             panel: {
-                                html: availability(period, tuesdayAvailability)
+                                html: availability(period, tuesdayAvailability) + printAvailability(tuesdayPrintAvailability)
                             },
                             attributes: {
                                 "data-qa": "tuesday_tab",
@@ -150,7 +153,7 @@
                             label: formattedDate(wednesday),
                             id: "wednesday",
                             panel: {
-                                html: availability(period, wednesdayAvailability)
+                                html: availability(period, wednesdayAvailability) + printAvailability(wednesdayPrintAvailability)
                             },
                             attributes: {
                                 "data-qa": "wednesday_tab",
@@ -161,7 +164,7 @@
                             label: formattedDate(thursday),
                             id: "thursday",
                             panel: {
-                                html: availability(period, thursdayAvailability)
+                                html: availability(period, thursdayAvailability) + printAvailability(thursdayPrintAvailability)
                             },
                             attributes: {
                                 "data-qa": "thursday_tab",
@@ -172,7 +175,7 @@
                             label: formattedDate(friday),
                             id: "friday",
                             panel: {
-                                html: availability(period, fridayAvailability)
+                                html: availability(period, fridayAvailability) + printAvailability(fridayPrintAvailability)
                             },
                             attributes: {
                                 "data-qa": "friday_tab",
