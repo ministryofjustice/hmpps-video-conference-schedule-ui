@@ -62,13 +62,8 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
       const { monday, friday } = this.startAndEndOfWeek(weekDay)
 
       // Print view data - only if feature switch is on - otherwise empty
-      const roomAvailabilityPrint = config.featureToggles.printViewAvailability ?
-        await this.roomAvailabilityService.getPrintViewRoomAvailability(
-          prison.code,
-          monday,
-          friday,
-          user,
-        )
+      const roomAvailabilityPrint = config.featureToggles.printViewAvailability
+        ? await this.roomAvailabilityService.getPrintViewRoomAvailability(prison.code, monday, friday, user)
         : []
 
       // Screen view data
