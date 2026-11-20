@@ -3,6 +3,7 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
 import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
 import { formatDate } from '../utils/utils'
+import config from '../config'
 
 export type RoomAvailability = {
   id: string
@@ -13,7 +14,13 @@ export type RoomAvailability = {
 
 export type HourlySlot = {
   hour: number
-  freeSlots: TimeSlot[]
+  freeSlots?: TimeSlot[]
+  bookedSlots?: TimeSlot[]
+}
+
+export interface RoomAvailabilityResult {
+  roomAvailability: RoomAvailability[]
+  roomBookings: RoomAvailability[]
 }
 
 // Timeline specific type
@@ -75,10 +82,15 @@ export default class RoomAvailabilityService {
     endDate: Date,
     period: Period,
     user: Express.User,
-  ): Promise<RoomAvailability[]> {
+  ): Promise<RoomAvailabilityResult> {
     const videoEvents = await this.bookAVideoLinkApiClient.getVideoEvents(prisonId, { fromDate, endDate }, user)
 
+    // The free slots for the screen view
     let roomAvailability: RoomAvailability[] = []
+
+    // The booked slots for the print view
+    let roomBookings: RoomAvailability[] = []
+
     let date: Date = fromDate
 
     while (isWithinInterval(date, interval(fromDate, endDate))) {
@@ -102,10 +114,17 @@ export default class RoomAvailabilityService {
         )
       }
 
+      // Populate the print view data if feature switched on
+      if (config.featureToggles.printViewAvailability) {
+        roomBookings = roomBookings.concat(
+          videoEvents.locations.map(le => this.toAllDayRoomBookings(immutableDate, le)),
+        )
+      }
+
       date = addDays(date, 1)
     }
 
-    return roomAvailability
+    return { roomAvailability, roomBookings }
   }
 
   private toMorningRoomAvailability(date: Date, locationEvent: LocationEvent): RoomAvailability {
@@ -217,93 +236,22 @@ export default class RoomAvailabilityService {
     )
   }
 
-  private toAllDayRoomAvailability(date: Date, locationEvent: LocationEvent): RoomAvailability {
+  private toAllDayRoomBookings(date: Date, locationEvent: LocationEvent): RoomAvailability {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
+    const hourlySlots = Array.from({ length: 13 }, (_, index) => {
+      const hour = index + 8
+      return {
+        hour,
+        bookedSlots: busySlots.filter(slot => slot.hour === hour),
+      }
+    })
 
     return {
       id: locationEvent.dpsLocationId,
       description: locationEvent.localName,
       date: formatDate(date, 'yyyy-MM-dd'),
-      hourlySlots: [
-        {
-          hour: 8,
-          freeSlots: this.getFreeSlotsFor(8, busySlots),
-        },
-        {
-          hour: 9,
-          freeSlots: this.getFreeSlotsFor(9, busySlots),
-        },
-        {
-          hour: 10,
-          freeSlots: this.getFreeSlotsFor(10, busySlots),
-        },
-        {
-          hour: 11,
-          freeSlots: this.getFreeSlotsFor(11, busySlots),
-        },
-        {
-          hour: 12,
-          freeSlots: this.getFreeSlotsFor(12, busySlots),
-        },
-        {
-          hour: 13,
-          freeSlots: this.getFreeSlotsFor(13, busySlots),
-        },
-        {
-          hour: 14,
-          freeSlots: this.getFreeSlotsFor(14, busySlots),
-        },
-        {
-          hour: 15,
-          freeSlots: this.getFreeSlotsFor(15, busySlots),
-        },
-        {
-          hour: 16,
-          freeSlots: this.getFreeSlotsFor(16, busySlots),
-        },
-        {
-          hour: 17,
-          freeSlots: this.getFreeSlotsFor(17, busySlots),
-        },
-        {
-          hour: 18,
-          freeSlots: this.getFreeSlotsFor(18, busySlots),
-        },
-        {
-          hour: 19,
-          freeSlots: this.getFreeSlotsFor(19, busySlots),
-        },
-        {
-          hour: 20,
-          freeSlots: this.getFreeSlotsFor(20, busySlots),
-        },
-      ],
-    } as unknown as RoomAvailability
-  }
-
-  public async getPrintViewRoomAvailability(
-    prisonId: string,
-    fromDate: Date,
-    endDate: Date,
-    user: Express.User,
-  ): Promise<RoomAvailability[]> {
-    const videoEvents = await this.bookAVideoLinkApiClient.getVideoEvents(prisonId, { fromDate, endDate }, user)
-
-    let roomAvailability: RoomAvailability[] = []
-    let date: Date = fromDate
-
-    // Loop around all days in the period, and get all events combined together for all hours of the day
-    while (isWithinInterval(date, interval(fromDate, endDate))) {
-      const immutableDate = date
-
-      roomAvailability = roomAvailability.concat(
-        videoEvents.locations.map(le => this.toAllDayRoomAvailability(immutableDate, le)),
-      )
-
-      date = addDays(date, 1)
-    }
-
-    return roomAvailability
+      hourlySlots,
+    } as RoomAvailability
   }
 
   public async getTimelineAvailability(

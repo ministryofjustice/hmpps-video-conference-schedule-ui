@@ -61,13 +61,8 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
       const period: Period = <Period>req.query.period || 'AM'
       const { monday, friday } = this.startAndEndOfWeek(weekDay)
 
-      // Print view data - only if feature switch is on - otherwise empty
-      const roomAvailabilityPrint = config.featureToggles.printViewAvailability
-        ? await this.roomAvailabilityService.getPrintViewRoomAvailability(prison.code, monday, friday, user)
-        : []
-
-      // Screen view data
-      const roomAvailability = await this.roomAvailabilityService.getRoomAvailability(
+      // Screen and print view availability/booking data returned in same operation
+      const { roomAvailability, roomBookings } = await this.roomAvailabilityService.getRoomAvailability(
         prison.code,
         monday,
         friday,
@@ -114,11 +109,11 @@ export default class WeeklyAvailabilityHandler implements PageHandler {
         fridayAvailability: roomAvailability.filter(ra => dayFilter(ra, friday)),
 
         // Print view of room availability for each day this week
-        mondayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, monday)),
-        tuesdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextTuesday(monday))),
-        wednesdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextWednesday(monday))),
-        thursdayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, nextThursday(monday))),
-        fridayPrintAvailability: roomAvailabilityPrint.filter(rap => dayFilter(rap, friday)),
+        mondayPrintAvailability: roomBookings.filter(rap => dayFilter(rap, monday)),
+        tuesdayPrintAvailability: roomBookings.filter(rap => dayFilter(rap, nextTuesday(monday))),
+        wednesdayPrintAvailability: roomBookings.filter(rap => dayFilter(rap, nextWednesday(monday))),
+        thursdayPrintAvailability: roomBookings.filter(rap => dayFilter(rap, nextThursday(monday))),
+        fridayPrintAvailability: roomBookings.filter(rap => dayFilter(rap, friday)),
 
         previousWeek: previousMonday(monday),
         nextWeek: nextMonday(friday),
