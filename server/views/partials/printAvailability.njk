@@ -1,6 +1,6 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% macro printAvailability(date, rooms) %}
+{% macro printAvailability(prison, date, rooms) %}
     <div class="print-only">
         {% set head = [] %}
         {% set head = (head.push({ text: 'Rooms', classes: 'app-print-availability__corner-header' }), head) %}
@@ -10,7 +10,7 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">Video room availability: Risley (HMP)</h1>
+                <h2 class="govuk-heading-m">Video room availability: {{ prison.name }}</h2>
                 <hr class="govuk-section-break govuk-section-break--visible">
                 <p class="govuk-body">Each column represents 15 minutes. Times are labelled every 30 minutes. Please note, availability may have changed since this document was printed.</p>
             </div>
@@ -21,7 +21,7 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
-                <h2 class="govuk-heading-m">{{ date | formatDate('iiii d MMMM yyyy') }}</h2>
+                <h3 class="govuk-heading-s">{{ date | formatDate('iiii d MMMM yyyy') }}</h3>
             </div>
             <div class="govuk-grid-column-one-half govuk-!-text-align-right">
                 <p class="govuk-body">
@@ -67,7 +67,7 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body"><span class="govuk-!-font-weight-bold">10</span> rooms listed</p>
+                <p class="govuk-body"><span class="govuk-!-font-weight-bold">{{ rooms.length if rooms.length else 0 }}</span> rooms listed</p>
             </div>
         </div>
     </div>
