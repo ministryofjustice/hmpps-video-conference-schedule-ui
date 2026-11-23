@@ -5,6 +5,7 @@ import { PrintButton, ExportButton } from './print-and-export'
 import { ShowHideLinkButton } from './show-hide-link-button'
 import MojFilter from './moj-filter'
 import { initSchedule } from './timeline-init'
+import { formatDate } from '../../server/utils/utils'
 
 function initAll() {
   var $autoCompleteElements = document.getElementsByName('autocompleteElements')
@@ -35,6 +36,14 @@ function initAll() {
   var $showHideLinkButtons = document.querySelectorAll('[class*=hmpps-show-hide-link-button]')
   nodeListForEach($showHideLinkButtons, function ($showHideLinkButton) {
     new ShowHideLinkButton($showHideLinkButton)
+  })
+
+  // Adds a timestamp to the printed page anywhere the data-printed-at attribute is present
+  window.addEventListener('beforeprint', () => {
+    const date = new Date()
+    document.querySelectorAll('[data-printed-at]').forEach(el => {
+      el.innerText = `Printed at ${formatDate(date, 'HH:mm')} on ${formatDate(date, 'iiii d MMMM yyyy')}`
+    })
   })
 
   initSchedule()
