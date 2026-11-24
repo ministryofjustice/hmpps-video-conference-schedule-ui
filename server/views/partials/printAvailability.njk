@@ -27,23 +27,42 @@
             </div>
         </div>
 
+        {# Build the table rows of 15-minute booking slots throughout the day #}
+
         {% set rows = [] %}
         {% for room in rooms %}
             {% set row = [] %}
             {% set row = (row.push({ text: room.description, classes: 'app-print-availability__row-header' }), row) %}
-            {% for booking in room.hourlySlots %}
-                {% if booking.bookedSlots.length %}
-                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
-                {% else %}
-                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
-                    {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
-                {% endif %}
+
+            {# Loop through the hourly slots for each room #}
+            {% for hourSlot in room.hourlySlots %}
+
+                {# Loop through the 15 minute quarter hours in each hour #}
+                {% for quarterStart in [0, 15, 30, 45] %}
+                    {% set quarterEnd = quarterStart + 15 %}
+                    {% set isQuarterBooked = false %} {# Reset flag for each 15-min block #}
+
+                    {# Check if this quarter hour has any bookings which overlap it #}
+                    {% for booked in hourSlot.bookedSlots %}
+                        {% set startMinute = booked['startTime'].split(':')[1] | int %}
+                        {% set endMinute = startMinute + booked.durationInMinutes %}
+
+                        {# Use local startMinute and endMinute variables #}
+                        {% if startMinute < quarterEnd and endMinute > quarterStart %}
+                            {% set isQuarterBooked = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if isQuarterBooked %}
+                        {# If there are bookings present in this quarter draw it as booked #}
+                        {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
+                    {% else %}
+                        {# Draw them as available #}
+                        {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
+                    {% endif %}
+                {% endfor %}
             {% endfor %}
+
             {% set rows = (rows.push(row), rows) %}
         {% endfor %}
 
