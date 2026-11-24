@@ -59,18 +59,34 @@
         </div>
 
         <div class="govuk-grid-row">
+            {# Number of rooms shown #}
             <div class="govuk-grid-column-two-thirds">
                 <p class="govuk-body"><span class="govuk-!-font-weight-bold">{{ rooms.length if rooms.length else 0 }}</span> rooms listed</p>
             </div>
 
+            {# Key to blocks on screen #}
             <div class="govuk-grid-column-one-third">
-              <p class="govuk-body  govuk-!-text-align-right">
-                Key:
-                <span class="app-print-availability__key app-print-availability__key--booked"></span>
-                Booked
-                <span class="app-print-availability__key app-print-availability__key--available"></span>
-                Available
-              </p>
+
+                <div class="app-print-availability__key-grid govuk-body-s govuk-!-text-align-right">
+                    {# Top Left #}
+                    <div class="govuk-!-font-weight-bold">Key:</div>
+
+                    {# Top Right #}
+                    <div class="app-print-availability__key-item">
+                        <span class="app-print-availability__key app-print-availability__key--booked"></span>
+                        Booked
+                    </div>
+
+                    {# Bottom Left (Empty) #}
+                    <div aria-hidden="true"></div>
+
+                    {# Bottom Right #}
+                    <div class="app-print-availability__key-item">
+                        <span class="app-print-availability__key app-print-availability__key--available"></span>
+                        Available
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

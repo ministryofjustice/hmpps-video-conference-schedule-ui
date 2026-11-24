@@ -71,6 +71,20 @@
   }
 }
 
+.app-print-availability__key-grid {
+  display: grid;
+  grid-template-columns: auto auto; // Keeps "Key:" and the swatches tightly grouped
+  justify-content: end; // Aligns the whole grid to the right edge of the one-third column
+  gap: govuk-spacing(1) govuk-spacing(3); // 5px vertical gap, 15px horizontal gap
+  align-items: center;
+}
+
+.app-print-availability__key-item {
+  display: flex;
+  align-items: center;
+  gap: govuk-spacing(1); // 5px space between the colour swatch span and the text
+}
+
 .app-print-availability__booked {
   background-color: govuk-tint(govuk-colour('black'), 50%);
   print-color-adjust: exact;
