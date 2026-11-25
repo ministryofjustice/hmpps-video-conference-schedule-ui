@@ -2,14 +2,6 @@
 
 {% macro printAvailability(prison, date, rooms) %}
     <div class="print-only">
-        {% set head = [] %}
-        {% set head = (head.push({ text: 'Rooms', classes: 'app-print-availability__corner-header' }), head) %}
-
-        {# Format the hours to 10:00 or 09:00 #}
-        {% for slot in rooms[0].hourlySlots %}
-            {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
-            {% set head = (head.push({ text: hour, colspan: 4, classes: 'app-print-availability__col-header' }), head) %}
-        {% endfor %}
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-three-quarters">
@@ -27,55 +19,62 @@
             </div>
         </div>
 
-        {# Build the table rows of 15-minute booking slots throughout the day #}
+        <table class="govuk-table app-print-availability__table">
 
-        {% set rows = [] %}
-        {% for room in rooms %}
-            {% set row = [] %}
-            {% set row = (row.push({ text: room.description, classes: 'app-print-availability__row-header' }), row) %}
+            {# Generate the table header row based on the number of hourly slots - all rows have the same number #}
+            <thead class="govuk-table__head">
+              <tr>
+                  <th class="app-print-availability__corner-header">Rooms</th>
+                  {% for slot in rooms[0].hourlySlots %}
+                      {# Translate numeric hours into formatted hour strings #}
+                      {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
 
-            {# Loop through the hourly slots for each room #}
-            {% for hourSlot in room.hourlySlots %}
+                      {# Each hourly slot will have four quarter-hour cells within it i.e. colspan 4 #}
+                      <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
+                  {% endfor %}
+              </tr>
+            </thead>
 
-                {# Loop through the 15 minute quarter hours in each hour #}
-                {% for quarterStart in [0, 15, 30, 45] %}
-                    {% set quarterEnd = quarterStart + 15 %}
-                    {% set isQuarterBooked = false %} {# Reset flag for each 15-min block #}
+            <tbody class="govuk-table__body">
 
-                    {# Check if this quarter hour has any bookings which overlap it #}
-                    {% for booked in hourSlot.bookedSlots %}
-                        {% set startMinute = booked['startTime'].split(':')[1] | int %}
-                        {% set endMinute = startMinute + booked.durationInMinutes %}
+            {# Loop through the rooms list and generate a table row for each one #}
 
-                        {# Use local startMinute and endMinute variables #}
-                        {% if startMinute < quarterEnd and endMinute > quarterStart %}
-                            {% set isQuarterBooked = true %}
-                        {% endif %}
+            {% for room in rooms %}
+                <tr class="govuk-table__row">
+
+                    {# First column is the room description #}
+                    <td class="govuk-table__header app-print-availability__row-header">{{ room.description }}</td>
+
+                    {# Loop through the hourly slots for each room #}
+                    {% for hourSlot in room.hourlySlots %}
+
+                        {# Loop through the 15 minute quarter hours in each hour #}
+                        {% for quarterStart in [0, 15, 30, 45] %}
+                            {% set quarterEnd = quarterStart + 15 %}
+                            {% set isQuarterBooked = false %}
+
+                            {# Check if this quarter hour has any bookings which overlap it #}
+                            {% for booked in hourSlot.bookedSlots %}
+                                {% set startMinute = booked['startTime'].split(':')[1] | int %}
+                                {% set endMinute = startMinute + booked.durationInMinutes %}
+                                {% if startMinute < quarterEnd and endMinute > quarterStart %}
+                                    {% set isQuarterBooked = true %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if isQuarterBooked %}
+                                <td class="govuk-table__cell app-print-availability__cell">
+                                    <div class="app-print-availability__booked"></div>
+                                </td>
+                            {% else %}
+                                <td class="govuk-table__cell app-print-availability__cell"></td>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
-
-                    {% if isQuarterBooked %}
-                        {# If there are bookings present in this quarter draw it as booked #}
-                        {% set row = (row.push({ html: '<div class="app-print-availability__booked"></div>', classes: 'app-print-availability__cell' }), row) %}
-                    {% else %}
-                        {# Draw them as available #}
-                        {% set row = (row.push({ text: '', classes: 'app-print-availability__cell' }), row) %}
-                    {% endif %}
-                {% endfor %}
+                </tr>
             {% endfor %}
-
-            {% set rows = (rows.push(row), rows) %}
-        {% endfor %}
-
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                {{ govukTable({
-                    head: head,
-                    firstCellIsHeader: true,
-                    rows: rows,
-                    classes: 'app-print-availability__table'
-                }) }}
-            </div>
-        </div>
+            </tbody>
+        </table>
 
         <div class="govuk-grid-row">
             {# Number of rooms shown #}
