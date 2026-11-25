@@ -48,9 +48,7 @@
                     {% for hourSlot in room.hourlySlots %}
                         {% for quarter in hourSlot.quarters %}
                             {% if quarter %}
-                                <td class="govuk-table__cell app-print-availability__cell">
-                                    <div class="app-print-availability__booked"></div>
-                                </td>
+                                <td class="govuk-table__cell app-print-availability__cell app-print-availability__booked"></td>
                             {% else %}
                                 <td class="govuk-table__cell app-print-availability__cell"></td>
                             {% endif %}
