@@ -112,6 +112,32 @@
   }
 }
 
+.app-tabs-wrapper {
+  position: relative;
+}
+
+.app-tabs-action {
+  margin-bottom: 25px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-tabs-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-bottom: 0;
+    /* Match the vertical padding/height of .govuk-tabs__list-item so text aligns cleanly */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 1;
+  }
+
+  /* Optional: Add right padding to the tab list so tabs don't overlap the link if the screen narrows */
+  .app-tabs-wrapper .govuk-tabs__list {
+    padding-right: 160px;
+  }
+}
+
 @media print {
   %app-\!-display-contents-print {
     display: contents !important;

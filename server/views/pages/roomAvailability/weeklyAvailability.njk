@@ -123,7 +123,18 @@
                     } if currentWeekStartDate
                 ]
             }) }}
-            <div>
+
+            <div class="app-tabs-wrapper">
+
+                {# The print link to display the full day availability - feature switched #}
+                {% if printViewAvailability %}
+                    <div class="app-tabs-action hmpps-action-bar govuk-!-display-none-print">
+                        <div class="hmpps-print-and-export">
+                            <button id="print-availability-link" class="hmpps-print-and-export--print">Print full day availability</button>
+                        </div>
+                    </div>
+                {% endif %}
+
                 {{ govukTabs({
                     classes: 'app-print-availability__tabs',
                     items: [
