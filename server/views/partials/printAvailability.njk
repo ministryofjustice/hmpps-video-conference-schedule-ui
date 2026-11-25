@@ -26,10 +26,8 @@
               <tr>
                   <th class="app-print-availability__corner-header">Rooms</th>
                   {% for slot in rooms[0].hourlySlots %}
-                      {# Translate numeric hours into formatted hour strings #}
                       {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
-
-                      {# Each hourly slot will have four quarter-hour cells within it i.e. colspan 4 #}
+                      {# Each hourly slot has four quarter-hour cells i.e. colspan 4 #}
                       <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
                   {% endfor %}
               </tr>
@@ -37,32 +35,19 @@
 
             <tbody class="govuk-table__body">
 
-            {# Loop through the rooms list and generate a table row for each one #}
+            {#
+              Loop through the rooms list and generate a table row for each
+              Each room has a list of hourlySlots
+              Each hourlySlot has a list of 4 quarters (booleans)
+              If the quarter has a booking which overlaps it will be true (booked), otherwise false (available).
+            #}
 
             {% for room in rooms %}
                 <tr class="govuk-table__row">
-
-                    {# First column is the room description #}
                     <td class="govuk-table__header app-print-availability__row-header">{{ room.description }}</td>
-
-                    {# Loop through the hourly slots for each room #}
                     {% for hourSlot in room.hourlySlots %}
-
-                        {# Loop through the 15 minute quarter hours in each hour #}
-                        {% for quarterStart in [0, 15, 30, 45] %}
-                            {% set quarterEnd = quarterStart + 15 %}
-                            {% set isQuarterBooked = false %}
-
-                            {# Check if this quarter hour has any bookings which overlap it #}
-                            {% for booked in hourSlot.bookedSlots %}
-                                {% set startMinute = booked['startTime'].split(':')[1] | int %}
-                                {% set endMinute = startMinute + booked.durationInMinutes %}
-                                {% if startMinute < quarterEnd and endMinute > quarterStart %}
-                                    {% set isQuarterBooked = true %}
-                                {% endif %}
-                            {% endfor %}
-
-                            {% if isQuarterBooked %}
+                        {% for quarter in hourSlot.quarters %}
+                            {% if quarter %}
                                 <td class="govuk-table__cell app-print-availability__cell">
                                     <div class="app-print-availability__booked"></div>
                                 </td>
@@ -73,6 +58,7 @@
                     {% endfor %}
                 </tr>
             {% endfor %}
+
             </tbody>
         </table>
 

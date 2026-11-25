@@ -16,6 +16,7 @@ export type HourlySlot = {
   hour: number
   freeSlots?: TimeSlot[]
   bookedSlots?: TimeSlot[]
+  quarters?: boolean[]
 }
 
 export interface RoomAvailabilityResult {
@@ -236,13 +237,35 @@ export default class RoomAvailabilityService {
     )
   }
 
+  private getQuarterHourOccupancy(bookingsInThisHour: TimeSlot[]): boolean[] {
+    const occupancy = [false, false, false, false]
+
+    for (const booking of bookingsInThisHour) {
+      const startMinute = Number(booking.startTime.split(':')[1])
+      const endMinute = startMinute + booking.durationInMinutes
+
+      // Determine the first and last quarter-hour index (0 to 3) touched by this booking
+      const firstQuarter = Math.floor(startMinute / 15)
+      const lastQuarter = Math.floor((endMinute - 1) / 15)
+
+      for (let q = firstQuarter; q <= lastQuarter; q += 1) {
+        occupancy[q] = true
+      }
+    }
+
+    return occupancy
+  }
+
   private toAllDayRoomBookings(date: Date, locationEvent: LocationEvent): RoomAvailability {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
+
     const hourlySlots = Array.from({ length: 13 }, (_, index) => {
       const hour = index + 8
+      const hourlyBusySlots: TimeSlot[] = busySlots.filter(slot => slot.hour === hour)
       return {
         hour,
-        bookedSlots: busySlots.filter(slot => slot.hour === hour),
+        bookedSlots: hourlyBusySlots,
+        quarters: this.getQuarterHourOccupancy(hourlyBusySlots),
       }
     })
 

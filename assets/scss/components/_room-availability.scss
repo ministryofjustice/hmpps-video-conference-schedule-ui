@@ -71,6 +71,12 @@
   }
 }
 
+.app-print-availability__booked {
+  background-color: govuk-tint(govuk-colour('black'), 50%);
+  print-color-adjust: exact;
+  height: 100%;
+}
+
 .app-print-availability__key-grid {
   display: grid;
   grid-template-columns: auto auto; // Keeps "Key:" and the swatches tightly grouped
@@ -83,12 +89,6 @@
   display: flex;
   align-items: center;
   gap: govuk-spacing(1); // 5px space between the colour swatch span and the text
-}
-
-.app-print-availability__booked {
-  background-color: govuk-tint(govuk-colour('black'), 50%);
-  print-color-adjust: exact;
-  height: 100%;
 }
 
 .app-print-availability__key {
