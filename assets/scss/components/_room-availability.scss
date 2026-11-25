@@ -51,11 +51,7 @@
 }
 
 .app-print-availability__col-header {
-  border-right: 1px solid #cecece;
-
-  &:nth-child(#{"2n of " + &}) {
-    border-right-color: #767676;
-  }
+  border-right: 1px solid #767676;
 }
 
 .app-print-availability__row-header {
@@ -69,6 +65,14 @@
   &:nth-child(#{"4n of " + &}) {
     border-right-color: #767676;
   }
+}
+
+.app-print__cell--truncate {
+  // For room descriptions
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .app-print-availability__booked {
