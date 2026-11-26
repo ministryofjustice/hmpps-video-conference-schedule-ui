@@ -23,39 +23,39 @@
 
             {# Generate the table header row based on the number of hourly slots - all rows have the same number #}
             <thead class="govuk-table__head">
-              <tr>
-                  <th class="app-print-availability__corner-header">Rooms</th>
-                  {% for slot in rooms[0].hourlySlots %}
-                      {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
-                      {# Each hourly slot has four quarter-hour cells i.e. colspan 4 #}
-                      <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
-                  {% endfor %}
-              </tr>
+                <tr>
+                    <th class="app-print-availability__corner-header">Rooms</th>
+                    {% for slot in rooms[0].hourlySlots %}
+                        {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
+                        {# Each hourly slot has four quarter-hour cells i.e. colspan 4 #}
+                        <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
+                    {% endfor %}
+                </tr>
             </thead>
 
             <tbody class="govuk-table__body">
 
-            {#
-              Loop through the rooms list and generate a table row for each
-              Each room has a list of hourlySlots
-              Each hourlySlot has a list of 4 quarters (booleans)
-              If the quarter has a booking which overlaps it will be true (booked), otherwise false (available).
-            #}
+                {#
+                    Loop through the rooms list and generate a table row for each
+                    Each room has a list of hourlySlots
+                    Each hourlySlot has a list of 4 quarters (booleans)
+                    If the quarter has a booking which overlaps it will be true (booked), otherwise false (available).
+                #}
 
-            {% for room in rooms %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__header app-print-availability__row-header app-print__cell--truncate">{{ room.description }}</td>
-                    {% for hourSlot in room.hourlySlots %}
-                        {% for quarter in hourSlot.quarters %}
-                            {% if quarter %}
-                                <td class="govuk-table__cell app-print-availability__cell app-print-availability__booked"></td>
-                            {% else %}
-                                <td class="govuk-table__cell app-print-availability__cell"></td>
-                            {% endif %}
+                {% for room in rooms %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__header app-print-availability__row-header app-print__cell--truncate">{{ room.description }}</td>
+                        {% for hourSlot in room.hourlySlots %}
+                            {% for quarter in hourSlot.quarters %}
+                                {% if quarter %}
+                                    <td class="govuk-table__cell app-print-availability__cell app-print-availability__booked"></td>
+                                {% else %}
+                                    <td class="govuk-table__cell app-print-availability__cell"></td>
+                                {% endif %}
+                            {% endfor %}
                         {% endfor %}
-                    {% endfor %}
-                </tr>
-            {% endfor %}
+                    </tr>
+                {% endfor %}
 
             </tbody>
         </table>
