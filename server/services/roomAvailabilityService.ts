@@ -115,12 +115,8 @@ export default class RoomAvailabilityService {
         )
       }
 
-      // Populate the print view data if feature switched on
-      if (config.featureToggles.printViewAvailability) {
-        roomBookings = roomBookings.concat(
-          videoEvents.locations.map(le => this.toAllDayRoomBookings(immutableDate, le)),
-        )
-      }
+      // Populate the print view data
+      roomBookings = roomBookings.concat(videoEvents.locations.map(le => this.toAllDayRoomBookings(immutableDate, le)))
 
       date = addDays(date, 1)
     }
