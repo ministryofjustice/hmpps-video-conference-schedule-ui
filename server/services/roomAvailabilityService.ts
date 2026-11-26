@@ -3,7 +3,6 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { LocationEvent } from '../@types/bookAVideoLinkApi/types'
 import { calculateFreeTimeSlots, generateHourlySlots, simpleTimeToDate, TimeSlot } from '../utils/timeSlotUtils'
 import { formatDate } from '../utils/utils'
-import config from '../config'
 
 export type RoomAvailability = {
   id: string
