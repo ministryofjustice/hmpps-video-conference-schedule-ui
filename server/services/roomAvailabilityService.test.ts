@@ -235,22 +235,7 @@ describe('Room availability service', () => {
               {
                 hour: 17,
                 bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 18,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 19,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 20,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
+                quarters: [false, false],
               },
             ],
           },
@@ -307,22 +292,7 @@ describe('Room availability service', () => {
               {
                 hour: 17,
                 bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 18,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 19,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
-              },
-              {
-                hour: 20,
-                bookedSlots: [],
-                quarters: [false, false, false, false],
+                quarters: [false, false],
               },
             ],
           },
