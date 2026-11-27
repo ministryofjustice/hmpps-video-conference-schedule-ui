@@ -6,7 +6,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-three-quarters">
                 <h2 class="govuk-heading-m">Video room availability: {{ prison.name }}</h2>
-                <p class="govuk-body-s">Each column represents 15 minutes. Times are labelled every hour. Please note, availability may have changed since this document was printed.</p>
+                <p class="govuk-body-s">Each column represents 15 minutes. Times are labelled every 30 minutes. Please note, availability may have changed since this document was printed.</p>
             </div>
         </div>
 
@@ -15,7 +15,9 @@
                 <h3 class="govuk-heading-s">{{ date | formatDate('iiii d MMMM yyyy') }}</h3>
             </div>
             <div class="govuk-grid-column-one-half govuk-!-text-align-right">
-                <p data-printed-at="printed-at" class="govuk-body-s govuk-!-text-align-right"></p>
+                <p class="govuk-body-s govuk-!-text-align-right">
+                    Printed at {{ now() | formatDate('HH:mm') }} on {{ now() | formatDate('iiii d MMMM yyyy') }}
+                </p>
             </div>
         </div>
 
@@ -26,9 +28,12 @@
                 <tr>
                     <th class="app-print-availability__corner-header">Rooms</th>
                     {% for slot in rooms[0].hourlySlots %}
-                        {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
-                        {# Each hourly slot has four quarter-hour cells i.e. colspan 4 #}
-                        <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
+                        {% set hour = "0" + slot.hour if slot.hour < 10 else slot.hour %}
+                        {# Each half-hour slot has two quarter-hour cells i.e. colspan 2 #}
+                        <th class="govuk-table__header app-print-availability__col-header" colspan="2">{{ hour }}:00</th>
+                        {% if not loop.last %}
+                            <th class="govuk-table__header app-print-availability__col-header" colspan="2">{{ hour }}:30</th>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             </thead>

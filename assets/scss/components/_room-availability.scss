@@ -43,12 +43,16 @@
 }
 
 .app-print-availability__col-header {
-  border-right: 1px solid #767676;
+  border-right: 1px solid #cecece;
+
+  &:nth-child(#{"2n of " + &}) {
+    border-right-color: #767676;
+  }
 }
 
 .govuk-table .govuk-table__header.app-print-availability__col-header {
-  padding-left: govuk-spacing(2);
-  padding-right: govuk-spacing(2);
+  padding-left: govuk-spacing(1);
+  padding-right: govuk-spacing(1);
 }
 
 .app-print-availability__row-header {
@@ -57,7 +61,7 @@
 
 .app-print-availability__cell {
   border-right: 1px solid #cecece;
-  padding: 1px;
+  padding: 0px;
 
   &:nth-child(#{"4n of " + &}) {
     border-right-color: #767676;

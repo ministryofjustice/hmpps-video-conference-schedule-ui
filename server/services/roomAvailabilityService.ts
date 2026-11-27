@@ -254,13 +254,14 @@ export default class RoomAvailabilityService {
   private toAllDayRoomBookings(date: Date, locationEvent: LocationEvent): RoomAvailability {
     const busySlots: TimeSlot[] = this.getBusySlotsFor(date, locationEvent)
 
-    const hourlySlots = Array.from({ length: 13 }, (_, index) => {
+    const hourlySlots = Array.from({ length: 10 }, (_, index) => {
       const hour = index + 8
       const hourlyBusySlots: TimeSlot[] = busySlots.filter(slot => slot.hour === hour)
+      const quarters = this.getQuarterHourOccupancy(hourlyBusySlots)
       return {
         hour,
         bookedSlots: hourlyBusySlots,
-        quarters: this.getQuarterHourOccupancy(hourlyBusySlots),
+        quarters: hour === 17 ? quarters.slice(0, 2) : quarters,
       }
     })
 
