@@ -7,6 +7,7 @@
 
         {% if period == "AM" %}
             {{ govukTable({
+                classes: 'govuk-!-display-none-print',
                 firstCellIsHeader: true,
                 head: [
                     {
@@ -43,6 +44,7 @@
         {% if period == "PM" %}
             {{ govukTable({
                 firstCellIsHeader: true,
+                classes: 'govuk-!-display-none-print',
                 head: [
                     {
                         text: "Rooms",
@@ -78,6 +80,7 @@
         {% if period == "ED" %}
             {{ govukTable({
                 firstCellIsHeader: true,
+                classes: 'govuk-!-display-none-print',
                 head: [
                     {
                         text: "Rooms",

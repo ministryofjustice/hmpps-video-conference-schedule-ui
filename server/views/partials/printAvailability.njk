@@ -1,0 +1,95 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% macro printAvailability(prison, date, rooms) %}
+    <div class="print-only">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <h2 class="govuk-heading-m">Video room availability: {{ prison.name }}</h2>
+                <p class="govuk-body-s">Each column represents 15 minutes. Times are labelled every hour. Please note, availability may have changed since this document was printed.</p>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h3 class="govuk-heading-s">{{ date | formatDate('iiii d MMMM yyyy') }}</h3>
+            </div>
+            <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+                <p data-printed-at="printed-at" class="govuk-body-s govuk-!-text-align-right"></p>
+            </div>
+        </div>
+
+        <table class="govuk-table app-print-availability__table">
+
+            {# Generate the table header row based on the number of hourly slots - all rows have the same number #}
+            <thead class="govuk-table__head">
+                <tr>
+                    <th class="app-print-availability__corner-header">Rooms</th>
+                    {% for slot in rooms[0].hourlySlots %}
+                        {% set hour = ("0" + slot.hour if slot.hour < 10 else slot.hour) + ":00" %}
+                        {# Each hourly slot has four quarter-hour cells i.e. colspan 4 #}
+                        <th class="govuk-table__header app-print-availability__col-header" colspan="4">{{ hour }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody class="govuk-table__body">
+
+                {#
+                    Loop through the rooms list and generate a table row for each
+                    Each room has a list of hourlySlots
+                    Each hourlySlot has a list of 4 quarters (booleans)
+                    If the quarter has a booking which overlaps it will be true (booked), otherwise false (available).
+                #}
+
+                {% for room in rooms %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__header app-print-availability__row-header app-print__cell--truncate">{{ room.description }}</td>
+                        {% for hourSlot in room.hourlySlots %}
+                            {% for quarter in hourSlot.quarters %}
+                                {% if quarter %}
+                                    <td class="govuk-table__cell app-print-availability__cell app-print-availability__booked"></td>
+                                {% else %}
+                                    <td class="govuk-table__cell app-print-availability__cell"></td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <div class="govuk-grid-row">
+            {# Number of rooms shown #}
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body"><span class="govuk-!-font-weight-bold">{{ rooms.length if rooms.length else 0 }}</span> rooms listed</p>
+            </div>
+
+            {# Key to blocks on screen #}
+            <div class="govuk-grid-column-one-third">
+
+                <div class="app-print-availability__key-grid govuk-body-s govuk-!-text-align-right">
+                    {# Top Left #}
+                    <div class="govuk-!-font-weight-bold">Key:</div>
+
+                    {# Top Right #}
+                    <div class="app-print-availability__key-item">
+                        <span class="app-print-availability__key app-print-availability__key--booked"></span>
+                        Booked
+                    </div>
+
+                    {# Bottom Left (Empty) #}
+                    <div aria-hidden="true"></div>
+
+                    {# Bottom Right #}
+                    <div class="app-print-availability__key-item">
+                        <span class="app-print-availability__key app-print-availability__key--available"></span>
+                        Available
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endmacro %}

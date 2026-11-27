@@ -127,7 +127,206 @@ describe('Room availability service', () => {
             ],
           },
         ],
-        roomBookings: [],
+        roomBookings: [
+          {
+            id: '81b02c1e-1e26-46e5-b4ee-00830c0cff5e',
+            description: 'VCC Room 1',
+            date: '2026-07-01',
+            hourlySlots: [
+              {
+                hour: 8,
+                bookedSlots: [
+                  {
+                    hour: 8,
+                    durationInMinutes: 60,
+                    startTime: '08:00',
+                    endTime: '09:00',
+                  },
+                ],
+                quarters: [true, true, true, true],
+              },
+              {
+                hour: 9,
+                bookedSlots: [
+                  {
+                    hour: 9,
+                    durationInMinutes: 30,
+                    startTime: '09:30',
+                    endTime: '10:00',
+                  },
+                ],
+                quarters: [false, false, true, true],
+              },
+              {
+                hour: 10,
+                bookedSlots: [
+                  {
+                    hour: 10,
+                    durationInMinutes: 30,
+                    startTime: '10:00',
+                    endTime: '10:30',
+                  },
+                  {
+                    hour: 10,
+                    durationInMinutes: 30,
+                    startTime: '10:30',
+                    endTime: '11:00',
+                  },
+                ],
+                quarters: [true, true, true, true],
+              },
+              {
+                hour: 11,
+                bookedSlots: [
+                  {
+                    hour: 11,
+                    durationInMinutes: 30,
+                    startTime: '11:00',
+                    endTime: '11:30',
+                  },
+                  {
+                    hour: 11,
+                    durationInMinutes: 30,
+                    startTime: '11:30',
+                    endTime: '12:00',
+                  },
+                ],
+                quarters: [true, true, true, true],
+              },
+              {
+                hour: 12,
+                bookedSlots: [
+                  {
+                    hour: 12,
+                    durationInMinutes: 60,
+                    startTime: '12:00',
+                    endTime: '13:00',
+                  },
+                ],
+                quarters: [true, true, true, true],
+              },
+              {
+                hour: 13,
+                bookedSlots: [
+                  {
+                    hour: 13,
+                    durationInMinutes: 30,
+                    startTime: '13:00',
+                    endTime: '13:30',
+                  },
+                ],
+                quarters: [true, true, false, false],
+              },
+              {
+                hour: 14,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 15,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 16,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 17,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 18,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 19,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 20,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+            ],
+          },
+          {
+            id: '81b02c1e-1e26-46e5-b4ee-00830c0cff5e',
+            description: 'VCC Room 1',
+            date: '2026-07-02',
+            hourlySlots: [
+              {
+                hour: 8,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 9,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 10,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 11,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 12,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 13,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 14,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 15,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 16,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 17,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 18,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 19,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+              {
+                hour: 20,
+                bookedSlots: [],
+                quarters: [false, false, false, false],
+              },
+            ],
+          },
+        ],
       })
     })
   })

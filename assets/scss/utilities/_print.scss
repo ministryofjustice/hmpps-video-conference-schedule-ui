@@ -3,6 +3,14 @@
   padding: 0.5in 0.2in;
 }
 
+@page a4-landscape {
+  size: a4 landscape;
+}
+
+.app-page-a4-landscape {
+  page: a4-landscape;
+}
+
 @include govuk-media-query($media-type: screen) {
   .print-only {
     display: none !important;

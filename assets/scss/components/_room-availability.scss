@@ -1,0 +1,154 @@
+.govuk-tag {
+  @extend .govuk-tag;
+
+  &--no-text-transform {
+    text-transform: none;
+  }
+
+  &--spacing {
+    margin-bottom: 10px;
+  }
+}
+
+.govuk-table {
+  .govuk-table__header {
+    @extend .govuk-table__header;
+
+    &--no-border-top {
+      border-top: none;
+    }
+
+    &--no-border-bottom {
+      border-bottom: none;
+    }
+  }
+}
+
+.appointments-link-div {
+  text-align: right;
+  margin-right: 10px;
+}
+
+.booked {
+  background-color: govuk-tint(govuk-colour('black'), 50%);
+  print-color-adjust: exact;
+}
+
+.app-print-availability__table {
+  height: fit-content;
+}
+
+.app-print-availability__corner-header {
+  border-right: 1px solid #767676;
+}
+
+.app-print-availability__col-header {
+  border-right: 1px solid #767676;
+}
+
+.govuk-table .govuk-table__header.app-print-availability__col-header {
+  padding-left: govuk-spacing(2);
+  padding-right: govuk-spacing(2);
+}
+
+.app-print-availability__row-header {
+  border-right: 1px solid #767676;
+}
+
+.app-print-availability__cell {
+  border-right: 1px solid #cecece;
+  padding: 1px;
+
+  &:nth-child(#{"4n of " + &}) {
+    border-right-color: #767676;
+  }
+}
+
+.app-print__cell--truncate {
+  // For room descriptions
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-print-availability__booked {
+  background-color: govuk-tint(govuk-colour('black'), 50%);
+  print-color-adjust: exact;
+  height: 100%;
+}
+
+.app-print-availability__key-grid {
+  display: grid;
+  grid-template-columns: auto auto; // Keeps "Key:" and the swatches tightly grouped
+  justify-content: end; // Aligns the whole grid to the right edge of the one-third column
+  gap: govuk-spacing(1) govuk-spacing(3); // 5px vertical gap, 15px horizontal gap
+  align-items: center;
+}
+
+.app-print-availability__key-item {
+  display: flex;
+  align-items: center;
+  gap: govuk-spacing(1); // 5px space between the colour swatch span and the text
+}
+
+.app-print-availability__key {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  print-color-adjust: exact;
+
+  &--available {
+    background-color: transparent;
+    border: 1px solid #939292;
+  }
+
+  &--booked {
+    background-color: govuk-tint(govuk-colour('black'), 50%);
+    border: 1px solid govuk-tint(govuk-colour('black'), 50%);
+  }
+}
+
+.app-tabs-wrapper {
+  position: relative;
+}
+
+.app-tabs-action {
+  margin-bottom: 25px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-tabs-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-bottom: 0;
+    /* Match the vertical padding/height of .govuk-tabs__list-item so text aligns cleanly */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 1;
+  }
+
+  /* Optional: Add right padding to the tab list so tabs don't overlap the link if the screen narrows */
+  .app-tabs-wrapper .govuk-tabs__list {
+    padding-right: 160px;
+  }
+}
+
+@media print {
+  %app-\!-display-contents-print {
+    display: contents !important;
+  }
+}
+
+.app-print-availability__tabs {
+  .govuk-tabs__list {
+    @extend .govuk-\!-display-none-print;
+  }
+
+  .govuk-tabs__panel {
+    &:not(&--hidden) {
+      @extend %app-\!-display-contents-print;
+    }
+  }
+}
